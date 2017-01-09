@@ -17,10 +17,10 @@ In order to use it, you must provide the resources you want to map when starting
 For example, to map the planets resource from Star Wars API, you will start the server as follows:
 
 ```
-java -jar -Dplanets=http://swapi.co/api/planets/ restql-server-v1.0.0-standalone.jar
+java -jar -Dport=9000 -Dplanets=http://swapi.co/api/planets/ restql-server-v1.0.0-standalone.jar
 ```
 
-For more information about resources see [the restQL-core configuration wiki](https://github.com/B2W-BIT/restQL-core/wiki/Configuration).
+For more information about resources see [the restQL-core configuration wiki](https://github.com/B2W-BIT/restQL-core/wiki/Configuration#resources).
 
 ## Running Queries
 
