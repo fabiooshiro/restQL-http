@@ -32,7 +32,7 @@ Example POST Body:
 [:allPlanets {:from :planets}]
 ```
 
-For more details about the query language and structure see [restQL-server wiki](https://github.com/B2W-BIT/restQL-server/wiki).
+For more details about the query language and structure see [restQL-core Query Language wiki](https://github.com/B2W-BIT/restQL-core/wiki/Query-Language).
 
 
 ## License
