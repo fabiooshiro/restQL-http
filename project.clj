@@ -1,0 +1,33 @@
+(defproject restql-server "v1.0.0" :description "RestQL Server"
+  :url "http://example.com/FIXME"
+  :license {:name "Eclipse Public License"
+            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :dependencies [[org.clojure/clojure "1.7.0"]
+                 [http-kit "2.1.18"]
+                 [compojure "1.4.0"]
+                 [org.clojure/data.json "0.2.6"]
+                 [com.taoensso/timbre "4.1.4"]
+                 [environ "1.0.0"]
+                 [expectations "2.0.9"]
+                 [http-kit.fake "0.2.1"]
+                 [slingshot "0.12.2"]
+                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]
+                 [cheshire "5.5.0"]
+                 [com.b2wdigital/restql-core "0.3.2"]]
+  :plugins [[lein-expectations "0.0.8"]
+            [lein-autoexpect "1.4.0"]
+            [lein-environ "1.0.0"]
+            [single-file-lein-zip "0.1.0"]]
+  :main ^:skip-aot restql.server.core
+  :target-path "target/%s"
+  :zip ["Dockerfile" {:file-name "restql-server-v1.0.0-standalone.jar" :file-folder "target/uberjar"}]
+  :profiles {:uberjar {:aot :all
+                       :env {
+                             :port "9000"
+                             :cards "http://api.magicthegathering.io/v1/cards"
+                             }}
+
+             :dev {:env {
+                         :port "9000"
+                         :cards "http://api.magicthegathering.io/v1/cards"
+                         }}})
