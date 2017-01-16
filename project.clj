@@ -8,11 +8,13 @@
                  [org.clojure/data.json "0.2.6"]
                  [com.taoensso/timbre "4.1.4"]
                  [environ "1.0.0"]
+                 [prismatic/schema "1.1.2"]
                  [expectations "2.0.9"]
                  [http-kit.fake "0.2.1"]
                  [slingshot "0.12.2"]
-                 [org.clojure/core.async "0.1.346.0-17112a-alpha"]
+                 [org.clojure/core.async "0.2.395"]
                  [cheshire "5.5.0"]
+                 [com.novemberain/monger "3.0.2"]
                  [com.b2wdigital/restql-core "0.3.2"]]
   :plugins [[lein-expectations "0.0.8"]
             [lein-autoexpect "1.4.0"]
@@ -30,4 +32,5 @@
              :dev {:env {
                          :port "9000"
                          :cards "http://api.magicthegathering.io/v1/cards"
+                         :mongo-url "mongodb://localhost:27017/restql-server"
                          }}})
