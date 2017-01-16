@@ -1,12 +1,15 @@
 (ns restql.server.async-handler
   (:require [compojure.core :as c]
+            [clojure.walk :refer [keywordize-keys]]
             [restql.core.api.restql-facade :as restql]
             [restql.server.logger :refer [log generate-uuid!]]
             [restql.core.log :refer [info warn error]]
+            [restql.server.database.persistence :as db]
             [clojure.edn :as edn]
             [clojure.data.json :as json]
             [environ.core :refer [env]]
             [restql.core.transformations.select :refer [select]]
+            [restql.server.interpolate :refer [interpolate]]
             [clojure.core.async :refer [chan go go-loop >! >!! <! alt! timeout]]
             [org.httpkit.server :refer [with-channel send!]]
             [ring.middleware.params :refer [wrap-params]]
@@ -101,12 +104,41 @@
                                         "restQL Query finished")
                                  (send! channel err)))))))
 
+(defn- run-saved-query
+  [req]
+  (with-channel req channel
+    (info "Trying to retrieve query" (-> req :params :id))
+    (let [id (-> req :params :id)
+          rev (-> req :params :rev read-string)
+          headers (-> req :headers)
+          params (-> req :query-params keywordize-keys)
+          query-entry (db/find-query id rev)
+          query-with-params (interpolate query-entry params) ; Interpolating parameters
+          query (interpolate query-with-params headers) ; Interpolating headers
+          time-before (System/currentTimeMillis)
+          [result-ch error-ch] (process-query query params)]
+          (info "Query" id "rev" rev "retrieved")
+      (go
+        (alt!
+          result-ch ([result]
+                      (info {:time (- (System/currentTimeMillis) time-before )
+                             :success true}
+                            "restQL Query finished")
+                      (send! channel result))
+          error-ch ([err]
+                     (error {:time (- (System/currentTimeMillis) time-before )
+                             :success false}
+                            "restQL Query finished")
+                     (send! channel err)))))))
+
+
 (c/defroutes routes
   (c/OPTIONS "/restql" request {:status 204} )
   (c/GET "/health" [] "restql is healthy :)")
   (c/GET "/resource-status" [] "OK")
   (c/POST "/restql/validate" req (validate-request req))
-  (c/POST "/run-query" req (run-query req)))
+  (c/POST "/run-query" req (run-query req))
+  (c/GET "/run-query/:id/revision/:rev" req (run-saved-query req)))
 
 (def app (-> routes
              wrap-params ))
