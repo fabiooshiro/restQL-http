@@ -1,6 +1,9 @@
 (ns restql.server.database.core
   (:require [restql.server.database.persistence :as db]
             [restql.server.request-util :as util]
+            [environ.core :refer [env]]
+            [clojure.edn :as edn]
+            [restql.core.validator.core :as validator]
             [slingshot.slingshot :refer [throw+]]
             [org.httpkit.client :as http]))
 
@@ -9,24 +12,18 @@
 (def count-query-revisions db/count-query-revisions)
 
 
-;(def restql-url (:restql-url env))
-;
-;(defn request-restql-validate! [text]
-;        (http/request {:url    (str restql-url "/validate")
-;                       :method :post
-;                       :body   text}))
-;
-;(defn validate [text]
-;        (let [{:keys [status body]} @(request-restql-validate! text)]
-;          (if (= 400 status)
-;            {:valid? false
-;             :details (get-response-message body)}
-;            {:valid? true})))
-
+(defn validate [text]
+  (validator/validate {:mappings env} text))
 
 
 (defn save-query [id query]
-  (db/save-query id query))
+  (let [parsed-query (->> query
+                          :text
+                          edn/read-string)]
+    (if (validate parsed-query)
+      (db/save-query id query)
+      (throw+ {:type :pdg-query-validation-error :data query}))))
+
   ;(let [validation (validate (:text query))]
   ;  (when-not (:valid? validation)
   ;    (throw+ {:type :pdg-query-validation-error :data validation}))

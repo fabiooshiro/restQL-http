@@ -107,7 +107,7 @@
         query (-> req :body slurp)
         metadata (-> query edn/read-string meta) ]
     {:status 201
-     :headers {"Location" (->> (db/save-query id (util/format-entry-query query metadata))
+     :headers {"Location" (->> (dbcore/save-query id (util/format-entry-query query metadata))
                                :size
                                (make-revision-link id))}}))
 
