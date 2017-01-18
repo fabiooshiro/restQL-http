@@ -24,6 +24,16 @@
                                 :query      query
                                 :query-opts query-opts))
 
+(defn validate-request [req]
+  (try+
+    (let [query (->>
+                  (util/parse-req req)
+                  edn/read-string)]
+      (if (dbcore/validate query)
+        (util/json-output 200 "valid")))
+    (catch [:type :validation-error] {:keys [message]}
+      (util/json-output 400 message))))
+
 
 (defn handle-request [req result-ch error-ch]
   (try+
@@ -104,7 +114,7 @@
 
 (defn add-query [req]
   (let [id (-> req :params :id)
-        query (-> req :body slurp)
+        query (util/parse-req req)
         metadata (-> query edn/read-string meta) ]
     {:status 201
      :headers {"Location" (->> (dbcore/save-query id (util/format-entry-query query metadata))
@@ -113,11 +123,18 @@
 
 
 (c/defroutes routes
+  ; Routes to health checking
   (c/OPTIONS "/restql" request {:status 204} )
   (c/GET "/health" [] "restql is healthy :)")
   (c/GET "/resource-status" [] "OK")
-  (c/POST "/restql/validate" req (util/validate-request req))
+
+  ; Route to validate some query
+  (c/POST "/validate-query" req (validate-request req))
+
+  ; Route to run ad hoc queries
   (c/POST "/run-query" req (run-query req))
+
+  ; Routes to save and run saved queries
   (c/POST "/save-query/:id" req (add-query req))
   (c/GET "/run-query/:id/revision/:rev" req (run-saved-query req)))
 
