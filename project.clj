@@ -1,4 +1,4 @@
-(defproject restql-server "v1.0.0" :description "RestQL Server"
+(defproject restql-server "v1.1.0" :description "RestQL Server"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
@@ -14,6 +14,7 @@
                  [slingshot "0.12.2"]
                  [org.clojure/core.async "0.2.395"]
                  [cheshire "5.5.0"]
+                 [ring/ring-json "0.4.0"]
                  [com.novemberain/monger "3.0.2"]
                  [com.b2wdigital/restql-core "0.3.2"]]
   :plugins [[lein-expectations "0.0.8"]

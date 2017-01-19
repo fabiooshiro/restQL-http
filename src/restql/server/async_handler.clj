@@ -2,11 +2,11 @@
   (:require [compojure.core :as c]
             [clojure.walk :refer [keywordize-keys]]
             [restql.core.api.restql-facade :as restql]
+            [restql.core.log :refer [info warn error]]
             [restql.server.logger :refer [log generate-uuid!]]
             [restql.server.request-util :as util]
-            [restql.core.log :refer [info warn error]]
-            [restql.server.database.persistence :as db]
             [restql.server.database.core :as dbcore]
+            [restql.server.exception-handler :refer [wrap-exception-handling]]
             [clojure.edn :as edn]
             [clojure.data.json :as json]
             [environ.core :refer [env]]
@@ -15,6 +15,7 @@
             [clojure.core.async :refer [chan go go-loop >! >!! <! alt! timeout]]
             [org.httpkit.server :refer [with-channel send!]]
             [ring.middleware.params :refer [wrap-params]]
+            [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
             [slingshot.slingshot :refer [try+]]))
 
 
@@ -33,6 +34,14 @@
         (util/json-output 200 "valid")))
     (catch [:type :validation-error] {:keys [message]}
       (util/json-output 400 message))))
+
+(defn make-revision-link
+  [id, rev]
+  (str "/run-query/" id "/revision/" rev))
+
+(defn make-query-link
+  [id, rev]
+  (str "/query/" id "/revision/" rev))
 
 
 (defn handle-request [req result-ch error-ch]
@@ -80,6 +89,25 @@
                                          :success false}
                                         "restQL Query finished")
                                  (send! channel err)))))))
+(defn- list-revisions [req]
+  (let [id (-> req :params :id)
+        revs (dbcore/count-query-revisions id)]
+    {:status (if (= 0 revs) 404 200)
+     :body {:revisions (->> (range 0 revs)
+                             reverse
+                             (map inc)
+                             (map (fn [index]
+                                    {:index index
+                                     :link (make-revision-link id index)
+                                     :query (make-query-link id index)}))
+                             (into []))}}))
+
+(defn- find-formatted-query [req]
+  (let [id (-> req :params :id)
+        rev (-> req :params :rev read-string)
+        query (-> (dbcore/find-query-by-id-and-revision id rev) :text)]
+    {:status (if (= 0 rev) 404 200)
+     :body query}))
 
 (defn- run-saved-query
   [req]
@@ -89,7 +117,7 @@
           rev (-> req :params :rev read-string)
           headers (-> req :headers)
           params (-> req :query-params keywordize-keys)
-          query-entry (-> (db/find-query id rev) :text)
+          query-entry (-> (dbcore/find-query-by-id-and-revision id rev) :text)
           query-with-params (interpolate query-entry params) ; Interpolating parameters
           query (interpolate query-with-params headers) ; Interpolating headers
           time-before (System/currentTimeMillis)
@@ -108,9 +136,6 @@
                             "restQL Query finished")
                      (send! channel err)))))))
 
-(defn make-revision-link
-        [id, rev]
-        (str "/run-query/" id "/revision/" rev))
 
 (defn add-query [req]
   (let [id (-> req :params :id)
@@ -134,9 +159,16 @@
   ; Route to run ad hoc queries
   (c/POST "/run-query" req (run-query req))
 
+  ; Routes to search for queries and revisions
+  (c/GET "/revisions/:id" req (list-revisions req))
+  (c/GET "/query/:id/revision/:rev" req (find-formatted-query req))
+
   ; Routes to save and run saved queries
   (c/POST "/save-query/:id" req (add-query req))
   (c/GET "/run-query/:id/revision/:rev" req (run-saved-query req)))
 
 (def app (-> routes
-             wrap-params ))
+             wrap-exception-handling
+             wrap-params
+             wrap-json-response
+             (wrap-json-body {:keywords? true})))
