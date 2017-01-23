@@ -70,7 +70,6 @@
           query-ch ([result]
             (let [output (->> result
                               ;(select (flatten query))
-                              json/write-str
                               (assoc response :body))]
               (info {:session uid} " finishing request handler")
               (>! result-ch output))))))
