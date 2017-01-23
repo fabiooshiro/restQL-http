@@ -24,15 +24,20 @@
             [single-file-lein-zip "0.1.0"]]
   :main ^:skip-aot restql.server.core
   :target-path "target/%s"
-  :zip ["Dockerfile" {:file-name "restql-server-v1.0.0-standalone.jar" :file-folder "target/uberjar"}]
-  :profiles {:uberjar {:aot :all
-                       :env {
-                             :port "9000"
-                             :cards "http://api.magicthegathering.io/v1/cards"
-                             }}
-
-             :dev {:env {
-                         :port "9000"
-                         :cards "http://api.magicthegathering.io/v1/cards"
-                         :mongo-url "mongodb://localhost:27017/restql-server"
-                         }}})
+  :zip ["Dockerfile" {:file-name "restql-server-standalone.jar" :file-folder "target/uberjar"}]
+  :uberjar-name "restql-server-standalone.jar"
+  :profiles {
+    :uberjar {
+      :aot :all
+      :env {
+        :port "9000"
+        :cards "http://api.magicthegathering.io/v1/cards"
+      }
+    }
+    :dev {
+      :env {
+        :port "9000"
+        :cards "http://api.magicthegathering.io/v1/cards"
+        :mongo-url "mongodb://localhost:27017/restql-server"
+      }
+    }})

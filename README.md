@@ -4,18 +4,18 @@ RestQL-server is a server to run restQL queries, making easy to fetch informatio
 
 ### Installation
 
-You can download the latest binary release on the releases page or clone the repository and build from source (requires clojure).
+You can download the latest binary release on the releases page, clone the repository and [build from source](#building-from-source-code) (requires Clojure) or build a Docker image and [run it as a container](#running-as-a-docker-container).
 
-Java 8 is the only pre-requisite to run restQL-server, making it easy to run and deploy. 
+Java 8 is the only pre-requisite to run restQL-server, making it easy to run and deploy. You may also need MongoDB if you want to store queries and run them later.
 
 ### Configuration
 
-In order to use it, you must provide the resources you want to map when starting the server. You can also provide an optional port argument (default running on port 8080).
+In order to use it, you must provide the resources you want to map when starting the server. You can also provide an optional port argument (default running on port 9000).
 
-For example, to map the planets resource from Star Wars API, you will start the server as follows:
+For example, to map the planets resource from Star Wars API and use port 8080, you should start the server as follows:
 
 ```
-java -jar -Dmongo-url=mongodb://localhost:27017/restql-server -Dport=9000 -Dplanets=http://swapi.co/api/planets/ restql-server-v1.0.0-standalone.jar
+java -jar -Dmongo-url=mongodb://localhost:27017/restql-server -Dport=8080 -Dplanets=http://swapi.co/api/planets/ restql-server-v1.0.0-standalone.jar
 ```
 
 For more information about resources see [the restQL-core configuration wiki](https://github.com/B2W-BIT/restQL-core/wiki/Configuration#resources).
@@ -24,7 +24,7 @@ For more information about resources see [the restQL-core configuration wiki](ht
 
 Once configured, you can run queries on the server you can send a POST HTTP request to `http://your-server.ip/run-query` with your query on the body.
 
-Example POST Body: 
+Example POST Body:
 
 ```clojure
 [:allPlanets {:from :planets}]
@@ -42,7 +42,31 @@ As prerequisites to build restQL-server from source we have:
 
 To run the server using Leinigen: `lein run`
 
-To build the server as a deployable standalone: `lein uberjar` (will generate `restql-server-v1-standalone.jar` under `target/uberjar`)
+To build the server as a deployable standalone: `lein uberjar` (will generate `restql-server-standalone.jar` under `target/uberjar`)
+
+## Running as a Docker container
+
+### Building Docker image
+RestQL-server can also be run as a Docker container.
+First, from the root folder, build a Docker image with the command:
+```shell
+docker build -t restql-server-img .
+```
+
+### Running the container
+Than run the image as a container with the command:
+```shell
+docker run -p 9000:9000 -e JAVA_OPTS="-Dmongo-url=mongodb://my-mongo-ip:27017/restql-server -Dplanets=http://swapi.co/api/planets/" restql-server-img
+```
+
+You can register your APIs as resources by passing them in `JAVA_OPTS` environment variable, as seen above.
+The server default port is 9000 but it can be changed by passing the `PORT` environment variable with the desired port.
+
+The MongoDB instance can also run from a container. If that's the case you can link to it and use its link name as the address:
+```shell
+docker run -p 27017-27017 --name mongo-docker mongo
+docker run --link mongo-docker -p 9000:9000 -e JAVA_OPTS="-Dmongo-url=mongodb://mongo-docker:27017/restql-server -Dplanets=http://swapi.co/api/planets/" restql-server-img
+```
 
 ## License
 
