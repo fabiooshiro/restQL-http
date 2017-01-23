@@ -10,7 +10,7 @@
 ;re-exporting find-query
 (def find-query-by-id-and-revision db/find-query)
 (def count-query-revisions db/count-query-revisions)
-
+(def find-all-queries db/find-all-queries)
 
 (defn validate [text]
   (validator/validate {:mappings env} text))

@@ -1,6 +1,7 @@
 (ns restql.server.request-util
   (:require [clojure.data.json :as json]
-            [slingshot.slingshot :refer [try+]]))
+            [slingshot.slingshot :refer [try+]])
+  (import [org.apache.commons.validator UrlValidator]))
 
 (defn parse-req [req]
   (->> req
@@ -44,3 +45,8 @@
 (defn format-entry-query [text metadata]
   (let [data (into {} metadata)]
     (assoc data :text text)))
+
+
+(defn valid-url? [url-str]
+  (let [validator (UrlValidator.)]
+    (.isValid validator url-str)))

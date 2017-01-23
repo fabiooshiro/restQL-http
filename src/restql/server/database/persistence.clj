@@ -46,5 +46,13 @@
       0
       (:size res))))
 
+(defquery find-all-queries[{} :with db]
+  (let [res (mc/find-maps db "query")]
+    (map
+      (fn [q]
+        {:id (:_id q)
+         :size (:size q)} )
+      res)))
+
 (comment
   (connect! "mongodb://localhost:27017/pdgquery"))

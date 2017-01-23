@@ -25,6 +25,14 @@
                                 :query      query
                                 :query-opts query-opts))
 
+(defn list-mapped-resources []
+  {:status 200
+   :body {:resources (filter
+                       (fn [key]
+                         (util/valid-url? (env key)))
+                       (keys env))}
+   })
+
 (defn validate-request [req]
   (try+
     (let [query (->>
@@ -35,12 +43,13 @@
     (catch [:type :validation-error] {:keys [message]}
       (util/json-output 400 message))))
 
-(defn make-revision-link
-  [id, rev]
+(defn make-revision-link [id, rev]
   (str "/run-query/" id "/revision/" rev))
 
-(defn make-query-link
-  [id, rev]
+(defn make-revision-list-link [id]
+  (str "/revisions/" id))
+
+(defn make-query-link [id, rev]
   (str "/query/" id "/revision/" rev))
 
 
@@ -109,6 +118,15 @@
     {:status (if (= 0 rev) 404 200)
      :body query}))
 
+(defn- list-saved-queries []
+  (let [queries (dbcore/find-all-queries {})]
+    {:status 200
+     :body {:queries (map
+                       (fn[q] {:id (:id q)
+                               :revisions (make-revision-list-link (:id q))
+                               :last-revision (make-query-link (:id q) (:size q))})
+                       queries)}}))
+
 (defn- run-saved-query
   [req]
   (with-channel req channel
@@ -153,6 +171,9 @@
   (c/GET "/health" [] "restql is healthy :)")
   (c/GET "/resource-status" [] "OK")
 
+  ; Route to check mapped resources
+  (c/GET "/resources" [] (list-mapped-resources))
+
   ; Route to validate some query
   (c/POST "/validate-query" req (validate-request req))
 
@@ -160,6 +181,7 @@
   (c/POST "/run-query" req (run-query req))
 
   ; Routes to search for queries and revisions
+  (c/GET "/queries" [] (list-saved-queries))
   (c/GET "/revisions/:id" req (list-revisions req))
   (c/GET "/query/:id/revision/:rev" req (find-formatted-query req))
 
