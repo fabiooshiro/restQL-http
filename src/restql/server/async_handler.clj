@@ -6,6 +6,7 @@
             [restql.server.logger :refer [log generate-uuid!]]
             [restql.server.request-util :as util]
             [restql.server.database.core :as dbcore]
+            [restql.server.cache :as cache]
             [restql.server.exception-handler :refer [wrap-exception-handling]]
             [clojure.edn :as edn]
             [clojure.data.json :as json]
@@ -18,6 +19,8 @@
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
             [slingshot.slingshot :refer [try+]]))
 
+(def find-query (cache/cached (fn [id rev]
+                                 (-> (dbcore/find-query-by-id-and-revision id rev) :text))))
 
 (defn process-query [query query-opts]
   (restql/execute-query-channel :mappings env
@@ -134,7 +137,7 @@
           rev (-> req :params :rev read-string)
           headers (-> req :headers)
           params (-> req :query-params keywordize-keys)
-          query-entry (-> (dbcore/find-query-by-id-and-revision id rev) :text)
+          query-entry (find-query id rev)
           query-with-params (interpolate query-entry params) ; Interpolating parameters
           query (interpolate query-with-params headers) ; Interpolating headers
           time-before (System/currentTimeMillis)
