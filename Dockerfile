@@ -1,4 +1,4 @@
-from clojure:lein-2.7.1-alpine
+FROM clojure:lein-2.7.1-alpine
 
 ENV PORT=9000
 EXPOSE $PORT
