@@ -21,8 +21,8 @@ java -jar -Dmongo-url=mongodb://localhost:27017/restql-server -Dport=8080 -Dplan
 The optional configurations currently available are:
 
 + port: The port restQL-server will be using to run.
-+ mongo: The MongoDB connection url to store the queries.
-+ cache-ttl: The time, in milliseconds, a query string retrieved from the database will be chached.
++ mongo-url: The MongoDB connection url to store the queries.
++ cache-ttl: The time, in milliseconds, a query string retrieved from the database will be cached.
 
 For more information about resources see [the restQL-core configuration wiki](https://github.com/B2W-BIT/restQL-core/wiki/Configuration#resources).
 
