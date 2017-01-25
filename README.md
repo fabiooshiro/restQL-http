@@ -18,6 +18,12 @@ For example, to map the planets resource from Star Wars API and use port 8080, y
 java -jar -Dmongo-url=mongodb://localhost:27017/restql-server -Dport=8080 -Dplanets=http://swapi.co/api/planets/ restql-server-v1.0.0-standalone.jar
 ```
 
+The optional configurations currently available are:
+
++ port: The port restQL-server will be using to run.
++ mongo: The MongoDB connection url to store the queries.
++ cache-ttl: The time, in milliseconds, a query string retrieved from the database will be chached.
+
 For more information about resources see [the restQL-core configuration wiki](https://github.com/B2W-BIT/restQL-core/wiki/Configuration#resources).
 
 ## Running Queries
