@@ -149,7 +149,8 @@
                       (info {:time (- (System/currentTimeMillis) time-before )
                              :success true}
                             "restQL Query finished")
-                      (send! channel result))
+                      (send! channel {:headers {"Content-Type" "application/json"}
+                                      :body result}))
           error-ch ([err]
                      (error {:time (- (System/currentTimeMillis) time-before )
                              :success false}

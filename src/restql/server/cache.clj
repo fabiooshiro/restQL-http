@@ -2,10 +2,11 @@
   (:require [clojure.tools.logging :as log]
             [slingshot.slingshot :refer [throw+]]
             [clojure.core.cache :as cache]
+            [environ.core :refer [env]]
             [clojure.core.memoize :as memo]))
 
 (def search-cache (atom (cache/fifo-cache-factory {} :threshold 100)))
-(def DEFAULT_TTL 10000)
+(def DEFAULT_TTL (if (contains? env :cache-ttl) (read-string (env :cache-ttl)) 10000))
 
 (defn build-cache [limit]
   (atom (cache/fifo-cache-factory {} :threshold limit)))
