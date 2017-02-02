@@ -16,7 +16,7 @@
                  [cheshire "5.5.0"]
                  [ring/ring-json "0.4.0"]
                  [com.novemberain/monger "3.0.2"]
-                 [com.b2wdigital/restql-core "0.3.2"]
+                 [com.b2wdigital/restql-core "0.4.0"]
                  [commons-validator "1.5.1"]]
   :plugins [[lein-expectations "0.0.8"]
             [lein-autoexpect "1.4.0"]
@@ -31,13 +31,12 @@
       :aot :all
       :env {
         :port "9000"
-        :cards "http://api.magicthegathering.io/v1/cards"
       }
     }
     :dev {
       :env {
         :port "9000"
-	:cache-ttl "30000"
+	      :cache-ttl "30000"
         :cards "http://api.magicthegathering.io/v1/cards"
         :mongo-url "mongodb://localhost:27017/restql-server"
       }
