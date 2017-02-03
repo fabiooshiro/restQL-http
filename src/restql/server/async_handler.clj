@@ -46,14 +46,14 @@
     (catch [:type :validation-error] {:keys [message]}
       (util/json-output 400 message))))
 
-(defn make-revision-link [id, rev]
-  (str "/run-query/" id "/revision/" rev))
+(defn make-revision-link [query-ns id rev]
+  (str "/run-query/ns/" query-ns "/query/" id "/revision/" rev))
 
-(defn make-revision-list-link [id]
-  (str "/revisions/" id))
+(defn make-revision-list-link [query-ns id]
+  (str "/ns/" query-ns "/query/" id))
 
-(defn make-query-link [id, rev]
-  (str "/query/" id "/revision/" rev))
+(defn make-query-link [query-ns id rev]
+  (str "/ns/" query-ns "/query/" id "/revision/" rev))
 
 
 (defn handle-request [req result-ch error-ch]
@@ -110,8 +110,8 @@
                              (map inc)
                              (map (fn [index]
                                     {:index index
-                                     :link (make-revision-link id index)
-                                     :query (make-query-link id index)}))
+                                     :link (make-revision-link query-ns id index)
+                                     :query (make-query-link query-ns id index)}))
                              (into []))}}))
 
 (defn- find-formatted-query [req]
@@ -128,8 +128,8 @@
     {:status 200
      :body {:queries (map
                        (fn[q] {:id (:id q)
-                               :revisions (make-revision-list-link (:id q))
-                               :last-revision (make-query-link (:id q) (:size q))})
+                               :revisions (make-revision-list-link query-ns (:id q))
+                               :last-revision (make-query-link query-ns (:id q) (:size q))})
                        queries)}}))
 
 (defn- run-saved-query
@@ -170,7 +170,7 @@
     {:status 201
      :headers {"Location" (->> (dbcore/save-query query-ns id (util/format-entry-query query metadata))
                                :size
-                               (make-revision-link id))}}))
+                               (make-revision-link query-ns id))}}))
 
 
 (c/defroutes routes
