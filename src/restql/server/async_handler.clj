@@ -19,8 +19,8 @@
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
             [slingshot.slingshot :refer [try+]]))
 
-(def find-query (cache/cached (fn [id rev]
-                                 (-> (dbcore/find-query-by-id-and-revision id rev) :text))))
+(def find-query (cache/cached (fn [query-ns id rev]
+                                 (-> (dbcore/find-query-by-id-and-revision query-ns id rev) :text))))
 
 (defn process-query [query query-opts]
   (restql/execute-query-channel :mappings env
@@ -102,7 +102,8 @@
                                  (send! channel err)))))))
 (defn- list-revisions [req]
   (let [id (-> req :params :id)
-        revs (dbcore/count-query-revisions id)]
+        query-ns (-> req :params :namespace)
+        revs (dbcore/count-query-revisions query-ns id)]
     {:status (if (= 0 revs) 404 200)
      :body {:revisions (->> (range 0 revs)
                              reverse
@@ -114,14 +115,16 @@
                              (into []))}}))
 
 (defn- find-formatted-query [req]
-  (let [id (-> req :params :id)
-        rev (-> req :params :rev read-string)
-        query (-> (dbcore/find-query-by-id-and-revision id rev) :text)]
+  (let [query-ns (-> req :params :namespace)
+        id (-> req :params :id)
+        rev (-> req :params :rev Integer/parseInt)
+        query (-> (dbcore/find-query-by-id-and-revision query-ns id rev) :text)]
     {:status (if (= 0 rev) 404 200)
      :body query}))
 
-(defn- list-saved-queries []
-  (let [queries (dbcore/find-all-queries {})]
+(defn- list-saved-queries [req]
+  (let [query-ns (-> req :params :namespace)
+        queries (dbcore/find-all-queries-by-namespace query-ns)]
     {:status 200
      :body {:queries (map
                        (fn[q] {:id (:id q)
@@ -134,10 +137,11 @@
   (with-channel req channel
     (info "Trying to retrieve query" (-> req :params :id))
     (let [id (-> req :params :id)
+          query-ns (-> req :params :namespace)
           rev (-> req :params :rev read-string)
           headers (-> req :headers)
           params (-> req :query-params keywordize-keys)
-          query-entry (find-query id rev)
+          query-entry (find-query query-ns id rev)
           query-with-params (interpolate query-entry params) ; Interpolating parameters
           query (interpolate query-with-params headers) ; Interpolating headers
           time-before (System/currentTimeMillis)
@@ -160,10 +164,11 @@
 
 (defn add-query [req]
   (let [id (-> req :params :id)
+        query-ns (-> req :params :namespace)
         query (util/parse-req req)
         metadata (-> query edn/read-string meta) ]
     {:status 201
-     :headers {"Location" (->> (dbcore/save-query id (util/format-entry-query query metadata))
+     :headers {"Location" (->> (dbcore/save-query query-ns id (util/format-entry-query query metadata))
                                :size
                                (make-revision-link id))}}))
 
@@ -184,13 +189,15 @@
   (c/POST "/run-query" req (run-query req))
 
   ; Routes to search for queries and revisions
-  (c/GET "/queries" [] (list-saved-queries))
-  (c/GET "/revisions/:id" req (list-revisions req))
-  (c/GET "/query/:id/revision/:rev" req (find-formatted-query req))
+  (c/GET "/ns/:namespace" req (list-saved-queries req))
+  (c/GET "/ns/:namespace/query/:id" req (list-revisions req))
+  (c/GET "/ns/:namespace/query/:id/revision/:rev" req (find-formatted-query req))
 
   ; Routes to save and run saved queries
-  (c/POST "/save-query/:id" req (add-query req))
-  (c/GET "/run-query/:id/revision/:rev" req (run-saved-query req)))
+  (c/POST "/ns/:namespace/query/:id" req (add-query req))
+  (c/GET "/run-query/ns/:namespace/query/:id/revision/:rev" req (run-saved-query req))
+  (c/GET "/run-query/:namespace/:id/:rev" req (run-saved-query req)))
+
 
 (def app (-> routes
              wrap-exception-handling

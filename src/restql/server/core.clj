@@ -12,9 +12,9 @@
 (defn -main
   [& args]
   (let [port (get-port 8080)]
-  (info "Starting the amazing restQL Server!")
-  (info "Connecting to MongoDB:" (:mongo-url env))
-  (db/connect! (:mongo-url env))
-  (info "Starting server")
-  (server/start! port)
-  (info "restQL Server running on port" port)))
+    (info "Starting the amazing restQL Server!")
+    (info "Connecting to MongoDB:" (:mongo-url env))
+    (db/connect! (:mongo-url env))
+    (info "Starting server")
+    (server/start! port)
+    (info "restQL Server running on port" port)))

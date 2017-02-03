@@ -26,33 +26,35 @@
        (check-conn!)
        ~@body))))
 
-(defquery save-query [id query :with db]
+(defquery save-query [query-ns id query :with db]
   (mc/find-and-modify db "query"
-                      {:_id id}
+                      {:name id :namespace query-ns}
                       {$inc {:size 1}
                        $push {:revisions query}}
                       {:return-new true
                        :upsert true
                        :fields {:size true}}))
 
-(defquery find-query [id revision :with db]
-  (let [res (mc/find-map-by-id db "query" id {:_id 0 :size 0 :revisions {$slice [(dec revision) 1]}})
+(defquery find-query [query-ns id revision :with db]
+  (let [res (mc/find-one-as-map db "query" {:name id :namespace query-ns}
+                                     {:_id 0 :size 0 :revisions {$slice [(dec revision) 1]}})
         text (-> res :revisions first)]
     text))
 
-(defquery count-query-revisions [id :with db]
-  (let [res (mc/find-map-by-id db "query" id {:_id 0 :revisions 0})]
+(defquery count-query-revisions [query-ns id :with db]
+  (let [res (mc/find-one-as-map db "query" {:name id :namespace query-ns} {:name 0 :revisions 0})]
     (if (nil? res)
       0
       (:size res))))
 
-(defquery find-all-queries[{} :with db]
-  (let [res (mc/find-maps db "query")]
+(defquery find-all-queries-by-namespace [query-ns :with db]
+  (let [res (mc/find-maps db "query" {:namespace query-ns})]
     (map
       (fn [q]
-        {:id (:_id q)
+        {:id (:name q)
          :size (:size q)} )
       res)))
 
 (comment
+  (find-all-queries {})
   (connect! "mongodb://localhost:27017/pdgquery"))
