@@ -28,33 +28,6 @@
                                 :query      query
                                 :query-opts query-opts))
 
-(defn list-mapped-resources []
-  {:status 200
-   :body {:resources (filter
-                       (fn [key]
-                         (util/valid-url? (env key)))
-                       (keys env))}
-   })
-
-(defn validate-request [req]
-  (try+
-    (let [query (->>
-                  (util/parse-req req)
-                  edn/read-string)]
-      (if (dbcore/validate query)
-        (util/json-output 200 "valid")))
-    (catch [:type :validation-error] {:keys [message]}
-      (util/json-output 400 message))))
-
-(defn make-revision-link [query-ns id rev]
-  (str "/run-query/ns/" query-ns "/query/" id "/revision/" rev))
-
-(defn make-revision-list-link [query-ns id]
-  (str "/ns/" query-ns "/query/" id))
-
-(defn make-query-link [query-ns id rev]
-  (str "/ns/" query-ns "/query/" id "/revision/" rev))
-
 
 (defn handle-request [req result-ch error-ch]
   (try+
@@ -100,37 +73,7 @@
                                          :success false}
                                         "restQL Query finished")
                                  (send! channel err)))))))
-(defn- list-revisions [req]
-  (let [id (-> req :params :id)
-        query-ns (-> req :params :namespace)
-        revs (dbcore/count-query-revisions query-ns id)]
-    {:status (if (= 0 revs) 404 200)
-     :body {:revisions (->> (range 0 revs)
-                             reverse
-                             (map inc)
-                             (map (fn [index]
-                                    {:index index
-                                     :link (make-revision-link query-ns id index)
-                                     :query (make-query-link query-ns id index)}))
-                             (into []))}}))
 
-(defn- find-formatted-query [req]
-  (let [query-ns (-> req :params :namespace)
-        id (-> req :params :id)
-        rev (-> req :params :rev Integer/parseInt)
-        query (-> (dbcore/find-query-by-id-and-revision query-ns id rev) :text)]
-    {:status (if (= 0 rev) 404 200)
-     :body query}))
-
-(defn- list-saved-queries [req]
-  (let [query-ns (-> req :params :namespace)
-        queries (dbcore/find-all-queries-by-namespace query-ns)]
-    {:status 200
-     :body {:queries (map
-                       (fn[q] {:id (:id q)
-                               :revisions (make-revision-list-link query-ns (:id q))
-                               :last-revision (make-query-link query-ns (:id q) (:size q))})
-                       queries)}}))
 
 (defn- run-saved-query
   [req]
@@ -162,39 +105,20 @@
                      (send! channel err)))))))
 
 
-(defn add-query [req]
-  (let [id (-> req :params :id)
-        query-ns (-> req :params :namespace)
-        query (util/parse-req req)
-        metadata (-> query edn/read-string meta) ]
-    {:status 201
-     :headers {"Location" (->> (dbcore/save-query query-ns id (util/format-entry-query query metadata))
-                               :size
-                               (make-revision-link query-ns id))}}))
 
-
-(c/defroutes routes
+(c/defroutes
+  routes
   ; Routes to health checking
   (c/OPTIONS "/restql" request {:status 204} )
   (c/GET "/health" [] "restql is healthy :)")
   (c/GET "/resource-status" [] "OK")
 
-  ; Route to check mapped resources
-  (c/GET "/resources" [] (list-mapped-resources))
-
-  ; Route to validate some query
-  (c/POST "/validate-query" req (validate-request req))
+  ; Route to validate a query
+  (c/POST "/validate-query" req (util/validate-request req))
 
   ; Route to run ad hoc queries
   (c/POST "/run-query" req (run-query req))
 
-  ; Routes to search for queries and revisions
-  (c/GET "/ns/:namespace" req (list-saved-queries req))
-  (c/GET "/ns/:namespace/query/:id" req (list-revisions req))
-  (c/GET "/ns/:namespace/query/:id/revision/:rev" req (find-formatted-query req))
-
-  ; Routes to save and run saved queries
-  (c/POST "/ns/:namespace/query/:id" req (add-query req))
   (c/GET "/run-query/ns/:namespace/query/:id/revision/:rev" req (run-saved-query req))
   (c/GET "/run-query/:namespace/:id/:rev" req (run-saved-query req)))
 

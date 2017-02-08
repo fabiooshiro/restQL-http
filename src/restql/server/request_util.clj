@@ -1,6 +1,9 @@
 (ns restql.server.request-util
   (:require [clojure.data.json :as json]
-            [slingshot.slingshot :refer [try+]])
+            [slingshot.slingshot :refer [try+]]
+            [environ.core :refer [env]]
+            [clojure.edn :as edn]
+            [restql.core.validator.core :as validator])
   (import [org.apache.commons.validator UrlValidator]))
 
 (defn parse-req [req]
@@ -32,16 +35,6 @@
    :headers {"Content-Type" "application/json"}
    :body    (json/write-str {:message message})})
 
-(defn validate-request [req]
-  (try+
-    (->> req parse-req)
-    (json-output 200 "ok")
-
-    (catch [:type :validation-error] {:keys [message]}
-      (json-output 400 message))
-    (catch Object e
-      (json-output 500 (.toString e)))))
-
 (defn format-entry-query [text metadata]
   (let [data (into {} metadata)]
     (assoc data :text text)))
@@ -50,3 +43,22 @@
 (defn valid-url? [url-str]
   (let [validator (UrlValidator.)]
     (.isValid validator url-str)))
+
+(defn make-revision-link [query-ns id rev]
+  (str "/run-query/ns/" query-ns "/query/" id "/revision/" rev))
+
+(defn make-revision-list-link [query-ns id]
+  (str "/ns/" query-ns "/query/" id))
+
+(defn make-query-link [query-ns id rev]
+  (str "/ns/" query-ns "/query/" id "/revision/" rev))
+
+(defn validate-request [req]
+  (try+
+    (let [query (->>
+                  (parse-req req)
+                  edn/read-string)]
+      (if (validator/validate {:mappings env} query)
+        (json-output 200 "valid")))
+    (catch [:type :validation-error] {:keys [message]}
+      (json-output 400 message))))
