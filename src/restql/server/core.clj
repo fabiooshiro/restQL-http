@@ -15,8 +15,8 @@
 
 (defn -main
   [& args]
-  (let [port (get-port 8080)
-        manager-port (get-manager-port 8081)]
+  (let [port (get-port 9000)
+        manager-port (get-manager-port 9001)]
     (info "Starting the amazing restQL Server!")
     (info "Connecting to MongoDB:" (:mongo-url env))
     (db/connect! (:mongo-url env))

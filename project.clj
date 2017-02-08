@@ -1,4 +1,4 @@
-(defproject restql-server "v1.1.0" :description "RestQL Server"
+(defproject restql-server "v1.2.0" :description "RestQL Server"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
@@ -31,11 +31,13 @@
       :aot :all
       :env {
         :port "9000"
+        :manager-port "9001"
       }
     }
     :dev {
       :env {
         :port "9000"
+        :manager-port "9001"
 	      :cache-ttl "30000"
         :cards "http://api.magicthegathering.io/v1/cards"
         :mongo-url "mongodb://localhost:27017/restql-server"
