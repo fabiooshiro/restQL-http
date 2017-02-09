@@ -15,6 +15,7 @@
                  [org.clojure/core.async "0.2.395"]
                  [cheshire "5.5.0"]
                  [ring/ring-json "0.4.0"]
+                 [org.clojure/java.classpath "0.2.3"]
                  [com.novemberain/monger "3.0.2"]
                  [com.b2wdigital/restql-core "0.4.0"]
                  [commons-validator "1.5.1"]]
@@ -24,22 +25,14 @@
             [single-file-lein-zip "0.1.0"]]
   :main ^:skip-aot restql.server.core
   :target-path "target/%s"
+  :resource-paths ["plugins/first.jar"]
   :zip ["Dockerfile" {:file-name "restql-server-standalone.jar" :file-folder "target/uberjar"}]
   :uberjar-name "restql-server-standalone.jar"
-  :profiles {
-    :uberjar {
-      :aot :all
-      :env {
-        :port "9000"
-        :manager-port "9001"
-      }
-    }
-    :dev {
-      :env {
-        :port "9000"
-        :manager-port "9001"
-	      :cache-ttl "30000"
-        :cards "http://api.magicthegathering.io/v1/cards"
-        :mongo-url "mongodb://localhost:27017/restql-server"
-      }
-    }})
+  :profiles {:uberjar {:aot :all
+                       :env {:port "9000"
+                             :manager-port "9001"}}
+             :dev {:env {:port "9000"
+                         :manager-port "9001"
+                         :cache-ttl "30000"
+                         :cards "http://api.magicthegathering.io/v1/cards"
+                         :mongo-url "mongodb://localhost:27017/restql-server" }}})

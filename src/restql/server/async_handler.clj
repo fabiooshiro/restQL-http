@@ -8,6 +8,7 @@
             [restql.server.database.core :as dbcore]
             [restql.server.cache :as cache]
             [restql.server.exception-handler :refer [wrap-exception-handling]]
+            [restql.server.plugin.core :as plugin]
             [clojure.edn :as edn]
             [clojure.data.json :as json]
             [environ.core :refer [env]]
@@ -26,7 +27,7 @@
   (restql/execute-query-channel :mappings env
                                 :encoders   {}
                                 :query      query
-                                :query-opts query-opts))
+                                :query-opts (plugin/get-query-opts-with-plugins query-opts)))
 
 
 (defn handle-request [req result-ch error-ch]

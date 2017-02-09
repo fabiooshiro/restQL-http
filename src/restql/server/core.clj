@@ -1,5 +1,6 @@
 (ns restql.server.core
   (:require [restql.server.server :as server]
+            [restql.server.plugin.core :as plugin]
             [restql.server.manager :as manager]
             [restql.server.database.persistence :as db]
             [restql.core.log :refer [info]]
@@ -13,6 +14,10 @@
 (defn get-manager-port [default]
   (if (contains? env :manager-port) (read-string (env :manager-port)) default))
 
+(defn display-loaded-plugins! []
+  (doseq [p (plugin/get-loaded-plugins)]
+    (info "Loaded: "(:name p))))
+
 (defn -main
   [& args]
   (let [port (get-port 9000)
@@ -20,6 +25,9 @@
     (info "Starting the amazing restQL Server!")
     (info "Connecting to MongoDB:" (:mongo-url env))
     (db/connect! (:mongo-url env))
+    (info "Loading plugins")
+    (plugin/load-plugins!)
+    (display-loaded-plugins!)
     (info "Starting server")
     (server/start! port)
     (info "restQL Server running on port" port)
