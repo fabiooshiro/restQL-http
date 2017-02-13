@@ -18,10 +18,13 @@ fi
 . ./env.sh
 
 export DIST_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/dist"
-export JAVA_AGENTS=$(for i in $(ls $JAVA_AGENTS_DIR); do echo "-javaagent:$i"; done)
+export JAVA_AGENTS=$(for i in $(ls $JAVA_AGENTS_DIR); do echo "-javaagent:$JAVA_AGENTS_DIR/$i"; done)
 export MAIN_JAR="$DIST_PATH/restql-server.jar"
 
 export RUN_CLASSPATH="$MAIN_JAR:$JARS_PATH/*"
 export JAVA_CMD="java $JAVA_AGENTS -cp $RUN_CLASSPATH restql.server.core"
+
+echo "Running java with the following line:"
+echo $JAVA_CMD
 
 $JAVA_CMD

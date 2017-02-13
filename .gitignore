@@ -15,4 +15,6 @@ pom.xml.asc
 documentation/site/
 site/
 tags
-plugin/*.jar
+/plugins
+/java-agents
+newrelic.yml
