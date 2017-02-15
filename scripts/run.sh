@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-export JAVA_AGENTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/java-agents"
-export JARS_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/plugins"
+export JAVA_AGENTS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../java-agents"
+export JARS_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../plugins"
 
 if [[ ! -e $JAVA_AGENTS_DIR ]]; then
     mkdir $JAVA_AGENTS_DIR
@@ -15,11 +15,12 @@ elif [[ ! -d $JARS_PATH ]]; then
     echo "$JARS_PATH already exists but is not a directory" 1>&2
 fi
 
-. ./env.sh
+export DIST_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
 
-export DIST_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/dist"
+. $DIST_PATH/bin/env.sh
+
 export JAVA_AGENTS=$(for i in $(ls $JAVA_AGENTS_DIR); do echo "-javaagent:$JAVA_AGENTS_DIR/$i"; done)
-export MAIN_JAR="$DIST_PATH/restql-server.jar"
+export MAIN_JAR="$DIST_PATH/lib/restql-server.jar"
 
 export RUN_CLASSPATH="$MAIN_JAR:$JARS_PATH/*"
 export JAVA_CMD="java $JAVA_AGENTS -cp $RUN_CLASSPATH restql.server.core"
