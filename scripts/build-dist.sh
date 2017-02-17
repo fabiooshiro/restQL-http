@@ -25,4 +25,4 @@ cp "$SOURCE_CODE_DIR/README.md" "$DIST_DIR"
 
 cd $DIST_DIR
 zip -r restql-server.zip .
-cp restql-server.zip ..
+mv restql-server.zip ..
