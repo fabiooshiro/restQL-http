@@ -2,9 +2,10 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.7.0"]
+  :dependencies [[org.clojure/clojure "1.8.0"]
                  [http-kit "2.1.18"]
                  [compojure "1.4.0"]
+                 [instaparse "1.4.5"]
                  [environ "1.0.0"]
                  [prismatic/schema "1.1.2"]
                  [expectations "2.0.9"]
@@ -27,7 +28,7 @@
             [single-file-lein-zip "0.1.0"]]
   :main ^:skip-aot restql.server.core
   :target-path "target/%s"
-  :resource-paths ["plugins/first.jar"]
+  :resource-paths ["plugins/first.jar" "resources"]
   :zip ["Dockerfile" {:file-name "restql-server-standalone.jar" :file-folder "target/uberjar"}]
   :uberjar-name "restql-server-standalone.jar"
   :profiles {:uberjar {:aot :all

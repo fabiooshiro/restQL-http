@@ -14,8 +14,7 @@ mkdir -p "$DIST_DIR/plugins"
 mkdir -p "$DIST_DIR/java-agents"
 mkdir -p "$DIST_DIR/lib"
 
-
-cd $SOURCE_CODE_DIR && lein uberjar
+cd $SOURCE_CODE_DIR && lein test && lein uberjar
 
 cp "$LEIN_TARGET_DIR/uberjar/restql-server-standalone.jar" "$DIST_DIR/lib/restql-server.jar"
 cp "$SCRIPTS_DIR/run.sh" "$DIST_DIR/bin"

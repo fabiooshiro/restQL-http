@@ -1,0 +1,254 @@
+Query =
+  WS QueryItem (WS LS WS QueryItem)*;
+
+QueryItem =
+  WS FromRule WS (HeaderRule WS)? (TimeoutRule WS)? (WithRule WS)? (OnlyRule WS)?;
+
+
+<FromRule> =
+  KW_FROM WS FromResource WS KW_AS WS ResultAlias;
+
+FromResource =
+  Identifier;
+
+ResultAlias =
+  Identifier;
+
+
+TimeoutRule =
+  KW_TIMEOUT WS TimeoutRuleValue;
+
+TimeoutRuleValue =
+  Integer;
+
+
+HeaderRule =
+  KW_HEADERS WS HeaderRuleItem (WS LS WS HeaderRuleItem)*;
+
+HeaderRuleItem =
+  HeaderName WS EQUALS_SIGN WS HeaderValue;
+
+HeaderName =
+  (Digit | Letter | "-" | "_")+;
+
+HeaderValue =
+  String;
+
+
+WithRule =
+  KW_WITH WS WithRuleItem (WS LS WS WithRuleItem)*;
+
+WithRuleItem =
+  WithParamName WS EQUALS_SIGN WS WithParamValue;
+
+WithParamName =
+  QueryParameterName;
+
+WithParamValue =
+  WithParamValueData WithParamValueModifierList;
+
+WithParamValueData =
+  (WithParamPrimitiveValue | Chaining | ListParamValue | ComplexParamValue);
+
+WithParamValueModifierList =
+  (WS MOD_OPERATOR WS WithParamModifier)*;
+
+WithParamPrimitiveValue =
+  Primitive;
+
+ListParamValue =
+  BEGIN_LIST WS END_LIST |
+  BEGIN_LIST WS WithParamValue ( WS LS WS WithParamValue )* END_LIST;
+
+ComplexParamValue =
+  BEGIN_OBJ WS END_OBJ |
+  BEGIN_OBJ WS ComplexParamItem ( WS OBJ_SEP WS ComplexParamItem)* WS END_OBJ;
+
+ComplexParamItem =
+  ComplexParamKey WS OBJ_PROP_SEP WS WithParamValue;
+
+ComplexParamKey =
+  Identifier | String;
+
+Chaining =
+  PathItem (CHAINING_OPERATOR PathItem)+;
+
+PathItem =
+  Identifier;
+
+<QueryParameterName> =
+  (Letter | Digit | "_" | "-" | "." | "|")+;
+
+WithParamModifier =
+  WithModifierAlias | WithModifierFunction;
+
+WithModifierAlias =
+  Identifier;
+
+WithModifierFunction =
+  WithModifierFunctionName OPEN_PARAMS CLOSE_PARAMS |
+  WithModifierFunctionName OPEN_PARAMS WithModifierFunctionArgList CLOSE_PARAMS;
+
+WithModifierFunctionName =
+  Identifier;
+
+WithModifierFunctionArgList =
+  WithModifierFunctionArg (WS ARGS_SEP WS WithModifierFunctionArg)*;
+
+WithModifierFunctionArg =
+  Primitive;
+
+OnlyRule =
+  KW_ONLY WS OnlyRuleItem (WS LS WS OnlyRuleItem)*;
+
+OnlyRuleItem =
+  OnlyRuleItemName OnlyRuleItemModifierList;
+
+OnlyRuleItemName =
+  Identifier | "*";
+
+OnlyRuleItemModifierList =
+  (WS MOD_OPERATOR WS OnlyRuleItemModifier)*;
+
+OnlyRuleItemModifier =
+  OnlyRuleItemModifierName WS OPEN_PARAMS WS CLOSE_PARAMS |
+  OnlyRuleItemModifierName WS OPEN_PARAMS WS OnlyRuleItemModifierArgList WS CLOSE_PARAMS;
+
+OnlyRuleItemModifierName =
+  Identifier;
+
+OnlyRuleItemModifierArgList =
+  OnlyRuleItemModifierArg (WS ARGS_SEP WS OnlyRuleItemModifierArg)*;
+
+OnlyRuleItemModifierArg =
+  Primitive;
+
+
+<KW_FROM> =
+  <"from">;
+
+<KW_AS> =
+  <"as">;
+
+<KW_HEADERS> =
+  <"headers">;
+
+<KW_TIMEOUT> =
+  <"timeout">;
+
+<KW_WITH> =
+  <"with">;
+
+<KW_ONLY> =
+  <"only">;
+
+<EQUALS_SIGN> =
+  <"=">;
+
+<CHAINING_OPERATOR> =
+  <".">;
+
+<MOD_OPERATOR> =
+  <"->">;
+
+<BEGIN_LIST> =
+  <"[">;
+
+<END_LIST> =
+  <"]">;
+
+<BEGIN_OBJ> =
+  <"{">;
+
+<END_OBJ> =
+  <"}">;
+
+<OBJ_SEP> =
+  <",">;
+
+<OBJ_PROP_SEP> =
+  <":">;
+
+<OPEN_PARAMS> =
+  <"(">;
+
+<CLOSE_PARAMS> =
+  <")">;
+
+<ARGS_SEP> =
+  <",">;
+
+
+<Identifier> =
+  Letter (Letter | Digit)*;
+
+<Primitive> =
+  String | Number | Boolean | Null;
+
+<String> =
+  Quote StringChar* Quote;
+
+<Boolean> =
+  True | False;
+
+True =
+  <"true">;
+
+False =
+  <"false">;
+
+Null =
+  <"null">;
+
+<Number> =
+  Integer | Float;
+
+
+<Integer> =
+  "0" | #"[1-9]\d*";
+
+<Float> =
+  "0.0" | Integer "." Digit+;
+
+<StringChar> =
+  Unescaped;
+
+<Unescaped> =
+  #"[^\x00-\x1F\x22\x5C]";
+
+<Quote> =
+  "\"";
+
+<Digit> =
+  #"\d";
+
+<Letter> =
+  #"\w";
+
+(*List Separator*)
+<LS> =
+  <"\n"> | <",">;
+
+(*White Space*)
+<WS> =
+  (SPACE | Comment)*;
+
+<SPACE> =
+  <#"\s">;
+
+<Comment> =
+  BEGIN_COMMENT <CommentText> END_COMMENT;
+
+<BEGIN_COMMENT> =
+  < "//" >;
+
+<END_COMMENT> =
+  < #"\n" >
+;
+
+<CommentChar> =
+  #"[^\x00-\x1F\n]";
+
+<CommentText> =
+  CommentChar* ;
+

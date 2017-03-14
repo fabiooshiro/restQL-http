@@ -3,13 +3,20 @@
             [slingshot.slingshot :refer [try+]]
             [environ.core :refer [env]]
             [clojure.edn :as edn]
+            [restql.parser.core :as parser]
             [restql.core.validator.core :as validator])
   (import [org.apache.commons.validator UrlValidator]))
+
+(defn parse [text]
+  (let [parsed (parser/parse-query text :pretty true)]
+    (println parsed)
+    parsed))
 
 (defn parse-req [req]
   (->> req
        :body
-       slurp))
+       slurp
+       parse))
 
 (defn status-code-ok [query-response]
   (and
