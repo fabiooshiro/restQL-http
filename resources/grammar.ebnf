@@ -227,7 +227,7 @@ Null =
 
 (*List Separator*)
 <LS> =
-  <"\n"> | <",">;
+  <"\n"> | <","> | Comment;
 
 (*White Space*)
 <WS> =
@@ -243,8 +243,7 @@ Null =
   < "//" >;
 
 <END_COMMENT> =
-  < #"\n" >
-;
+  < #"\n" >;
 
 <CommentChar> =
   #"[^\x00-\x1F\n]";

@@ -57,6 +57,12 @@
     (catch Exception e (.printStackTrace e)
       (go (>! error-ch (.getMessage e))))))
 
+(defn- parse-query [req]
+  (try+
+    {:status 200 :body (util/parse-req req)}
+    (catch [:type :parse-error] {:keys [line column reason]}
+      {:status 400 :body (str "Parsing error in line " line ", column " column "\n" reason)})))
+
 (defn- run-query
   [req]
   (with-channel req channel
@@ -121,6 +127,9 @@
 
   ; Route to run ad hoc queries
   (c/POST "/run-query" req (run-query req))
+
+  ; Route to check the parsing of the query
+  (c/POST "/parse-query" req (parse-query req))
 
   (c/GET "/run-query/ns/:namespace/query/:id/revision/:rev" req (run-saved-query req))
   (c/GET "/run-query/:namespace/:id/:rev" req (run-saved-query req)))

@@ -16,6 +16,7 @@
 (defn handle-error [result]
   (let [error (insta/get-failure result)]
     (throw+ {:type :parse-error
+             :reason (:reason error)
              :line (:line error)
              :column (:column error)})))
 

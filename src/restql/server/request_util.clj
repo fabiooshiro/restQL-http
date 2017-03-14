@@ -8,7 +8,7 @@
   (import [org.apache.commons.validator UrlValidator]))
 
 (defn parse [text]
-  (let [parsed (parser/parse-query text :pretty true)]
+  (let [parsed (parser/parse-query (str text "\n") :pretty true)]
     (println parsed)
     parsed))
 
