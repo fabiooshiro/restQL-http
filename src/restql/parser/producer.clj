@@ -20,8 +20,10 @@
         alias       (->> query-clauses (find-first :ResultAlias) produce)
         with-rule   (->> query-clauses (find-first :WithRule) produce)
         header-rule (->> query-clauses (find-first :HeaderRule) produce)
-        only-rule   (->> query-clauses (find-first :OnlyRule) produce)]
-    (str alias " {:from " resource with-rule header-rule only-rule "}")))
+        only-rule   (->> query-clauses (find-first :OnlyRule) produce)
+        hide-rule   (->> query-clauses (find-first :HideRule) produce)
+        ]
+    (str alias " {:from " resource with-rule header-rule only-rule hide-rule "}")))
 
 
 (defn produce-from-rule [from-rule-items]
@@ -111,6 +113,9 @@
 (defn produce-with-param-value-data [value-data]
   (produce (first value-data)))
 
+(defn produce-hide-rule []
+  " :select :none")
+
 
 (defn produce-only-rule [only-rule-items]
   (let [produced-items (map produce only-rule-items)]
@@ -174,6 +179,8 @@
 
       :ComplexParamItem            (produce-complex-param-item content)
       :ComplexParamKey             (join-chars ":" content)
+
+      :HideRule                    (produce-hide-rule)
 
       :OnlyRule                    (produce-only-rule content)
       :OnlyRuleItem                (produce-only-rule-item content)

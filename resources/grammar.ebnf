@@ -2,7 +2,7 @@ Query =
   WS QueryItem (WS LS WS QueryItem)*;
 
 QueryItem =
-  WS FromRule WS (HeaderRule WS)? (TimeoutRule WS)? (WithRule WS)? (OnlyRule WS)?;
+  WS FromRule WS (HeaderRule WS)? (TimeoutRule WS)? (WithRule WS)? ( (OnlyRule | HideRule) WS)?;
 
 
 <FromRule> =
@@ -123,6 +123,9 @@ OnlyRuleItemModifierArgList =
 OnlyRuleItemModifierArg =
   Primitive;
 
+HideRule =
+  KW_HIDE;
+
 
 <KW_FROM> =
   <"from">;
@@ -141,6 +144,9 @@ OnlyRuleItemModifierArg =
 
 <KW_ONLY> =
   <"only">;
+
+<KW_HIDE> =
+  <"hidden">;
 
 <EQUALS_SIGN> =
   <"=">;
