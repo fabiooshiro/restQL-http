@@ -211,10 +211,10 @@ Null =
 
 
 <Integer> =
-  "0" | #"[1-9]\d*";
+ "-"? ("0" | #"[1-9]\d*");
 
 <Float> =
-  "0.0" | Integer "." Digit+;
+  "-"? ( "0.0" | Integer "." Digit+ );
 
 <StringChar> =
   Unescaped;
