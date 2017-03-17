@@ -60,7 +60,7 @@
 
   (testing "Testing query with hidden selection"
     (is (= (read-string (parse-query "from heroes as hero with id = 1 hidden"))
-           [:hero {:from :heroes :with {:id 1} :select :none])))
+           [:hero {:from :heroes :with {:id 1} :select :none}])))
   
   (testing "Testing query with only selection"
     (is (= (read-string (parse-query "from heroes as hero with id = 1 only id, name"))
