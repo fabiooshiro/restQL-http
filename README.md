@@ -32,8 +32,8 @@ Once configured, you can run queries on the server you can send a POST HTTP requ
 
 Example POST Body:
 
-```clojure
-[:allPlanets {:from :planets}]
+```restql
+from planets as allPlanets
 ```
 
 For more details about the query language and structure see [restQL-core Query Language wiki](https://github.com/B2W-BIT/restQL-core/wiki/Query-Language).
