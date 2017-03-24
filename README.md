@@ -36,7 +36,7 @@ Example POST Body:
 from planets as allPlanets
 ```
 
-For more details about the query language and structure see [restQL-core Query Language wiki](https://github.com/B2W-BIT/restQL-core/wiki/Query-Language).
+For more details about the query language and structure see [Query Language wiki](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language).
 
 ## Building From Source Code
 
