@@ -61,10 +61,10 @@
 (defn add-query [req]
   (let [id (-> req :params :id)
         query-ns (-> req :params :namespace)
-        query (util/parse-req req)
-        metadata (-> query edn/read-string meta) ]
+        query (util/extract-body req)
+        metadata {} ] ;(-> query edn/read-string meta) ]
     {:status 201
-     :headers {"Location" (->> (dbcore/save-query query-ns id (util/format-entry-query query metadata))
+     :headers {"Location" (->> (dbcore/save-query query-ns id query)
                                :size
                                (util/make-revision-link query-ns id))}}))
 

@@ -95,7 +95,8 @@
           params (-> req :query-params keywordize-keys)
           query-entry (find-query query-ns id rev)
           query-with-params (interpolate query-entry params) ; Interpolating parameters
-          query (interpolate query-with-params headers) ; Interpolating headers
+          query-with-headers (interpolate query-with-params headers) ; Interpolating headers
+          query (-> query-with-headers util/parse)
           time-before (System/currentTimeMillis)
           [result-ch error-ch] (process-query query params)]
           (info "Query" id "rev" rev "retrieved")

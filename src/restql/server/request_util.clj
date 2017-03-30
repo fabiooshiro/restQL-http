@@ -12,10 +12,14 @@
     (println parsed)
     parsed))
 
-(defn parse-req [req]
+(defn extract-body [req]
   (->> req
        :body
-       slurp
+       slurp))
+
+(defn parse-req [req]
+  (->> req
+       extract-body
        parse))
 
 (defn status-code-ok [query-response]
