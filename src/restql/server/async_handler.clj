@@ -132,7 +132,6 @@
   ; Route to check the parsing of the query
   (c/POST "/parse-query" req (parse-query req))
 
-  (c/GET "/run-query/ns/:namespace/query/:id/revision/:rev" req (run-saved-query req))
   (c/GET "/run-query/:namespace/:id/:rev" req (run-saved-query req)))
 
 
