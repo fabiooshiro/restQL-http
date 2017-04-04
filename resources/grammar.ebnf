@@ -186,7 +186,7 @@ HideRule =
 
 
 <Identifier> =
-  Letter (Letter | Digit)*;
+  Letter (Digit | Letter | "-" | "_")*;
 
 <Primitive> =
   String | Number | Boolean | Null;
