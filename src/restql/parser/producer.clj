@@ -17,7 +17,8 @@
 
 (defn produce-query-item [query-clauses]
   (let [resource    (->> query-clauses (find-first :FromResource) produce)
-        alias       (->> query-clauses (find-first :ResultAlias) produce)
+        alias-rule  (->> query-clauses (find-first :ResultAlias))
+        alias       (if (nil? alias-rule) resource (produce alias-rule))
         with-rule   (->> query-clauses (find-first :WithRule) produce)
         header-rule (->> query-clauses (find-first :HeaderRule) produce)
         only-rule   (->> query-clauses (find-first :OnlyRule) produce)

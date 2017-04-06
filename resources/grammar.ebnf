@@ -6,7 +6,7 @@ QueryItem =
 
 
 <FromRule> =
-  KW_FROM WS FromResource WS KW_AS WS ResultAlias;
+  KW_FROM WS FromResource (WS KW_AS WS ResultAlias)?;
 
 FromResource =
   Identifier;

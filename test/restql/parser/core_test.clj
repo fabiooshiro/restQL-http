@@ -7,6 +7,10 @@
     (is (= (read-string (parse-query "from heroes as hero"))
            [:hero {:from :heroes}])))
 
+  (testing "Testing simple query without alias"
+    (is (= (read-string (parse-query "from heroes"))
+           [:heroes {:from :heroes}])))
+
   (testing "Testing multiple query"
     (is (= (read-string (parse-query "from heroes as hero
                                       from monsters as monster"))
