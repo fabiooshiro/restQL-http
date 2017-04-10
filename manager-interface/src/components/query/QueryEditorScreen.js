@@ -3,15 +3,15 @@ import { connect } from 'react-redux';
 
 // Code editor
 import CodeMirror from 'react-codemirror';
-import '../../../node_modules/codemirror/lib/codemirror.css';
+import 'codemirror/lib/codemirror.css';
 // Code Theme
-import '../../../node_modules/codemirror/theme/eclipse.css';
+import 'codemirror/theme/eclipse.css';
 // Code language
-import '../../../node_modules/codemirror/mode/javascript/javascript';
+import 'codemirror/mode/javascript/javascript';
 // Code folders
-import '../../../node_modules/codemirror/addon/fold/foldgutter.css';
-import '../../../node_modules/codemirror/addon/fold/brace-fold';
-import '../../../node_modules/codemirror/addon/fold/foldgutter';
+import 'codemirror/addon/fold/foldgutter.css';
+import 'codemirror/addon/fold/brace-fold';
+import 'codemirror/addon/fold/foldgutter';
 
 // API Calls and processing
 import { runQuery, processResult } from '../../api/restQLAPI';
