@@ -1,5 +1,10 @@
+// React
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
+// Bootstrap
+import { OverlayTrigger, Tooltip, Row, Col, Navbar, Button } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.css';
 
 // Code editor
 import CodeMirror from 'react-codemirror';
@@ -18,6 +23,11 @@ import { runQuery, processResult } from '../../api/restQLAPI';
 
 // Redux actions
 import { QUERY_ACTIONS } from '../../reducers/queryReducer';
+
+// CSS for this screen and logo
+import './QueryEditorScreen.css';
+import Logo from '../restQL-logo.svg';
+
 
 class QueryEditorScreen extends Component {
   
@@ -69,6 +79,7 @@ class QueryEditorScreen extends Component {
     const editorOptions = {
       ...baseOptions,
       extraKeys: { 'Shift-Enter': this.handleRun },
+      readOnly: this.props.running
     };
     
     const resultOptions = {
@@ -77,16 +88,47 @@ class QueryEditorScreen extends Component {
       readOnly: true,
     };
 
+    const runTooltip = (
+      <Tooltip id="run-tooltip">
+        <strong>Shift+Enter</strong>
+      </Tooltip>
+    );
+
     return (
       <div className="QueryEditorScreen">
-        <CodeMirror value={this.props.queryString}
-                    onChange={this.handleChange}
-                    options={editorOptions}/>
+        <Navbar>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <img src={Logo} alt="Logo" />
+            </Navbar.Brand>
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Navbar.Form pullRight>
+              <OverlayTrigger placement="bottom" overlay={runTooltip}>
+                <Button bsStyle="success"
+                        onClick={this.handleRun}>Run Query</Button>
+              </OverlayTrigger>
+            </Navbar.Form>
+          </Navbar.Collapse>
+        </Navbar>
 
-        <hr />
+        <div className="container">
+          <Row>
+            <Col sm={12} md={6}>
+              <h3>Query</h3>
+              <CodeMirror value={this.props.queryString}
+                      onChange={this.handleChange}
+                      options={editorOptions}/>  
+            </Col>
 
-        <CodeMirror value={this.props.resultString}
-                    options={resultOptions}/>
+            <Col sm={12} md={6}>
+              <h3>Result</h3>
+              <CodeMirror value={this.props.resultString}
+                      options={resultOptions}/>
+            </Col>
+          </Row>
+        </div>
+        
       </div>
     );
   }
@@ -95,6 +137,7 @@ class QueryEditorScreen extends Component {
 const mapStateToProps = (state, ownProps) => ({
     queryString: state.queryReducer.query,
     resultString: state.queryReducer.queryResult,
+    running: state.queryReducer.running,
 });
 
 export default connect(mapStateToProps, null)(QueryEditorScreen);
