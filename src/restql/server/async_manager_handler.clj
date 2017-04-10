@@ -6,6 +6,7 @@
             [restql.server.database.core :as dbcore]
             [restql.server.cache :as cache]
             [restql.server.exception-handler :refer [wrap-exception-handling]]
+            [restql.server.async-handler :as runner]
             [clojure.edn :as edn]
             [clojure.data.json :as json]
             [environ.core :refer [env]]
@@ -13,6 +14,7 @@
             [org.httpkit.server :refer [with-channel send!]]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
+            [ring.middleware.file :refer [wrap-file]]
             [slingshot.slingshot :refer [try+]]))
 
 
@@ -67,7 +69,7 @@
      :headers {"Location" (->> (dbcore/save-query query-ns id query)
                                :size
                                (util/make-revision-link query-ns id))}}))
-
+(use 'ring.middleware.resource)
 
 
 
@@ -79,6 +81,7 @@
 
   ; Route to validate a query
   (c/POST "/validate-query" req (util/validate-request req))
+  (c/POST "/run-query" req (runner/run-query req))
 
   ; Routes to search for queries and revisions
   (c/GET "/ns/:namespace" req (list-saved-queries req))
@@ -92,4 +95,5 @@
              wrap-exception-handling
              wrap-params
              wrap-json-response
+             (wrap-file "manager-interface/build")
              (wrap-json-body {:keywords? true})))

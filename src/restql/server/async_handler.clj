@@ -63,7 +63,7 @@
     (catch [:type :parse-error] {:keys [line column reason]}
       {:status 400 :body (str "Parsing error in line " line ", column " column "\n" reason)})))
 
-(defn- run-query
+(defn run-query
   [req]
   (with-channel req channel
                 (let [time-before (System/currentTimeMillis)

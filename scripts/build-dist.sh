@@ -4,10 +4,15 @@ export SOURCE_CODE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
 export DIST_DIR="$SOURCE_CODE_DIR/dist"
 export SCRIPTS_DIR="$SOURCE_CODE_DIR/scripts"
 export LEIN_TARGET_DIR="$SOURCE_CODE_DIR/target"
+export MANAGER_INTERFACE_DIR="$SOURCE_CODE_DIR/manager-interface"
 
 if [[  -e $DIST_DIR ]]; then
     rm -rf $DIST_DIR
 fi
+
+cd $MANAGER_INTERFACE_DIR && npm run build
+mkdir -p "$DIST_DIR/manager-interface"
+cp -R "$MANAGER_INTERFACE_DIR/build" "$DIST_DIR/manager-interface/build"
 
 mkdir -p "$DIST_DIR/bin"
 mkdir -p "$DIST_DIR/plugins"

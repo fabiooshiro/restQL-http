@@ -1,7 +1,7 @@
 // This makes requests to restQL manager API
 const request = require('superagent');
 
-const baseUrl = 'http://localhost:4001/run-query';
+const baseUrl = '/run-query';
 
 // Processing request
 export function processResult(response) {
