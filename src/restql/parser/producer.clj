@@ -16,15 +16,16 @@
 
 
 (defn produce-query-item [query-clauses]
-  (let [resource    (->> query-clauses (find-first :FromResource) produce)
-        alias-rule  (->> query-clauses (find-first :ResultAlias))
-        alias       (if (nil? alias-rule) resource (produce alias-rule))
-        with-rule   (->> query-clauses (find-first :WithRule) produce)
-        header-rule (->> query-clauses (find-first :HeaderRule) produce)
-        only-rule   (->> query-clauses (find-first :OnlyRule) produce)
-        hide-rule   (->> query-clauses (find-first :HideRule) produce)
+  (let [resource     (->> query-clauses (find-first :FromResource) produce)
+        alias-rule   (->> query-clauses (find-first :ResultAlias))
+        alias        (if (nil? alias-rule) resource (produce alias-rule))
+        header-rule  (->> query-clauses (find-first :HeaderRule) produce)
+        timeout-rule (->> query-clauses (find-first :TimeoutRule) produce)
+        with-rule    (->> query-clauses (find-first :WithRule) produce)
+        only-rule    (->> query-clauses (find-first :OnlyRule) produce)
+        hide-rule    (->> query-clauses (find-first :HideRule) produce)
         ]
-    (str alias " {:from " resource with-rule header-rule only-rule hide-rule "}")))
+    (str alias " {:from " resource header-rule timeout-rule with-rule only-rule hide-rule "}")))
 
 
 (defn produce-from-rule [from-rule-items]
@@ -45,6 +46,9 @@
 (defn produce-header-name [content]
   (str "\"" (join-chars "" content) "\""))
 
+(defn produce-timeout-rule [content]
+  (let [value (->> content (find-first :TimeoutRuleValue) :content first)]
+    (str ":timeout " value)))
 
 (defn produce-with-rule [with-rule-items]
   (let [produced-items (map produce with-rule-items)]
@@ -158,6 +162,8 @@
       :HeaderRuleItem              (produce-header-rule-item content)
       :HeaderName                  (produce-header-name content)
       :HeaderValue                 (join-chars "" content)
+
+      :TimeoutRule                 (produce-timeout-rule content)
 
       :WithRule                    (produce-with-rule content)
       :WithRuleItem                (produce-with-rule-item content)
