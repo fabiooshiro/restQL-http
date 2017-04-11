@@ -4,6 +4,7 @@ export const initialState = {
     running: false,
     error: false,
     queryResult: '',
+    showModal: false,
 };
 
 // Enum for query actions
@@ -13,7 +14,8 @@ export const QUERY_ACTIONS = {
     QUERY_ERROR: 'QUERY_ERROR',
     QUERY_SUCCESS: 'QUERY_SUCCESS',
     SAVING_QUERY: 'SAVING_QUERY',
-    QUERY_SAVED: 'QUERY_SAVED'
+    QUERY_SAVED: 'QUERY_SAVED',
+    TOGGLE_SAVE_MODAL: 'TOGGLE_SAVE_MODAL',
 };
 
 const queryReducer = (state = initialState, action) => {
@@ -30,6 +32,8 @@ const queryReducer = (state = initialState, action) => {
             return {...state, running: true, error: false};
         case QUERY_ACTIONS.QUERY_SAVED:
             return {...state, running: false, error: false, queryResult: action.value};
+        case QUERY_ACTIONS.TOGGLE_SAVE_MODAL:
+            return {...state, showModal: !state.showModal};
         default:
             return state;
     }

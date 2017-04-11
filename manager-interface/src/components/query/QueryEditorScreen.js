@@ -1,6 +1,5 @@
 // React
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 // Bootstrap
 import {
@@ -31,6 +30,7 @@ import 'codemirror/addon/fold/foldgutter';
 import { runQuery, saveQuery, processResult } from '../../api/restQLAPI';
 
 // Redux actions
+import { connect } from 'react-redux';
 import { QUERY_ACTIONS } from '../../reducers/queryReducer';
 
 // CSS for this screen and logo
@@ -78,6 +78,12 @@ class QueryEditorScreen extends Component {
     }
   }
 
+  showModal = () => {
+    this.props.dispatch({
+      type: QUERY_ACTIONS.TOGGLE_SAVE_MODAL,
+    })
+  }
+
   handleSave = (namespace, queryName) => {
     const query = this.props.queryString;
 
@@ -116,7 +122,11 @@ class QueryEditorScreen extends Component {
     
     const editorOptions = {
       ...baseOptions,
-      extraKeys: { 'Shift-Enter': this.handleRun },
+      extraKeys: {
+        'Shift-Enter': this.handleRun,
+        'Ctrl-S': this.showModal,
+        'Cmd-S': this.showModal,
+      },
       readOnly: this.props.running
     };
     
@@ -181,6 +191,7 @@ const mapStateToProps = (state, ownProps) => ({
     queryString: state.queryReducer.query,
     resultString: state.queryReducer.queryResult,
     running: state.queryReducer.running,
+    showModal: state.queryReducer.showModal,
 });
 
 export default connect(mapStateToProps, null)(QueryEditorScreen);

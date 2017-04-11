@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import {Modal, Button} from 'react-bootstrap';
 
+// Redux actions
+import { connect } from 'react-redux';
+import { QUERY_ACTIONS } from '../../reducers/queryReducer';
 
-export default class SaveModal extends Component {
+class SaveModal extends Component {
 
 	getDefaultState() {
 		return {
-			showModal: false,
 			namespace: '',
 			query: ''
 		};
@@ -18,12 +20,10 @@ export default class SaveModal extends Component {
 		this.state = this.getDefaultState();
 	}
 
-	open = () => {
-		this.setState({showModal: true});
-	}
-
-	close = () => {
-    this.setState({showModal: false});
+	toggleModal = () => {
+    this.props.dispatch({
+      type: QUERY_ACTIONS.TOGGLE_SAVE_MODAL,
+    })
   }
 
 	handleNamespaceChange = (evt) => {
@@ -38,15 +38,15 @@ export default class SaveModal extends Component {
 		let callback = this.props.onSave;
 		callback(this.state.namespace, this.state.query);
 
-		this.close();
+		this.toggleModal();
 	}
 
 	render() {
 		return (
 			<span>
-				<Button bsStyle="info" onClick={this.open} >Save Query</Button>
+				<Button bsStyle="info" onClick={this.toggleModal} >Save Query</Button>
 
-				<Modal show={this.state.showModal} onHide={this.close}>
+				<Modal show={this.props.showModal} onHide={this.close}>
 					<Modal.Header>
 						<Modal.Title>Save Query</Modal.Title>
 					</Modal.Header>
@@ -70,7 +70,7 @@ export default class SaveModal extends Component {
 
 					<Modal.Footer>
 						<Button bsStyle="success" onClick={this.handleSave}>Save</Button>
-						<Button onClick={this.close}>Close</Button>
+						<Button onClick={this.toggleModal}>Close</Button>
 					</Modal.Footer>
 				</Modal>
 			</span>
@@ -78,3 +78,9 @@ export default class SaveModal extends Component {
 	}
 
 }
+
+const mapStateToProps = (state, ownProps) => ({
+    showModal: state.queryReducer.showModal,
+});
+
+export default connect(mapStateToProps, null)(SaveModal);
