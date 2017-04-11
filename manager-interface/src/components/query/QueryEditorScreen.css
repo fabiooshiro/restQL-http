@@ -3,6 +3,10 @@
     background-color: #fff;
 }
 
+.navbar .btn {
+    margin-left: 4px;
+}
+
 .CodeMirror {
     height: 500px;
     border: 1px solid #e0e0e0;

@@ -3,7 +3,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 // Bootstrap
-import { OverlayTrigger, Tooltip, Row, Col, Navbar, Button } from 'react-bootstrap';
+import {
+    OverlayTrigger,
+    Tooltip,
+    Row,
+    Col,
+    Navbar,
+    Button,
+    FormGroup
+} from 'react-bootstrap';
+
 import 'bootstrap/dist/css/bootstrap.css';
 
 // Code editor
@@ -19,7 +28,7 @@ import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
 
 // API Calls and processing
-import { runQuery, processResult } from '../../api/restQLAPI';
+import { runQuery, saveQuery, processResult } from '../../api/restQLAPI';
 
 // Redux actions
 import { QUERY_ACTIONS } from '../../reducers/queryReducer';
@@ -27,6 +36,9 @@ import { QUERY_ACTIONS } from '../../reducers/queryReducer';
 // CSS for this screen and logo
 import './QueryEditorScreen.css';
 import Logo from '../restQL-logo.svg';
+
+// Custom Components for this screen
+import SaveModal from './SaveModal';
 
 
 class QueryEditorScreen extends Component {
@@ -66,6 +78,21 @@ class QueryEditorScreen extends Component {
     }
   }
 
+  handleSave = (namespace, queryName) => {
+    const query = this.props.queryString;
+
+    this.props.dispatch({
+      type: QUERY_ACTIONS.SAVING_QUERY
+    });
+
+    saveQuery(namespace, queryName, query, (error) => {
+      if(error)
+        this.props.dispatch({type: QUERY_ACTIONS.QUERY_ERROR, value: 'Error'});
+      else
+        this.props.dispatch({type: QUERY_ACTIONS.QUERY_SAVED});
+    });
+  }
+
   render() {
     const baseOptions = {
       lineNumbers: true,
@@ -101,13 +128,18 @@ class QueryEditorScreen extends Component {
             <Navbar.Brand>
               <img src={Logo} alt="Logo" />
             </Navbar.Brand>
+            <Navbar.Toggle />
           </Navbar.Header>
           <Navbar.Collapse>
             <Navbar.Form pullRight>
-              <OverlayTrigger placement="bottom" overlay={runTooltip}>
-                <Button bsStyle="success"
-                        onClick={this.handleRun}>Run Query</Button>
-              </OverlayTrigger>
+              <FormGroup controlId="formInlineName">
+                <OverlayTrigger placement="bottom" overlay={runTooltip}>
+                  <Button bsStyle="success"
+                          onClick={this.handleRun}>Run Query</Button>
+                </OverlayTrigger>
+
+                <SaveModal onSave={this.handleSave} />
+              </FormGroup>
             </Navbar.Form>
           </Navbar.Collapse>
         </Navbar>
