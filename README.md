@@ -43,12 +43,15 @@ For more details about the query language and structure see [Query Language wiki
 As prerequisites to build restQL-server from source we have:
 
 + Java 8
++ Node.js >= 6
 + Leiningen
 + MongoDB (To store and run saved queries)
 
-To run the server using Leinigen: `lein run`
+Build the server using the build script: `scripts/build-dist.sh`. 
 
-To build the server as a deployable standalone: `lein uberjar` (will generate `restql-server-standalone.jar` under `target/uberjar`)
+The building script will create a folder `dist` where you can configure your resources on the file `dist/bin/env.sh` and run the server using the script `dist/bin/run.sh`.
+
+If you want to deploy restQL-server, copy the files under the generated `dist` folder and start the server using the start script above.
 
 ## Running as a Docker container
 

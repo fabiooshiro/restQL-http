@@ -10,7 +10,7 @@ if [[  -e $DIST_DIR ]]; then
     rm -rf $DIST_DIR
 fi
 
-cd $MANAGER_INTERFACE_DIR && npm run build
+cd $MANAGER_INTERFACE_DIR && npm install && npm run build
 mkdir -p "$DIST_DIR/manager-interface"
 cp -R "$MANAGER_INTERFACE_DIR/build" "$DIST_DIR/manager-interface/build"
 
