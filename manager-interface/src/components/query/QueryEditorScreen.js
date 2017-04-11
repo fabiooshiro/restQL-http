@@ -85,11 +85,22 @@ class QueryEditorScreen extends Component {
       type: QUERY_ACTIONS.SAVING_QUERY
     });
 
-    saveQuery(namespace, queryName, query, (error) => {
-      if(error)
-        this.props.dispatch({type: QUERY_ACTIONS.QUERY_ERROR, value: 'Error'});
-      else
-        this.props.dispatch({type: QUERY_ACTIONS.QUERY_SAVED});
+    saveQuery(namespace, queryName, query, (result) => {
+      let processed = processResult(result);
+      let processedString = JSON.stringify(processed, null, 2);
+
+      if(result.error) {
+        this.props.dispatch({
+          type: QUERY_ACTIONS.QUERY_ERROR,
+          value: processedString
+        });
+      }
+      else {
+        this.props.dispatch({
+          type: QUERY_ACTIONS.QUERY_SAVED,
+          value: processedString
+        });
+      }
     });
   }
 

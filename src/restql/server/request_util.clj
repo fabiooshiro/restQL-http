@@ -56,7 +56,7 @@
     (.isValid validator url-str)))
 
 (defn make-revision-link [query-ns id rev]
-  (str "/run-query/ns/" query-ns "/query/" id "/revision/" rev))
+  (str "/run-query/" query-ns "/" id "/" rev))
 
 (defn make-revision-list-link [query-ns id]
   (str "/ns/" query-ns "/query/" id))

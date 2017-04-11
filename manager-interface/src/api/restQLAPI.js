@@ -8,7 +8,7 @@ export function processResult(response) {
     if(response.error !== null) {
         return { error: response.error.message };
     }
-    else if(response.body.statusCode === 200) {
+    else if(response.body.statusCode >= 200 && response.body.statusCode < 300) {
         try {
             return JSON.parse(response.body.text);
         }
@@ -47,6 +47,9 @@ export function saveQuery(namespace, queryName, queryString, callback) {
         .set('Accept', 'application/json')
         .send(queryString)
         .end((err, body) => {
-            return callback(err === undefined);
+            return callback({
+                error: err,
+                body: body
+            });
         });
 }

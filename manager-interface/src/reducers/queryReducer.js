@@ -29,7 +29,7 @@ const queryReducer = (state = initialState, action) => {
         case QUERY_ACTIONS.SAVING_QUERY:
             return {...state, running: true, error: false};
         case QUERY_ACTIONS.QUERY_SAVED:
-            return {...state, running: false, error: false};
+            return {...state, running: false, error: false, queryResult: action.value};
         default:
             return state;
     }

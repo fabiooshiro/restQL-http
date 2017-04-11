@@ -68,10 +68,10 @@
     {:status 201
      :headers {"Location" (->> (dbcore/save-query query-ns id query)
                                :size
-                               (util/make-revision-link query-ns id))}}))
-(use 'ring.middleware.resource)
-
-
+                               (util/make-revision-link query-ns id))}
+     :body {
+       :result (list-revisions req)
+     }}))
 
 (c/defroutes
   routes
