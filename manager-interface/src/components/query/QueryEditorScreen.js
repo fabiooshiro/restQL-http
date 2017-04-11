@@ -84,8 +84,9 @@ class QueryEditorScreen extends Component {
     })
   }
 
-  handleSave = (namespace, queryName) => {
+  handleSave = () => {
     const query = this.props.queryString;
+    const { namespace, queryName } = this.props;
 
     this.props.dispatch({
       type: QUERY_ACTIONS.SAVING_QUERY
@@ -193,6 +194,8 @@ const mapStateToProps = (state, ownProps) => ({
     queryString: state.queryReducer.query,
     resultString: state.queryReducer.queryResult,
     running: state.queryReducer.running,
+    queryName: state.queryReducer.queryName,
+    namespace: state.queryReducer.namespace,
     showModal: state.queryReducer.showModal,
 });
 

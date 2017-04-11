@@ -36,7 +36,7 @@ class SaveModal extends Component {
 
 	handleSave = () => {
 		let callback = this.props.onSave;
-		callback(this.state.namespace, this.state.query);
+		callback();
 
 		this.toggleModal();
 	}
@@ -55,7 +55,7 @@ class SaveModal extends Component {
 							<label>Namespace</label>
 							<input type="text"
 										className="form-control"
-										value={this.state.namespace}
+										value={this.props.namespace}
 										onChange={this.handleNamespaceChange} />
 						</div>
 
@@ -63,7 +63,7 @@ class SaveModal extends Component {
 							<label>Query Name</label>
 							<input type="text"
 										className="form-control"
-										value={this.state.query}
+										value={this.props.query}
 										onChange={this.handleQueryChange} />
 						</div>
 					</Modal.Body>
@@ -81,6 +81,8 @@ class SaveModal extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
     showModal: state.queryReducer.showModal,
+	queryName: state.queryReducer.queryName,
+    namespace: state.queryReducer.namespace,
 });
 
 export default connect(mapStateToProps, null)(SaveModal);
