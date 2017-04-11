@@ -3,7 +3,7 @@
     background-color: #fff;
 }
 
-.navbar img {
+.navbar img, .navbar object {
     margin: 0px;
     padding: 10px;
 }

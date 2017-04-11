@@ -147,7 +147,9 @@ class QueryEditorScreen extends Component {
         <Navbar>
           <Navbar.Header>
             <Navbar.Brand>
-              <img src={Logo} alt="Logo" />
+              <object data={Logo} type="image/svg+xml">
+                <img src={Logo} alt="Logo" />
+              </object>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
