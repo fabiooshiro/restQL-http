@@ -76,6 +76,9 @@
 (c/defroutes
   routes
 
+  (c/GET "/health" [] "restql manager is healthy :)")
+  (c/GET "/resource-status" [] "OK")
+
   ; Route to check mapped resources
   (c/GET "/resources" [] (list-mapped-resources))
 
