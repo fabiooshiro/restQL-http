@@ -89,9 +89,9 @@
                                                  only 
                                                      id, name, cep, phone")))
              (pr-str [:products {:from :product
+                                 :with-headers {"content-type" "application/json"}
                                  :with {:limit ^{:expand false :encoder :json}
                                                [:product :id]
                                        :fields ["rating" "tags" "images" "groups"]}
-                                 :with-headers {"content-type" "application/json"}
                                  :select #{:id :name :cep :phone}}]))))))
 
