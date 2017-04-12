@@ -14,6 +14,16 @@
 (defn get-manager-port [default]
   (if (contains? env :manager-port) (read-string (env :manager-port)) default))
 
+(defn start-api? []
+  (if (contains? env :run-api)
+    (= "true" (:run-api env))
+    true))
+
+(defn start-manager? []
+  (if (contains? env :run-manager)
+    (= "true" (:run-manager env))
+    true))
+
 (defn display-loaded-plugins! []
   (doseq [p (plugin/get-loaded-plugins)]
     (info "Loaded: "(:name p))))
@@ -28,9 +38,11 @@
     (info "Loading plugins")
     (plugin/load-plugins!)
     (display-loaded-plugins!)
-    (info "Starting server")
-    (server/start! port)
-    (info "restQL Server running on port" port)
-    (info "Starting manager")
-    (manager/start! manager-port)
-    (info "restQL Query Manager running on port" manager-port)))
+    (when (start-api?)
+      (info "Starting server")
+      (server/start! port)
+      (info "restQL Server running on port" port))
+    (when (start-manager?)
+      (info "Starting manager")
+      (manager/start! manager-port)
+      (info "restQL Query Manager running on port" manager-port))))
