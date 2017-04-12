@@ -47,7 +47,7 @@
   (str "\"" (join-chars "" content) "\""))
 
 (defn produce-timeout-rule [content]
-  (let [value (->> content (find-first :TimeoutRuleValue) :content first)]
+  (let [value (->> content (find-first :TimeoutRuleValue) produce)]
     (str ":timeout " value)))
 
 (defn produce-with-rule [with-rule-items]
@@ -164,6 +164,7 @@
       :HeaderValue                 (join-chars "" content)
 
       :TimeoutRule                 (produce-timeout-rule content)
+      :TimeoutRuleValue            (join-chars "" content)
 
       :WithRule                    (produce-with-rule content)
       :WithRuleItem                (produce-with-rule-item content)
