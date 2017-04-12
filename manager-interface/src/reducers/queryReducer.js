@@ -1,5 +1,7 @@
 // Initial state
 export const initialState = {
+    namespace: '',
+    queryName: '',
     query: '',
     running: false,
     error: false,
