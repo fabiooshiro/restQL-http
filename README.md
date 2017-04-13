@@ -68,7 +68,7 @@ If you want to deploy restQL-server, copy the files under the generated `dist` f
 ## Running as a Docker container
 
 ### Building Docker image
-RestQL-server can also be run as a Docker container.
+restQL-server can also be run as a Docker container.
 First, from the root folder, build a Docker image with the command:
 ```shell
 docker build -t restql-server-img .
