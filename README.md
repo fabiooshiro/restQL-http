@@ -1,4 +1,16 @@
-RestQL-server is a server to run restQL queries, making easy to fetch information from multiple services in the most efficient manner.
+restQL is a microservice query language that makes easy to fetch information from multiple services in the most efficient manner.
+
+Example:
+
+```restql
+from superheroes as hero
+    with
+        id = 1
+    only
+        name
+```
+
+For more details about the query language see [Query Language wiki](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language).
 
 ## Getting Started
 
