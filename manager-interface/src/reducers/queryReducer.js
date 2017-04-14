@@ -18,6 +18,9 @@ export const QUERY_ACTIONS = {
     SAVING_QUERY: 'SAVING_QUERY',
     QUERY_SAVED: 'QUERY_SAVED',
     TOGGLE_SAVE_MODAL: 'TOGGLE_SAVE_MODAL',
+
+    NAMESPACE_CHANGED: 'NAMESPACE_CHANGED',
+    QUERY_NAME_CHANGED: 'QUERY_NAME_CHANGED',
 };
 
 const queryReducer = (state = initialState, action) => {
@@ -36,6 +39,10 @@ const queryReducer = (state = initialState, action) => {
             return {...state, running: false, error: false, queryResult: action.value};
         case QUERY_ACTIONS.TOGGLE_SAVE_MODAL:
             return {...state, showModal: !state.showModal};
+        case QUERY_ACTIONS.NAMESPACE_CHANGED:
+            return {...state, namespace: action.value};
+        case QUERY_ACTIONS.QUERY_NAME_CHANGED:
+            return {...state, queryName: action.value};
         default:
             return state;
     }

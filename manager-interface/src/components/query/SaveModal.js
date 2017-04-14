@@ -6,32 +6,19 @@ import { connect } from 'react-redux';
 import { QUERY_ACTIONS } from '../../reducers/queryReducer';
 
 class SaveModal extends Component {
-
-	getDefaultState() {
-		return {
-			namespace: '',
-			query: ''
-		};
-	}
-
-	constructor(props) {
-		super(props);
-
-		this.state = this.getDefaultState();
-	}
-
-	toggleModal = () => {
+  
+  toggleModal = () => {
     this.props.dispatch({
       type: QUERY_ACTIONS.TOGGLE_SAVE_MODAL,
     })
   }
 
 	handleNamespaceChange = (evt) => {
-		this.setState({namespace: evt.target.value});
+		this.props.dispatch({type: QUERY_ACTIONS.NAMESPACE_CHANGED, value: evt.target.value});
 	}
 
-	handleQueryChange = (evt) => {
-		this.setState({query: evt.target.value});
+	handleQueryNameChange = (evt) => {
+		this.props.dispatch({type: QUERY_ACTIONS.QUERY_NAME_CHANGED, value: evt.target.value});
 	}
 
 	handleSave = () => {
@@ -63,8 +50,8 @@ class SaveModal extends Component {
 							<label>Query Name</label>
 							<input type="text"
 										className="form-control"
-										value={this.props.query}
-										onChange={this.handleQueryChange} />
+										value={this.props.queryName}
+										onChange={this.handleQueryNameChange} />
 						</div>
 					</Modal.Body>
 
