@@ -3,11 +3,15 @@ restQL is a microservice query language that makes easy to fetch information fro
 Example:
 
 ```restql
-from superheroes as hero
+from hero as protagonist
     with
-        id = 1
+        name = "Restman"
+
+from sidekick
+    with
+        hero = protagonist.id
     only
-        name
+        skills
 ```
 
 For more details about the query language see [Query Language wiki](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language).
