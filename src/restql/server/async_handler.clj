@@ -35,8 +35,8 @@
     (let [uid (generate-uuid!)
           headers {"Content-Type" "application/json"}
           response {:headers headers}
-          query (util/merge-headers (:headers req) (util/parse-req req))
-          _ (println query)
+          req-headers (into {"restql-query-control" "ad-hoc"} (:headers req))
+          query (util/merge-headers req-headers (util/parse-req req))
           debugging (-> req :query-params (get "_debug") boolean)
           [query-ch exception-ch] (process-query query {:debugging debugging})
           timeout-ch (timeout 10000)]
@@ -93,11 +93,15 @@
           query-ns (-> req :params :namespace)
           rev (-> req :params :rev read-string)
           headers (-> req :headers)
+          req-headers (into {"restql-query-control" "saved"
+                             "restql-query-namespace" query-ns
+                             "restql-query-id" id
+                             "restql-query-revision" rev} (:headers req))
           params (-> req :query-params keywordize-keys)
           query-entry (find-query query-ns id rev)
           query-with-params (interpolate query-entry params) ; Interpolating parameters
           query-with-headers (interpolate query-with-params headers) ; Interpolating headers
-          query (-> query-with-headers util/parse)
+          query (->> query-with-headers util/parse (util/merge-headers req-headers))
           time-before (System/currentTimeMillis)
           [result-ch error-ch] (process-query query params)]
           (info "Query" id "rev" rev "retrieved")
