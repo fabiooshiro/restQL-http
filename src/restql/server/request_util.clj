@@ -7,6 +7,30 @@
             [restql.core.validator.core :as validator])
   (import [org.apache.commons.validator UrlValidator]))
 
+(defn header-allowed? [[k v]]
+  (cond
+    (= k "host") false
+    (= k "user-agent") false
+    (= k "content-type") false
+    (= k "content-length") false
+    (= k "connection") false
+    :else true))
+
+(defn add-headers-to-object [headers query-obj]
+  (if (nil? (query-obj :with-headers))
+    (into query-obj {:with-headers (into {} (filter header-allowed? headers))})
+    (into query-obj {:with-headers (into (query-obj :with-headers) (into {} (filter header-allowed? headers)))} )))
+
+(defn merge-headers [headers query]
+  (let [query-vec (edn/read-string query)
+        _ (println "\n\n" query-vec "\n\n")
+        query-edn (apply hash-map query-vec)
+        _ (println "\n\n" query-edn "\n\n")]
+    (->>
+      (reduce-kv (fn [m k v]
+                   (into [k (add-headers-to-object headers v)] m)) [] query-edn)
+      str )))
+
 (defn parse [text]
   (let [parsed (parser/parse-query (str text "\n") :pretty true)]
     (println parsed)

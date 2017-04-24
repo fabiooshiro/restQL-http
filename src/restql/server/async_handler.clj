@@ -35,7 +35,8 @@
     (let [uid (generate-uuid!)
           headers {"Content-Type" "application/json"}
           response {:headers headers}
-          query (util/parse-req req)
+          query (util/merge-headers (:headers req) (util/parse-req req))
+          _ (println query)
           debugging (-> req :query-params (get "_debug") boolean)
           [query-ch exception-ch] (process-query query {:debugging debugging})
           timeout-ch (timeout 10000)]

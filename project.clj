@@ -38,4 +38,5 @@
                          :manager-port "9001"
                          :cache-ttl "30000"
                          :cards "http://api.magicthegathering.io/v1/cards"
+                         :heroes "http://localhost:3000/heroes/:name"
                          :mongo-url "mongodb://localhost:27017/restql-server" }}})

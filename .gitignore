@@ -19,4 +19,4 @@ tags
 /java-agents
 newrelic.yml
 dist/
-restql-server.zip
+restql-*.zip
