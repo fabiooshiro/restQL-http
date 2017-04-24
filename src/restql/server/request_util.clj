@@ -23,9 +23,7 @@
 
 (defn merge-headers [headers query]
   (let [query-vec (edn/read-string query)
-        _ (println "\n\n" query-vec "\n\n")
-        query-edn (apply hash-map query-vec)
-        _ (println "\n\n" query-edn "\n\n")]
+        query-edn (apply hash-map query-vec)]
     (->>
       (reduce-kv (fn [m k v]
                    (into [k (add-headers-to-object headers v)] m)) [] query-edn)
