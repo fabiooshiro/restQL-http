@@ -26,6 +26,12 @@ import 'codemirror/addon/fold/foldgutter.css';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/addon/fold/foldgutter';
 
+// Code Completion
+import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/hint/show-hint.css';
+
+import '../../codemirror/restql';
+
 // API Calls and processing
 import { runQuery, saveQuery, processResult } from '../../api/restQLAPI';
 
@@ -115,7 +121,7 @@ class QueryEditorScreen extends Component {
     const baseOptions = {
       lineNumbers: true,
       tabSize: 2,
-      mode: 'text',
+      mode: 'restql',
       theme: 'eclipse',
       foldGutter: true,
       gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-brace-fold"]
@@ -127,6 +133,7 @@ class QueryEditorScreen extends Component {
         'Shift-Enter': this.handleRun,
         'Ctrl-S': this.showModal,
         'Cmd-S': this.showModal,
+        'Ctrl-Space': 'autocomplete',
       },
       readOnly: this.props.running
     };
