@@ -51,6 +51,7 @@ const styles = {
 	paddingTop: 10,
 	paddingLeft: 10,
 	paddingRight: 20,
+	width: 260,
   },
 
 };
@@ -69,6 +70,14 @@ class QuerySidebar extends Component {
 		this.props.dispatch({
 			type: QUERY_ACTIONS.TOGGLE_SIDEBAR,
 		});
+	}
+
+	newQuery = () => {
+		this.props.dispatch({
+			type: QUERY_ACTIONS.INITIAL_STATE
+		});
+
+		this.loadNamespaces();
 	}
 
 	loadNamespaces = () => {
@@ -113,7 +122,7 @@ class QuerySidebar extends Component {
 		
 	}
 
-	loadQuery = (queryUrl) => {
+	loadQuery = (queryName, queryUrl) => {
 		this.props.dispatch({
 			type: QUERY_ACTIONS.QUERY_LOADING
 		});
@@ -122,6 +131,7 @@ class QuerySidebar extends Component {
 			if(response.error === null) {
 				this.props.dispatch({
 					type: QUERY_ACTIONS.QUERY_LOADED,
+					queryName: queryName,
 					value: response.body.text
 				});
 			}
@@ -172,7 +182,7 @@ class QuerySidebar extends Component {
 			return this.props.queries.map((val, index) => {
 				return (
 					<li key={index}>
-						<a onClick={() => this.loadQuery(val['last-revision'])}>{val.id}</a>
+						<a onClick={() => this.loadQuery(val.id, val['last-revision'])}>{val.id}</a>
 					</li>
 				);
 			});
@@ -191,6 +201,7 @@ class QuerySidebar extends Component {
 
 				<div className="menu-options">
 					<Button bsStyle="info" onClick={this.loadNamespaces}>Reload</Button>
+					<Button bsStyle="danger" onClick={this.newQuery}>New Query</Button>
 				</div>
 
 				<div className="menu">

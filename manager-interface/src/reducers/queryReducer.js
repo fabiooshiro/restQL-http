@@ -17,6 +17,8 @@ export const initialState = {
 
 // Enum for query actions
 export const QUERY_ACTIONS = {
+    INITIAL_STATE: 'INITIAL_STATE',
+
     READ_QUERY: 'READ_QUERY',
     RUNNING_QUERY: 'RUNNING_QUERY',
     QUERY_ERROR: 'QUERY_ERROR',
@@ -36,6 +38,7 @@ export const QUERY_ACTIONS = {
     QUERIES_LOADED: 'QUERIES_LOADED',
     QUERY_LOADING: 'QUERY_LOADING',
     QUERY_LOADED: 'QUERY_LOADED',
+
 };
 
 const queryReducer = (state = initialState, action) => {
@@ -73,7 +76,11 @@ const queryReducer = (state = initialState, action) => {
         case QUERY_ACTIONS.QUERY_LOADING:
             return {...state, query: '', queryResult: '', running: true}
         case QUERY_ACTIONS.QUERY_LOADED:
-            return {...state, query: action.value, running: false, showSidebar: false }
+            return {...state, queryName: action.queryName, query: action.value, running: false, showSidebar: false }
+
+
+        case QUERY_ACTIONS.INITIAL_STATE:
+            return initialState;
 
         default:
             return state;
