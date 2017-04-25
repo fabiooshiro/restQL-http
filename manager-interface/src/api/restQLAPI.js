@@ -1,8 +1,6 @@
 // This makes requests to restQL manager API
 const request = require('superagent');
 
-const runQueryUrl = '/run-query';
-
 // Processing request
 export function processResult(response) {
     if(response.error !== null) {
@@ -24,6 +22,8 @@ export function processResult(response) {
 
 // Running Queries
 export function runQuery(queryString, callback) {
+    const runQueryUrl = '/run-query';
+
     request
         .post(runQueryUrl)
         .set('Content-Type', 'text/plain')
@@ -46,6 +46,57 @@ export function saveQuery(namespace, queryName, queryString, callback) {
         .set('Content-Type', 'text/plain')
         .set('Accept', 'application/json')
         .send(queryString)
+        .end((err, body) => {
+            return callback({
+                error: err,
+                body: body
+            });
+        });
+}
+
+// Loading namespaces
+export function loadNamespaces(callback) {
+    const loadNamespacesUrl = '/namespaces';
+    
+    request
+        .get(loadNamespacesUrl)
+        .set('Content-Type', 'text/plain')
+        .set('Accept', 'application/json')
+        .send()
+        .end((err, body) => {
+            return callback({
+                error: err,
+                body: body
+            });
+        });
+}
+
+
+// Loading Queries
+export function loadQueries(namespace, callback) {
+    const loadQueriesUrl = '/ns/' + namespace;
+    
+    request
+        .get(loadQueriesUrl)
+        .set('Content-Type', 'text/plain')
+        .set('Accept', 'application/json')
+        .send()
+        .end((err, body) => {
+            return callback({
+                error: err,
+                body: body
+            });
+        });
+}
+
+// Loading a query revision
+export function loadRevision(revisionUrl, callback) {
+    
+    request
+        .get(revisionUrl)
+        .set('Content-Type', 'text/plain')
+        .set('Accept', 'application/json')
+        .send()
         .end((err, body) => {
             return callback({
                 error: err,

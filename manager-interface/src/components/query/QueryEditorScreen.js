@@ -45,7 +45,7 @@ import Logo from '../restQL-logo.svg';
 
 // Custom Components for this screen
 import SaveModal from './SaveModal';
-
+import QuerySidebar from './QuerySidebar';
 
 class QueryEditorScreen extends Component {
   
@@ -117,7 +117,15 @@ class QueryEditorScreen extends Component {
     });
   }
 
-  render() {
+  toggleSidebar = () => {
+		this.props.dispatch({
+			type: QUERY_ACTIONS.TOGGLE_SIDEBAR,
+		})
+	}
+
+
+  editorContent = () => {
+    
     const baseOptions = {
       lineNumbers: true,
       tabSize: 2,
@@ -144,14 +152,37 @@ class QueryEditorScreen extends Component {
       readOnly: true,
     };
 
+    return (
+      <Row>
+        <Col sm={12} md={6}>
+          <h3>Query</h3>
+          <CodeMirror value={this.props.queryString}
+                  onChange={this.handleChange}
+                  options={editorOptions}/>  
+        </Col>
+
+        <Col sm={12} md={6}>
+          <h3>Result</h3>
+          <CodeMirror value={this.props.resultString}
+                  options={resultOptions}/>
+        </Col>
+      </Row>
+    );
+  }
+
+  render() {
+    
+
     const runTooltip = (
       <Tooltip id="run-tooltip">
         <strong>Shift+Enter</strong>
       </Tooltip>
     );
 
+    const editor = this.editorContent();
+
     return (
-      <div className="QueryEditorScreen">
+      <QuerySidebar className="QueryEditorScreen">
         <Navbar>
           <Navbar.Header>
             <Navbar.Brand>
@@ -164,6 +195,8 @@ class QueryEditorScreen extends Component {
           <Navbar.Collapse>
             <Navbar.Form pullRight>
               <FormGroup controlId="formInlineName">
+                <Button onClick={this.toggleSidebar} bsStyle="default">Queries</Button>
+
                 <OverlayTrigger placement="bottom" overlay={runTooltip}>
                   <Button bsStyle="success"
                           onClick={this.handleRun}>Run Query</Button>
@@ -175,24 +208,13 @@ class QueryEditorScreen extends Component {
           </Navbar.Collapse>
         </Navbar>
 
+        
         <div className="container">
-          <Row>
-            <Col sm={12} md={6}>
-              <h3>Query</h3>
-              <CodeMirror value={this.props.queryString}
-                      onChange={this.handleChange}
-                      options={editorOptions}/>  
-            </Col>
-
-            <Col sm={12} md={6}>
-              <h3>Result</h3>
-              <CodeMirror value={this.props.resultString}
-                      options={resultOptions}/>
-            </Col>
-          </Row>
+          
+            {editor}
         </div>
         
-      </div>
+      </QuerySidebar>
     );
   }
 }

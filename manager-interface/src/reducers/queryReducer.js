@@ -7,6 +7,12 @@ export const initialState = {
     error: false,
     queryResult: '',
     showModal: false,
+    showSidebar: false,
+    
+    loadingNamespaces: false,
+    loadingQueries: false,
+    namespaces: [],
+    queries: []
 };
 
 // Enum for query actions
@@ -17,10 +23,19 @@ export const QUERY_ACTIONS = {
     QUERY_SUCCESS: 'QUERY_SUCCESS',
     SAVING_QUERY: 'SAVING_QUERY',
     QUERY_SAVED: 'QUERY_SAVED',
+    
     TOGGLE_SAVE_MODAL: 'TOGGLE_SAVE_MODAL',
+    TOGGLE_SIDEBAR: 'TOGGLE_SIDEBAR',
 
     NAMESPACE_CHANGED: 'NAMESPACE_CHANGED',
     QUERY_NAME_CHANGED: 'QUERY_NAME_CHANGED',
+
+    NAMESPACES_LOADING: 'NAMESPACES_LOADING',
+    NAMESPACES_LOADED: 'NAMESPACES_LOADED',
+    QUERIES_LOADING: 'QUERIES_LOADING',
+    QUERIES_LOADED: 'QUERIES_LOADED',
+    QUERY_LOADING: 'QUERY_LOADING',
+    QUERY_LOADED: 'QUERY_LOADED',
 };
 
 const queryReducer = (state = initialState, action) => {
@@ -28,7 +43,7 @@ const queryReducer = (state = initialState, action) => {
         case QUERY_ACTIONS.READ_QUERY:
             return {...state, query: action.value};
         case QUERY_ACTIONS.RUNNING_QUERY:
-            return {...state, running: true, error: false, queryResult: null};
+            return {...state, running: true, error: false, queryResult: ''};
         case QUERY_ACTIONS.QUERY_ERROR:
             return {...state, running: false, error: true, queryResult: action.value};
         case QUERY_ACTIONS.QUERY_SUCCESS:
@@ -37,12 +52,29 @@ const queryReducer = (state = initialState, action) => {
             return {...state, running: true, error: false};
         case QUERY_ACTIONS.QUERY_SAVED:
             return {...state, running: false, error: false, queryResult: action.value};
-        case QUERY_ACTIONS.TOGGLE_SAVE_MODAL:
-            return {...state, showModal: !state.showModal};
         case QUERY_ACTIONS.NAMESPACE_CHANGED:
             return {...state, namespace: action.value};
         case QUERY_ACTIONS.QUERY_NAME_CHANGED:
             return {...state, queryName: action.value};
+        
+        case QUERY_ACTIONS.TOGGLE_SAVE_MODAL:
+            return {...state, showModal: !state.showModal};
+        case QUERY_ACTIONS.TOGGLE_SIDEBAR:
+            return {...state, showSidebar: !state.showSidebar};
+
+        case QUERY_ACTIONS.NAMESPACES_LOADING:
+            return {...state, loadingNamespaces: true, namespaces: []}
+        case QUERY_ACTIONS.NAMESPACES_LOADED:
+            return {...state, loadingNamespaces: false, namespaces: action.value}
+        case QUERY_ACTIONS.QUERIES_LOADING:
+            return {...state, loadingQueries: true, namespace: action.value, queries: []}
+        case QUERY_ACTIONS.QUERIES_LOADED:
+            return {...state, loadingQueries: false, queries: action.value}
+        case QUERY_ACTIONS.QUERY_LOADING:
+            return {...state, query: '', queryResult: '', running: true}
+        case QUERY_ACTIONS.QUERY_LOADED:
+            return {...state, query: action.value, running: false, showSidebar: false }
+
         default:
             return state;
     }

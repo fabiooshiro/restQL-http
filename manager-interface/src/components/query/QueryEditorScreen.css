@@ -8,11 +8,28 @@
     padding: 10px;
 }
 
+.logo {
+    margin: 0px;
+    padding: 10px;
+    width: auto;
+    height: 80px;
+}
+
 .navbar .btn {
     margin-left: 4px;
 }
 
+
 .CodeMirror {
     height: 500px;
     border: 1px solid #e0e0e0;
+}
+
+.menu-options {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.menu {
+    padding-top: 15px;
 }
