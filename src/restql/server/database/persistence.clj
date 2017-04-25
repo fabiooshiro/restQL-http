@@ -1,7 +1,7 @@
 (ns restql.server.database.persistence
   (:require [monger.core :as mg]
             [monger.collection :as mc]
-            [monger.operators :refer [$inc $push $slice]]
+            [monger.operators :refer [$inc $push $slice $group]]
             [slingshot.slingshot :refer [throw+]]))
 
 (defonce conn-data (atom nil))
@@ -25,6 +25,10 @@
        (let [~dbarg (:db @conn-data)]
        (check-conn!)
        ~@body))))
+
+(defquery list-namespaces [{} :with db]
+  (let [namespaces (mc/aggregate db "query" [{$group {:_id "$namespace"}}])]
+    namespaces))
 
 (defquery save-query [query-ns id query :with db]
   (mc/find-and-modify db "query"

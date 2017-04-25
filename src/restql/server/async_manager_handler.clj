@@ -25,6 +25,8 @@
                          (util/valid-url? (env key)))
                        (keys env))}})
 
+(defn list-namespaces []
+  {:status 200 :body (dbcore/list-namespaces {})})
 
 
 (defn- list-revisions [req]
@@ -87,6 +89,7 @@
   (c/POST "/run-query" req (runner/run-query req))
 
   ; Routes to search for queries and revisions
+  (c/GET "/namespaces" req (list-namespaces))
   (c/GET "/ns/:namespace" req (list-saved-queries req))
   (c/GET "/ns/:namespace/query/:id" req (list-revisions req))
   (c/GET "/ns/:namespace/query/:id/revision/:rev" req (find-formatted-query req))

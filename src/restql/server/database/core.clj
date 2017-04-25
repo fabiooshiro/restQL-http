@@ -10,6 +10,7 @@
 ;re-exporting find-query
 (def find-query-by-id-and-revision db/find-query)
 (def count-query-revisions db/count-query-revisions)
+(def list-namespaces db/list-namespaces)
 (def find-all-queries-by-namespace db/find-all-queries-by-namespace)
 
 (defn save-query [query-ns id query]
