@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Modal, Button} from 'react-bootstrap';
+import {Modal, Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
 
 // Redux actions
 import { connect } from 'react-redux';
@@ -29,9 +29,25 @@ class SaveModal extends Component {
 	}
 
 	render() {
+
+		const button = (<Button bsStyle="info" onClick={this.toggleModal} >Save Query</Button>);
+
+		const saveTooltip = (
+			<Tooltip id="save-tooltip">
+				<strong>{this.props.tooltip}</strong>
+			</Tooltip>
+		);
+
+		const buttonWithTooltip = (this.props.tooltip ? (
+			<OverlayTrigger placement="bottom" overlay={saveTooltip}>
+				{button}
+			</OverlayTrigger>
+		) : button );
+
 		return (
 			<span>
-				<Button bsStyle="info" onClick={this.toggleModal} >Save Query</Button>
+				
+				{buttonWithTooltip}
 
 				<Modal show={this.props.showModal} onHide={this.close}>
 					<Modal.Header>

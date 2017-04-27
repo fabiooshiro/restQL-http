@@ -39,4 +39,5 @@
                          :cache-ttl "30000"
                          :cards "http://api.magicthegathering.io/v1/cards"
                          :heroes "http://localhost:3000/heroes/:name"
+                         :request-bin "http://requestb.in/1co0ai51"
                          :mongo-url "mongodb://localhost:27017/restql-server" }}})

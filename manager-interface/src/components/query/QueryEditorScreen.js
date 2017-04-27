@@ -33,7 +33,7 @@ import 'codemirror/addon/hint/show-hint.css';
 import '../../codemirror/restql';
 
 // API Calls and processing
-import { runQuery, saveQuery, processResult } from '../../api/restQLAPI';
+import { loadNamespaces, runQuery, saveQuery, processResult } from '../../api/restQLAPI';
 
 // Redux actions
 import { connect } from 'react-redux';
@@ -48,6 +48,35 @@ import SaveModal from './SaveModal';
 import QuerySidebar from './QuerySidebar';
 
 class QueryEditorScreen extends Component {
+  
+  constructor(props) {
+    super(props);
+    this.loadNamespaces();
+  }
+
+  newQuery = () => {
+		this.props.dispatch({
+			type: QUERY_ACTIONS.INITIAL_STATE
+		});
+
+		this.loadNamespaces();
+	}
+
+	loadNamespaces = () => {
+		this.props.dispatch({type: QUERY_ACTIONS.NAMESPACES_LOADING});
+
+		loadNamespaces((response)=>{
+			let result = processResult(response);
+
+			if(result.error !== undefined) {
+				this.props.dispatch({type: QUERY_ACTIONS.NAMESPACES_LOADED, value: []});
+				alert('Error loading namespaces: ' + result.error);
+			}
+			else {
+				this.props.dispatch({type: QUERY_ACTIONS.NAMESPACES_LOADED, value: result});
+			}
+		});
+	}
   
   handleChange = (text) => {
     this.props.dispatch({
@@ -152,13 +181,30 @@ class QueryEditorScreen extends Component {
       readOnly: true,
     };
 
+    const runTooltip = (
+      <Tooltip id="run-tooltip">
+        <strong>Shift+Enter</strong>
+      </Tooltip>
+    );
+
     return (
       <Row>
-        <Col sm={12} md={6}>
+        <Col sm={12} md={6} className="queryCol">
           <h3>Query</h3>
           <CodeMirror value={this.props.queryString}
                   onChange={this.handleChange}
                   options={editorOptions}/>  
+          
+          <div className="options">
+            <OverlayTrigger placement="bottom" overlay={runTooltip}>
+                <Button bsStyle="success"
+                        onClick={this.handleRun}>Run Query</Button>
+            </OverlayTrigger>
+          
+            <SaveModal onSave={this.handleSave} tooltip="Ctrl+S" />
+
+          </div>
+          
         </Col>
 
         <Col sm={12} md={6}>
@@ -172,13 +218,6 @@ class QueryEditorScreen extends Component {
 
   render() {
     
-
-    const runTooltip = (
-      <Tooltip id="run-tooltip">
-        <strong>Shift+Enter</strong>
-      </Tooltip>
-    );
-
     const editor = this.editorContent();
 
     return (
@@ -196,13 +235,7 @@ class QueryEditorScreen extends Component {
             <Navbar.Form pullRight>
               <FormGroup controlId="formInlineName">
                 <Button onClick={this.toggleSidebar} bsStyle="default">Queries</Button>
-
-                <OverlayTrigger placement="bottom" overlay={runTooltip}>
-                  <Button bsStyle="success"
-                          onClick={this.handleRun}>Run Query</Button>
-                </OverlayTrigger>
-
-                <SaveModal onSave={this.handleSave} />
+                <Button bsStyle="danger" onClick={this.newQuery}>New Query</Button>
               </FormGroup>
             </Navbar.Form>
           </Navbar.Collapse>
@@ -210,7 +243,6 @@ class QueryEditorScreen extends Component {
 
         
         <div className="container">
-          
             {editor}
         </div>
         

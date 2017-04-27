@@ -19,17 +19,71 @@
     margin-left: 4px;
 }
 
+.queryCol .options {
+    text-align: left;
+}
+
+.queryCol .btn {
+    text-align: center;
+    margin-top: 6px;
+    margin-right: 4px;
+}
+
 
 .CodeMirror {
-    height: 500px;
+    height: 450px;
     border: 1px solid #e0e0e0;
 }
 
-.menu-options {
-    text-align: center;
-    padding-top: 10px;
+
+/* Sidemenu query menu */
+.menu {
+  margin-top: 10px;
+  border-top: 1px solid #efefef;
 }
 
-.menu {
-    padding-top: 15px;
+.menu a:hover {
+  cursor: pointer;
+}
+
+
+.menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-top: 20px;
+  background-color: #00175B;
+  border-radius: 5px;
+}
+
+.menu ul li {
+  padding: 5px 10px;
+}
+
+.menu ul li a {
+  text-decoration: none;
+  color: #efefef;
+  font-weight: bold;
+}
+
+.menu ul li > ul {
+  border-radius: 0px;
+  background-color: #00175b;
+  color: #fff;
+
+  padding: 0px;
+  margin: 5px 0px;
+  margin-left: 23px;
+  list-style: enabled;
+  list-style-type: square;
+}
+
+.menu ul li > ul li {
+  padding-left: 0px;
+  margin-left: 0px;
+}
+
+.menu ul li > ul li a {
+    font-weight: normal;
+    color: #fff;
 }

@@ -10,7 +10,6 @@
 (defn header-allowed? [[k v]]
   (cond
     (= k "host") false
-    (= k "user-agent") false
     (= k "content-type") false
     (= k "content-length") false
     (= k "connection") false

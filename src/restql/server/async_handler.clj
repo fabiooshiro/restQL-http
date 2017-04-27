@@ -36,7 +36,11 @@
           headers {"Content-Type" "application/json"}
           response {:headers headers}
           req-headers (into {"restql-query-control" "ad-hoc"} (:headers req))
-          query (util/merge-headers req-headers (util/parse-req req))
+          params (-> req :query-params keywordize-keys)
+          query-entry (util/parse-req req)
+          query-with-params (interpolate query-entry params) ; Interpolating parameters
+          query-with-headers (interpolate query-with-params headers) ; Interpolating headers
+          query (->> query-with-headers (util/merge-headers req-headers))
           debugging (-> req :query-params (get "_debug") boolean)
           [query-ch exception-ch] (process-query query {:debugging debugging})
           timeout-ch (timeout 10000)]

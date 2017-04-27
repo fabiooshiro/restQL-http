@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 
 import Sidebar from 'react-sidebar';
-import {
-    Button
-} from 'react-bootstrap';
+import { Collapse } from 'react-bootstrap';
 
 // Redux actions
 import { connect } from 'react-redux';
@@ -12,7 +10,7 @@ import { QUERY_ACTIONS } from '../../reducers/queryReducer';
 import Logo from '../restQL-logo.svg';
 
 // API Calls and processing
-import { loadNamespaces, loadQueries, loadRevision, processResult } from '../../api/restQLAPI';
+import { loadQueries, loadRevision, processResult } from '../../api/restQLAPI';
 
 
 const styles = {
@@ -61,38 +59,12 @@ class QuerySidebar extends Component {
 
 	constructor(props) {
 		super(props);
-
-		this.loadNamespaces();
 		this.index = 0;
 	}
 
 	toggleSidebar = () => {
 		this.props.dispatch({
 			type: QUERY_ACTIONS.TOGGLE_SIDEBAR,
-		});
-	}
-
-	newQuery = () => {
-		this.props.dispatch({
-			type: QUERY_ACTIONS.INITIAL_STATE
-		});
-
-		this.loadNamespaces();
-	}
-
-	loadNamespaces = () => {
-		this.props.dispatch({type: QUERY_ACTIONS.NAMESPACES_LOADING});
-
-		loadNamespaces((response)=>{
-			let result = processResult(response);
-
-			if(result.error !== undefined) {
-				this.props.dispatch({type: QUERY_ACTIONS.NAMESPACES_LOADED, value: []});
-				alert('Error loading namespaces: ' + result.error);
-			}
-			else {
-				this.props.dispatch({type: QUERY_ACTIONS.NAMESPACES_LOADED, value: result});
-			}
 		});
 	}
 
@@ -153,10 +125,14 @@ class QuerySidebar extends Component {
 						<li key={index}>
 							<a onClick={() => this.loadQueries(val._id)}>{val._id}</a>
 							<ul className="queries">
-								{
-									this.props.namespace === val._id  ? 
-									this.renderQueries() : ''
-								}
+								<Collapse in={!this.props.loadingQueries}>
+									<div>
+									{
+										this.props.namespace === val._id  ? 
+										this.renderQueries() : ''
+									}
+									</div>
+								</Collapse>
 							</ul>
 						</li>
 					);
@@ -198,11 +174,6 @@ class QuerySidebar extends Component {
 				<object data={Logo} type="image/svg+xml" className="logo">
 					<img src={Logo} alt="Logo" className="logo" />
 				</object>
-
-				<div className="menu-options">
-					<Button bsStyle="info" onClick={this.loadNamespaces}>Reload</Button>
-					<Button bsStyle="danger" onClick={this.newQuery}>New Query</Button>
-				</div>
 
 				<div className="menu">
 					{this.renderNamespaces()}
