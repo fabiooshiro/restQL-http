@@ -149,6 +149,8 @@ class QueryEditorScreen extends Component {
           type: QUERY_ACTIONS.QUERY_SAVED,
           value: processedString
         });
+
+        this.loadNamespaces();
       }
     });
   }
