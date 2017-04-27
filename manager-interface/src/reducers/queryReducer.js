@@ -3,6 +3,7 @@ export const initialState = {
     namespace: '',
     queryName: '',
     query: '',
+    queryParams: '',
     running: false,
     error: false,
     queryResult: '',
@@ -20,6 +21,8 @@ export const QUERY_ACTIONS = {
     INITIAL_STATE: 'INITIAL_STATE',
 
     READ_QUERY: 'READ_QUERY',
+    READ_QUERY_PARAMS: 'READ_QUERY_PARAMS',
+    TOGGLE_QUERY_PARAMS: 'TOGGLE_QUERY_PARAMS',
     RUNNING_QUERY: 'RUNNING_QUERY',
     QUERY_ERROR: 'QUERY_ERROR',
     QUERY_SUCCESS: 'QUERY_SUCCESS',
@@ -38,13 +41,14 @@ export const QUERY_ACTIONS = {
     QUERIES_LOADED: 'QUERIES_LOADED',
     QUERY_LOADING: 'QUERY_LOADING',
     QUERY_LOADED: 'QUERY_LOADED',
-
 };
 
 const queryReducer = (state = initialState, action) => {
     switch (action.type) {
         case QUERY_ACTIONS.READ_QUERY:
             return {...state, query: action.value};
+        case QUERY_ACTIONS.READ_QUERY_PARAMS:
+            return {...state, queryParams: action.value};
         case QUERY_ACTIONS.RUNNING_QUERY:
             return {...state, running: true, error: false, queryResult: ''};
         case QUERY_ACTIONS.QUERY_ERROR:

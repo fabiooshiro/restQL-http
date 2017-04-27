@@ -31,9 +31,19 @@
 
 
 .CodeMirror {
-    height: 450px;
+    height: 500px;
     border: 1px solid #e0e0e0;
 }
+
+.queryInput > .CodeMirror{
+  height: 375px;
+  margin-bottom: 20px;
+}
+
+.queryCol .form-control {
+  margin-bottom: 8px;
+}
+
 
 
 /* Sidemenu query menu */

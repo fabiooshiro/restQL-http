@@ -85,14 +85,21 @@ class QueryEditorScreen extends Component {
     });
   }
 
+  handleParamsChange = (evt) => {
+    this.props.dispatch({
+      type: QUERY_ACTIONS.READ_QUERY_PARAMS,
+      value: evt.target.value
+    });
+  }
+
   handleRun = () => {
-    const query = this.props.queryString;
+    const {queryString, queryParams} = this.props;
 
     this.props.dispatch({
       type: QUERY_ACTIONS.RUNNING_QUERY
     });
 
-    runQuery(query, this.handleResult);
+    runQuery(queryString, queryParams, this.handleResult);
   }
 
   handleResult = (result) => {
@@ -191,16 +198,26 @@ class QueryEditorScreen extends Component {
       <Row>
         <Col sm={12} md={6} className="queryCol">
           <h3>Query</h3>
-          <CodeMirror value={this.props.queryString}
+          <CodeMirror className="queryInput"
+                  value={this.props.queryString}
                   onChange={this.handleChange}
                   options={editorOptions}/>  
           
+          <div className="from-group">
+            <label>Parameters</label>
+            <input type="text"
+                    className="form-control"
+                    value={this.props.queryParams}
+                    placeholder="name=test&age=18"
+                    onChange={this.handleParamsChange} />
+          </div>
+
           <div className="options">
             <OverlayTrigger placement="bottom" overlay={runTooltip}>
                 <Button bsStyle="success"
                         onClick={this.handleRun}>Run Query</Button>
             </OverlayTrigger>
-          
+
             <SaveModal onSave={this.handleSave} tooltip="Ctrl+S" />
 
           </div>
@@ -253,6 +270,7 @@ class QueryEditorScreen extends Component {
 
 const mapStateToProps = (state, ownProps) => ({
     queryString: state.queryReducer.query,
+    queryParams: state.queryReducer.queryParams,
     resultString: state.queryReducer.queryResult,
     running: state.queryReducer.running,
     queryName: state.queryReducer.queryName,

@@ -21,8 +21,8 @@ export function processResult(response) {
 
 
 // Running Queries
-export function runQuery(queryString, callback) {
-    const runQueryUrl = '/run-query';
+export function runQuery(queryString, queryParams='', callback) {
+    const runQueryUrl = '/run-query?' + queryParams;
 
     request
         .post(runQueryUrl)
