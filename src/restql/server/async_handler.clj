@@ -56,11 +56,11 @@
               (info {:session uid} " finishing request handler")
               (>! result-ch output))))))
     (catch [:type :validation-error] {:keys [message]}
-      (go (>! error-ch (util/json-output 400 message))))
+      (go (>! error-ch (util/json-output 400 {:error "VALIDATION_ERROR" :message message}))))
     (catch [:type :parse-error] {:keys [line column]}
       (go (>! error-ch (util/json-output 400 {:error "PARSE_ERROR" :line line :column column}))))
     (catch Exception e (.printStackTrace e)
-      (go (>! error-ch (.getMessage e))))))
+      (go (>! error-ch (util/json-output 400 {:error "UNKNOWN_ERROR" :message (.getMessage e)}))))))
 
 (defn- parse-query [req]
   (try+
