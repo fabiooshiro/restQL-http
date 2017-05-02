@@ -7,13 +7,17 @@
             [restql.core.validator.core :as validator])
   (import [org.apache.commons.validator UrlValidator]))
 
+(def headers-blacklist
+  ["host"
+   "content-type"
+   "content-length"
+   "connection"
+   "origin"])
+
 (defn header-allowed? [[k v]]
-  (cond
-    (= k "host") false
-    (= k "content-type") false
-    (= k "content-length") false
-    (= k "connection") false
-    :else true))
+  (let [header (.toLowerCase k)]
+    (not
+      (some #(= header %) headers-blacklist))))
 
 (defn add-headers-to-object [headers query-obj]
   (if (nil? (query-obj :with-headers))
