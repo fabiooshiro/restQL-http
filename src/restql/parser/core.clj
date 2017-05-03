@@ -1,7 +1,7 @@
 (ns restql.parser.core
   (:require [instaparse.core :as insta]
             [restql.parser.printer :refer [pretty-print]]
-            [restql.parser.producer :refer [produce]]
+            [restql.parser.producer :refer [produce *restql-variables*]]
             [clojure.java.io :as io])
   (:use     [slingshot.slingshot :only [throw+]]))
 
@@ -20,8 +20,12 @@
              :line (:line error)
              :column (:column error)})))
 
-(defn parse-query [query-text & {:keys [pretty]}]
+(defn handle-produce [tree context]
+  (binding [*restql-variables* (if (nil? context) {} context)]
+    (produce tree)))
+
+(defn parse-query [query-text & {:keys [pretty context]}]
   (let [result (query-parser query-text)]
     (if (insta/failure? result)
       (handle-error result)
-      (handle-success (produce result) :pretty pretty))))
+      (handle-success (handle-produce result context) :pretty pretty))))

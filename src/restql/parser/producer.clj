@@ -1,6 +1,8 @@
 (ns restql.parser.producer
   (:require [clojure.string :refer [join]]))
 
+(def ^:dynamic *restql-variables* {})
+
 (declare produce)
 
 (defn find-first [tag content]
@@ -45,6 +47,9 @@
 
 (defn produce-header-name [content]
   (str "\"" (join-chars "" content) "\""))
+
+(defn produce-header-value [content]
+  (-> content first produce))
 
 (defn produce-timeout-rule [content]
   (let [value (->> content (find-first :TimeoutRuleValue) produce)]
@@ -115,6 +120,16 @@
   (let [produced-path-items (map produce path-items)]
     (str "[" (join " " produced-path-items) "]")))
 
+(defn produce-variable [content]
+  (let [varname (join "" content)
+        value (get *restql-variables* varname)
+       ]
+    (cond
+      (nil? value) "nil"
+      (= "true" value) "true"
+      (= "false" value) "false"
+      :else (str "\"" value "\""))))
+
 (defn produce-with-param-value-data [value-data]
   (produce (first value-data)))
 
@@ -161,7 +176,8 @@
       :HeaderRule                  (produce-header-rule content)
       :HeaderRuleItem              (produce-header-rule-item content)
       :HeaderName                  (produce-header-name content)
-      :HeaderValue                 (join-chars "" content)
+      :HeaderValue                 (produce-header-value content)
+      :LiteralHeaderValue          (join-chars "" content)
 
       :TimeoutRule                 (produce-timeout-rule content)
       :TimeoutRuleValue            (join-chars "" content)
@@ -175,6 +191,7 @@
       :ListParamValue              (produce-list-value content)
       :ComplexParamValue           (produce-complex-value content)
       :Chaining                    (produce-chaining content)
+      :Variable                    (produce-variable content)
       :PathItem                    (join-chars ":" content)
 
       :WithParamValueModifierList  (produce-with-param-modifier-list content)

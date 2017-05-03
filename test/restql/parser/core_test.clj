@@ -25,6 +25,10 @@
     (is (= (read-string (parse-query "from heroes as hero with id = \"123\""))
            [:hero {:from :heroes :with {:id "123"}}])))
 
+  (testing "Testing query with variable parameter"
+    (is (= (read-string (parse-query "from heroes as hero with id = $id" :context {"id" "123"}))
+           [:hero {:from :heroes :with {:id "123"}}])))
+
   (testing "Testing query with one null parameter"
     (is (= (read-string (parse-query "from heroes as hero with id = 123, spell = null"))
            [:hero {:from :heroes :with {:id 123 :spell nil}}])))
@@ -62,10 +66,14 @@
     (is (= (read-string (parse-query "from heroes as hero headers Content-Type = \"application/json\" with id = 123"))
            [:hero {:from :heroes :with-headers {"Content-Type" "application/json"} :with {:id 123}}])))
 
+  (testing "Testing query with headers and parameters"
+    (is (= (read-string (parse-query "from heroes as hero headers Authorization = $auth with id = 123" :context {"auth" "abc123"}))
+           [:hero {:from :heroes :with-headers {"Authorization" "abc123"} :with {:id 123}}])))
+
   (testing "Testing query with hidden selection"
     (is (= (read-string (parse-query "from heroes as hero with id = 1 hidden"))
            [:hero {:from :heroes :with {:id 1} :select :none}])))
-  
+
   (testing "Testing query with only selection"
     (is (= (read-string (parse-query "from heroes as hero with id = 1 only id, name"))
            [:hero {:from :heroes :with {:id 1} :select #{:id :name}}])))

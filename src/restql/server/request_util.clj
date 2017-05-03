@@ -32,10 +32,8 @@
                    (into [k (add-headers-to-object headers v)] m)) [] query-edn)
       str )))
 
-(defn parse [text]
-  (let [parsed (parser/parse-query (str text "\n") :pretty true)]
-    (println parsed)
-    parsed))
+(defn parse [text context]
+  (parser/parse-query (str text "\n") :pretty true :context context))
 
 (defn extract-body [req]
   (->> req
@@ -43,9 +41,11 @@
        slurp))
 
 (defn parse-req [req]
-  (->> req
-       extract-body
-       parse))
+  (let [body (extract-body req)
+        params (:params req)
+        headers (:headers req)
+        context (into headers params)]
+    (parse body context)))
 
 (defn status-code-ok [query-response]
   (and

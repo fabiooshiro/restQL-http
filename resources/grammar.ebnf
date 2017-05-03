@@ -32,8 +32,10 @@ HeaderName =
   (Digit | Letter | "-" | "_")+;
 
 HeaderValue =
-  String;
+  LiteralHeaderValue | Variable;
 
+LiteralHeaderValue =
+  String
 
 WithRule =
   KW_WITH WS WithRuleItem (WS LS WS WithRuleItem)*;
@@ -48,7 +50,7 @@ WithParamValue =
   WithParamValueData WithParamValueModifierList;
 
 WithParamValueData =
-  (WithParamPrimitiveValue | Chaining | ListParamValue | ComplexParamValue);
+  (WithParamPrimitiveValue | Chaining | ListParamValue | ComplexParamValue | Variable);
 
 WithParamValueModifierList =
   (WS MOD_OPERATOR WS WithParamModifier)*;
@@ -72,6 +74,9 @@ ComplexParamKey =
 
 Chaining =
   PathItem (CHAINING_OPERATOR PathItem)+;
+
+Variable =
+  <"$"> Identifier
 
 PathItem =
   Identifier;

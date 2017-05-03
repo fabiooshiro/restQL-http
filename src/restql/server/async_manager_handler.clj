@@ -89,7 +89,7 @@
 
   ; Routes to run queries
   (c/POST "/run-query" req (runner/run-query req))
-  (c/GET "/run-query/:namespace/:id/:rev" req (runner/run-saved-query req)))
+  (c/GET "/run-query/:namespace/:id/:rev" req (runner/run-saved-query req))
 
   ; Routes to search for queries and revisions
   (c/GET "/namespaces" req (list-namespaces))
