@@ -1,7 +1,8 @@
 import CodeMirror from 'codemirror';
 
 // Language reserved words
-const languageList = ['from','as','headers','timeout','with','flatten','expand','contract','only','hidden'];
+const languageTokenList = ['from','as','headers','timeout','with','only','hidden'];
+const languageOperatorsList = ['flatten','expand','contract','json'];
 
 (function(mod) {
     mod(CodeMirror);
@@ -9,7 +10,7 @@ const languageList = ['from','as','headers','timeout','with','flatten','expand',
 
   CodeMirror.registerHelper("hint", "anyword", function(editor, options) {
 
-    let list = [].concat(languageList);
+    let list = [].concat(languageTokenList);
 
     let cursor = editor.getCursor(), currentLine = editor.getLine(cursor.line);
     
@@ -43,47 +44,39 @@ const languageList = ['from','as','headers','timeout','with','flatten','expand',
       lastFrom = (nextLine.indexOf('from') !== -1 ? i : lastFrom);
     }
 
-    if(lastFrom >= 0) {
+    // The lower boundary to look for language tokens
+    let fromBeforeCursor = 0;
+    let i = cursor.line;
 
-      // The lower boundary to look for language tokens
-      let fromBeforeCursor = 0;
-      let i = cursor.line;
-
-      // Iterates from the cursor to the last 'from' clause typed
-      // or stop if it reaches the beginning of the editor.
-      while(fromBeforeCursor === 0 && i >= 0) {
-        const nextLine = editor.getLine(i);
-        fromBeforeCursor = (nextLine.indexOf('from') !== -1 ? i : 0);
-        
-        i--;
-      }
-
-      list = languageList.reduce((prev, val)=>{
-        let hasLanguageToken = false;
-
-        // The upper boundary to look for language tokens
-        const stopAt = lastFrom > 0 ? lastFrom : editor.lastLine();
-
-        // We iterate over each line to see if the token is present
-        for(let i=fromBeforeCursor; i<=stopAt; i++) {
-          const nextLine = editor.getLine(i);
-          
-          // If present, don't add to the completion list
-          if(nextLine.indexOf(val) !== -1) {
-            hasLanguageToken = true;
-          }
-        } 
-
-        // "from" is always possible, so we look if the token is present
-        // or if it's a "from" token.
-        if(!hasLanguageToken || val === 'from') {
-          prev.push(val);
-        }
-
-        return prev;        
-      }, []);
+    // Iterates from the cursor to the last 'from' clause typed
+    // or stop if it reaches the beginning of the editor.
+    while(fromBeforeCursor === 0 && i >= 0) {
+      const nextLine = editor.getLine(i);
+      fromBeforeCursor = (nextLine.indexOf('from') !== -1 ? i : 0);
+      
+      i--;
     }
 
+    // The upper boundary to look for language tokens
+    const stopAt = cursor.line;
+
+    // The last token on our list
+    let lastTokenCount = 0;
+
+    // We iterate over each line to see if the token is present
+    for(let i=fromBeforeCursor; i<=stopAt; i++) {
+      const nextLine = editor.getLine(i);
+
+      languageTokenList.forEach((val, index)=>{
+        if(nextLine.indexOf(val) !== -1)
+          lastTokenCount = index;
+      });
+    }
+
+    // We concatenate on the last known token until current line and append operators
+    list = ['from'].concat(list.splice(lastTokenCount+1)).concat(languageOperatorsList);
+
+    // Concatenating the resources and aliases
     list = list.concat(resourcesList);
 
     // Filtering
