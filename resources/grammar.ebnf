@@ -35,7 +35,7 @@ HeaderValue =
   LiteralHeaderValue | Variable;
 
 LiteralHeaderValue =
-  String
+  String;
 
 WithRule =
   KW_WITH WS WithRuleItem (WS LS WS WithRuleItem)*;
