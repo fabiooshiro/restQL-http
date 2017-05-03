@@ -76,7 +76,7 @@ Chaining =
   PathItem (CHAINING_OPERATOR PathItem)+;
 
 Variable =
-  <"$"> Identifier
+  <"$"> Identifier;
 
 PathItem =
   Identifier;
