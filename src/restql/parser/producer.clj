@@ -120,15 +120,19 @@
   (let [produced-path-items (map produce path-items)]
     (str "[" (join " " produced-path-items) "]")))
 
+(defn format-variable [value]
+  (cond
+    (nil? value) "nil"
+    (sequential? value) (str "[" (->> value (map format-variable) (join " ") ) "]")
+    (= "true" value) "true"
+    (= "false" value) "false"
+    :else (str "\"" value "\"")))
+
 (defn produce-variable [content]
   (let [varname (join "" content)
         value (get *restql-variables* varname)
        ]
-    (cond
-      (nil? value) "nil"
-      (= "true" value) "true"
-      (= "false" value) "false"
-      :else (str "\"" value "\""))))
+    (format-variable value)))
 
 (defn produce-with-param-value-data [value-data]
   (produce (first value-data)))
