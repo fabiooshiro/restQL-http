@@ -23,6 +23,8 @@ cd $SOURCE_CODE_DIR && lein test && lein uberjar
 
 cp "$LEIN_TARGET_DIR/uberjar/restql-server-standalone.jar" "$DIST_DIR/lib/restql-server.jar"
 cp "$SCRIPTS_DIR/run.sh" "$DIST_DIR/bin"
+cp "$SCRIPTS_DIR/prepare.sh" "$DIST_DIR/bin"
+cp "$SCRIPTS_DIR/manager.sh" "$DIST_DIR/bin"
 cp "$SCRIPTS_DIR/env.sh" "$DIST_DIR/bin"
 cp "$SOURCE_CODE_DIR/LICENSE" "$DIST_DIR"
 cp "$SOURCE_CODE_DIR/README.md" "$DIST_DIR"
