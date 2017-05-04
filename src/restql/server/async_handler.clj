@@ -38,8 +38,6 @@
           req-headers (into {"restql-query-control" "ad-hoc"} (:headers req))
           params (-> req :query-params keywordize-keys)
           query-entry (util/parse-req req)
-          query-with-params (interpolate query-entry params) ; Interpolating parameters
-          query-with-headers (interpolate query-with-params headers) ; Interpolating headers
           query (->> query-entry (util/merge-headers req-headers))
           debugging (-> req :query-params (get "_debug") boolean)
           [query-ch exception-ch] (process-query query {:debugging debugging})
