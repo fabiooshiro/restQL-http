@@ -10,7 +10,7 @@ import { QUERY_ACTIONS } from '../../reducers/queryReducer';
 import Logo from '../restQL-logo.svg';
 
 // API Calls and processing
-import { loadQueries, loadRevision, processResult } from '../../api/restQLAPI';
+import { loadQueries, loadRevisionByUrl, processResult } from '../../api/restQLAPI';
 
 
 const styles = {
@@ -90,8 +90,6 @@ class QuerySidebar extends Component {
 			}
 
 		});
-
-		
 	}
 
 	loadQuery = (queryName, queryUrl) => {
@@ -99,12 +97,16 @@ class QuerySidebar extends Component {
 			type: QUERY_ACTIONS.QUERY_LOADING
 		});
 
-		loadRevision(queryUrl, (response)=>{
+		loadRevisionByUrl(queryUrl, (response)=>{
 			if(response.error === null) {
 				this.props.dispatch({
 					type: QUERY_ACTIONS.QUERY_LOADED,
 					queryName: queryName,
 					value: response.body.text
+				});
+
+				this.props.dispatch({
+					type: QUERY_ACTIONS.LOAD_REVISIONS,
 				});
 			}
 			else {

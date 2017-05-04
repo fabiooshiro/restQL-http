@@ -89,9 +89,48 @@ export function loadQueries(namespace, callback) {
         });
 }
 
-// Loading a query revision
-export function loadRevision(revisionUrl, callback) {
+// Loading all query revisions
+export function loadRevisions(namespace, query, callback) {
     
+    const revisionsUrl = '/ns/' + namespace + '/query/' + query;
+
+    request
+        .get(revisionsUrl)
+        .set('Content-Type', 'text/plain')
+        .set('Accept', 'application/json')
+        .send()
+        .end((err, body) => {
+            return callback({
+                error: err,
+                body: body
+            });
+        });
+}
+
+
+// Loading a query revision
+export function loadRevisionByUrl(revisionUrl, callback) {
+    
+    request
+        .get(''+revisionUrl)
+        .set('Content-Type', 'text/plain')
+        .set('Accept', 'application/json')
+        .send()
+        .end((err, body) => {
+            return callback({
+                error: err,
+                body: body
+            });
+        });
+}
+
+// Loading a query revision
+export function loadRevision(namespace, queryName, revision, callback) {
+    
+    const revisionUrl = '/ns/' + namespace
+                        + '/query/' + queryName
+                        + '/revision/' + revision;
+
     request
         .get(revisionUrl)
         .set('Content-Type', 'text/plain')

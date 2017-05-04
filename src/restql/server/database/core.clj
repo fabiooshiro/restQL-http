@@ -14,7 +14,7 @@
 (def find-all-queries-by-namespace db/find-all-queries-by-namespace)
 
 (defn save-query [query-ns id query]
-  (let [parsed-query (-> query util/parse edn/read-string)]
+  (let [parsed-query (-> query (util/parse {}) edn/read-string)]
     (if (validator/validate {:mappings env} parsed-query)
       (db/save-query query-ns id {:text query})
       (do (println query) (throw+ {:type :pdg-query-validation-error :data query})))))

@@ -19,6 +19,21 @@
     margin-left: 4px;
 }
 
+
+.queryTitle {
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.revisionPicker {
+  position: absolute;
+  right: 0;
+  margin-left: 25px;
+  padding: 0 6px;
+  font-size: 18px;
+  text-align: right;
+}
+
 .queryCol .options {
     text-align: left;
 }

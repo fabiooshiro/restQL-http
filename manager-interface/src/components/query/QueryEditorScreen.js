@@ -33,7 +33,14 @@ import 'codemirror/addon/hint/show-hint.css';
 import '../../codemirror/restql';
 
 // API Calls and processing
-import { loadNamespaces, runQuery, saveQuery, processResult } from '../../api/restQLAPI';
+import {
+  loadNamespaces,
+  loadRevisions,
+  loadRevision,
+  runQuery,
+  saveQuery,
+  processResult
+} from '../../api/restQLAPI';
 
 // Redux actions
 import { connect } from 'react-redux';
@@ -77,6 +84,46 @@ class QueryEditorScreen extends Component {
 			}
 		});
 	}
+
+  loadRevisions = () => {
+    this.props.dispatch({type: QUERY_ACTIONS.REVISIONS_LOADING});
+
+    loadRevisions(this.props.namespace, this.props.queryName, (response)=>{
+      let result = processResult(response);
+      
+      if(result.error !== undefined) {
+        this.props.dispatch({
+          type: QUERY_ACTIONS.REVISIONS_LOADED, value: []
+        });
+      }
+      else {
+        this.props.dispatch({
+          type: QUERY_ACTIONS.REVISIONS_LOADED,
+          value: result.revisions
+        });
+      }
+    });
+  }
+
+  loadQueryRevision = (rev) => {
+    this.props.dispatch({type: QUERY_ACTIONS.QUERY_LOADING});
+
+    loadRevision(this.props.namespace, this.props.queryName, rev, (response)=>{
+      if(response.error === null) {
+				this.props.dispatch({
+					type: QUERY_ACTIONS.QUERY_LOADED,
+					queryName: this.props.queryName,
+					value: response.body.text
+				});
+			}
+			else {
+				this.props.dispatch({
+					type: QUERY_ACTIONS.QUERY_ERROR,
+					value: response.body.text
+				});
+			}
+    });
+  }
   
   handleChange = (text) => {
     this.props.dispatch({
@@ -123,7 +170,7 @@ class QueryEditorScreen extends Component {
   showModal = () => {
     this.props.dispatch({
       type: QUERY_ACTIONS.TOGGLE_SAVE_MODAL,
-    })
+    });
   }
 
   handleSave = () => {
@@ -150,6 +197,10 @@ class QueryEditorScreen extends Component {
           value: processedString
         });
 
+        this.props.dispatch({
+					type: QUERY_ACTIONS.LOAD_REVISIONS,
+				});
+
         this.loadNamespaces();
       }
     });
@@ -161,6 +212,24 @@ class QueryEditorScreen extends Component {
 		})
 	}
 
+
+  renderRevisionCombo = () => {
+    if(this.props.revisions.length > 0) {
+      let options = [];
+
+      for(let i=this.props.revisions.length; i>0; i--) {
+        options.push(
+          (<option key={i} onClick={()=> this.loadQueryRevision(i)}>{i}</option>)
+        )
+      }
+
+      return (
+        <select className="revisionPicker">
+          {options}
+        </select>
+      );
+    }
+  }
 
   editorContent = () => {
     
@@ -199,7 +268,14 @@ class QueryEditorScreen extends Component {
     return (
       <Row>
         <Col sm={12} md={6} className="queryCol">
-          <h3>Query</h3>
+          <div className="queryTitle">
+            <h3>
+              Query
+              {this.props.shouldLoadRevisions ? this.loadRevisions() : this.renderRevisionCombo() }
+            </h3>  
+          </div>
+          
+            
           <CodeMirror className="queryInput"
                   value={this.props.queryString}
                   onChange={this.handleChange}
@@ -277,6 +353,8 @@ const mapStateToProps = (state, ownProps) => ({
     running: state.queryReducer.running,
     queryName: state.queryReducer.queryName,
     namespace: state.queryReducer.namespace,
+    revisions: state.queryReducer.revisions,
+    shouldLoadRevisions: state.queryReducer.shouldLoadRevisions,
     showModal: state.queryReducer.showModal,
 });
 

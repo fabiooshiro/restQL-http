@@ -13,7 +13,10 @@ export const initialState = {
     loadingNamespaces: false,
     loadingQueries: false,
     namespaces: [],
-    queries: []
+    queries: [],
+    revisions: [],
+
+    shouldLoadRevisions: false,
 };
 
 // Enum for query actions
@@ -41,6 +44,10 @@ export const QUERY_ACTIONS = {
     QUERIES_LOADED: 'QUERIES_LOADED',
     QUERY_LOADING: 'QUERY_LOADING',
     QUERY_LOADED: 'QUERY_LOADED',
+
+    REVISIONS_LOADING: 'REVISIONS_LOADING',
+    REVISIONS_LOADED: 'REVISIONS_LOADED',
+    LOAD_REVISIONS: 'LOAD_REVISIONS',
 };
 
 const queryReducer = (state = initialState, action) => {
@@ -81,8 +88,14 @@ const queryReducer = (state = initialState, action) => {
             return {...state, query: '', queryResult: '', running: true}
         case QUERY_ACTIONS.QUERY_LOADED:
             return {...state, queryName: action.queryName, query: action.value, running: false, showSidebar: false }
+        
+        case QUERY_ACTIONS.LOAD_REVISIONS:
+            return {...state, shouldLoadRevisions: true}
 
-
+        case QUERY_ACTIONS.REVISIONS_LOADING:
+            return {...state, running: true, shouldLoadRevisions: false, revisions: []}
+        case QUERY_ACTIONS.REVISIONS_LOADED:
+            return {...state, running: false, revisions: action.value }
         case QUERY_ACTIONS.INITIAL_STATE:
             return initialState;
 
