@@ -3,6 +3,8 @@
             [restql.parser.core :refer :all]))
 
 (deftest testing-edn-string-production
+
+
   (testing "Testing simple query"
     (is (= (read-string (parse-query "from heroes as hero"))
            [:hero {:from :heroes}])))
@@ -10,6 +12,11 @@
   (testing "Testing simple query without alias"
     (is (= (read-string (parse-query "from heroes"))
            [:heroes {:from :heroes}])))
+
+  (testing "Testing simple query with a use clause"
+    (is (= (parse-query "use cache-control = 900
+                                      from heroes as hero")
+           "^{:cache-control 900} [:hero {:from :heroes}]")))
 
   (testing "Testing multiple query"
     (is (= (read-string (parse-query "from heroes as hero

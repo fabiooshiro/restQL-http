@@ -1,5 +1,20 @@
 Query =
-  WS QueryItem (WS LS WS QueryItem)*;
+   WS (UseBlock WS LS WS)? QueryBlock;
+
+UseBlock =
+  UseRule (WS LS WS UseRule)*;
+
+UseRule =
+  KW_USE WS UseRuleKey WS EQUALS_SIGN WS UseRuleValue;
+
+UseRuleKey =
+  Identifier;
+
+UseRuleValue =
+  Primitive;
+
+QueryBlock =
+  QueryItem (WS LS WS QueryItem)*;
 
 QueryItem =
   WS FromRule WS (HeaderRule WS)? (TimeoutRule WS)? (WithRule WS)? ( (OnlyRule | HideRule) WS)?;
@@ -131,6 +146,9 @@ OnlyRuleItemModifierArg =
 HideRule =
   KW_HIDE;
 
+
+<KW_USE> =
+  <"use">;
 
 <KW_FROM> =
   <"from">;

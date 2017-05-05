@@ -11,8 +11,21 @@
 (defn join-chars [prefix content]
   (str prefix (join "" content)))
 
+(defn produce-query [blocks]
+  (let [use-block   (->> blocks (find-first :UseBlock) produce)
+        query-block (->> blocks (find-first :QueryBlock) produce)]
+    (str use-block query-block)))
 
-(defn produce-query [query-items]
+(defn produce-use-block [content]
+  (let [produced-use-items (map produce content)]
+    (str "^{" (join " " produced-use-items) "} ")))
+
+(defn produce-use-rule [content]
+  (let [rule-key   (->> content (find-first :UseRuleKey) produce)
+        rule-value (->> content (find-first :UseRuleValue) produce)]
+    (str rule-key " " rule-value)))
+
+(defn produce-query-block [query-items]
   (let [produced-query-items (map produce query-items)]
     (str "[" (join "\n" produced-query-items)  "]")))
 
@@ -172,6 +185,13 @@
     (let [{:keys [tag content]} tree]
       (case tag
       :Query                       (produce-query content)
+
+      :UseBlock                    (produce-use-block content)
+      :UseRule                     (produce-use-rule content)
+      :UseRuleKey                  (join-chars ":" content)
+      :UseRuleValue                (join-chars "" content)
+
+      :QueryBlock                  (produce-query-block content)
       :QueryItem                   (produce-query-item content)
 
       :FromResource                (join-chars ":" content)
