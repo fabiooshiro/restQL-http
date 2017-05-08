@@ -2,30 +2,17 @@
 import React, { Component } from 'react';
 
 // Bootstrap
-import {
-    Navbar,
-    Button,
-    FormGroup
-} from 'react-bootstrap';
-
 import 'bootstrap/dist/css/bootstrap.css';
-
-// API Calls and processing
-import {
-  loadNamespaces,
-  loadRevision,
-  processResult
-} from '../../api/restQLAPI';
 
 // Redux actions
 import { connect } from 'react-redux';
-import { QUERY_ACTIONS } from '../../reducers/queryReducer';
 
 // Application Logic
 import { 
   // UI Operations
   handleNewQuery,
   handleShowModal,
+  handleToggleSidebar,
 
   
   // Listeners
@@ -36,6 +23,8 @@ import {
 
   // Business logic operations
   handleLoadNamespaces,
+  handleLoadQueries,
+  handleLoadQuery,
   handleRunQuery,
   handleSaveQuery,
   handleLoadRevisions,
@@ -48,6 +37,7 @@ import './QueryEditorScreen.css';
 import Logo from '../restQL-logo.svg';
 
 // Custom Components for this screen
+import QueryNavbar from './QueryNavbar';
 import QuerySidebar from './QuerySidebar';
 import QueryEditor from './QueryEditor';
 
@@ -58,36 +48,25 @@ class QueryEditorScreen extends Component {
     handleLoadNamespaces();
   }
 
-  toggleSidebar = () => {
-		this.props.dispatch({
-			type: QUERY_ACTIONS.TOGGLE_SIDEBAR,
-		})
-	}
-
 
   render() {
     return (
-      <QuerySidebar className="QueryEditorScreen">
-        <Navbar>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <object data={Logo} type="image/svg+xml">
-                <img src={Logo} alt="Logo" />
-              </object>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Navbar.Form pullRight>
-              <FormGroup controlId="formInlineName">
-                {/* TODO: Refactor the sidebar! */}
-                <Button onClick={this.toggleSidebar} bsStyle="default">Queries</Button>
-                <Button bsStyle="danger" onClick={handleNewQuery}>New Query</Button>
-              </FormGroup>
-            </Navbar.Form>
-          </Navbar.Collapse>
-        </Navbar>
-
+      <QuerySidebar className="QueryEditorScreen"
+                    loadingNamespaces={this.props.loadingNamespaces}
+                    loadingQueries={this.props.loadingQueries}
+                    showSidebar={this.props.showSidebar}
+                    namespaces={this.props.namespaces}
+                    namespace={this.props.namespace}
+                    collapsedNamespace={this.props.collapsedNamespace}
+                    queries={this.props.queries}
+                    
+                    toggleSidebar={handleToggleSidebar}
+                    loadQueries={handleLoadQueries}
+                    loadQuery={handleLoadQuery}>
+                    
+        <QueryNavbar logo={Logo}
+                     toggleSidebar={handleToggleSidebar}
+                     newQuery={handleNewQuery} />
         
         <div className="container">
             <QueryEditor
@@ -132,10 +111,16 @@ const mapStateToProps = (state, ownProps) => ({
     resultString: state.queryReducer.queryResult,
     running: state.queryReducer.running,
     queryName: state.queryReducer.queryName,
+    namespaces: state.queryReducer.namespaces,
     namespace: state.queryReducer.namespace,
+    loadingQueries: state.queryReducer.loadingQueries,
+    queries: state.queryReducer.queries,
+    collapsedNamespace: state.queryReducer.collapsedNamespace,
+    loadingNamespaces: state.queryReducer.loadingNamespaces,
     revisions: state.queryReducer.revisions,
     shouldLoadRevisions: state.queryReducer.shouldLoadRevisions,
     showModal: state.queryReducer.showModal,
+    showSidebar: state.queryReducer.showSidebar,
 });
 
 export default connect(mapStateToProps, null)(QueryEditorScreen);

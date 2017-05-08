@@ -9,8 +9,10 @@ import { QUERY_ACTIONS } from '../reducers/queryReducer';
 // API Calls and processing dependencies
 import {
   loadNamespaces,
+  loadQueries,
   loadRevisions,
   loadRevision,
+  loadRevisionByUrl,
   runQuery,
   saveQuery,
   processResult
@@ -32,6 +34,13 @@ export function handleShowModal () {
     type: QUERY_ACTIONS.TOGGLE_SAVE_MODAL,
   });
 }
+
+export function handleToggleSidebar() {
+  window.store.dispatch({
+    type: QUERY_ACTIONS.TOGGLE_SIDEBAR,
+  });
+}
+
 
 // Listeners
 export function handleNamespaceChange(evt) {
@@ -146,7 +155,7 @@ export function handleLoadNamespaces(){
       dispatch({type: QUERY_ACTIONS.NAMESPACES_LOADED, value: []});
       alert('Error loading namespaces: ' + result.error);
     }
-    else {processResult
+    else {
       dispatch({type: QUERY_ACTIONS.NAMESPACES_LOADED, value: result});
     }
   });
@@ -200,4 +209,62 @@ export function handleLoadQueryRevision(evt) {
       });
     }
   });
+}
+
+export function handleLoadQueries(namespace, evt) {
+  const store = window.store;
+  const dispatch = store.dispatch;
+  
+  dispatch({
+			type: QUERY_ACTIONS.QUERIES_LOADING,
+			value: namespace
+		});
+
+		loadQueries(namespace, (response)=>{
+
+			let result = processResult(response);
+
+			if(result.error !== undefined) {
+				dispatch({type: QUERY_ACTIONS.QUERIES_LOADED, value: []});
+				alert('Error loading queries: ' + result.error);
+			}
+			else {
+				dispatch({
+					type: QUERY_ACTIONS.QUERIES_LOADED,
+					value: result.queries
+				});
+			}
+
+		});
+}
+
+export function handleLoadQuery(query, evt) {
+  const store = window.store;
+  const dispatch = store.dispatch;
+  
+
+  dispatch({
+    type: QUERY_ACTIONS.QUERY_LOADING
+  });
+
+  loadRevisionByUrl(query['last-revision'], (response)=>{
+    if(response.error === null) {
+      dispatch({
+        type: QUERY_ACTIONS.QUERY_LOADED,
+        queryName: query.id,
+        value: response.body.text
+      });
+
+      dispatch({
+        type: QUERY_ACTIONS.LOAD_REVISIONS,
+      });
+    }
+    else {
+      dispatch({
+        type: QUERY_ACTIONS.QUERY_ERROR,
+        value: response.body.text
+      });
+    }
+    
+  })
 }

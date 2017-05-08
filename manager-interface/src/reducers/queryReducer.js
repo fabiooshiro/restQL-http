@@ -77,7 +77,7 @@ const queryReducer = (state = initialState, action) => {
             return {...state, showSidebar: !state.showSidebar};
 
         case QUERY_ACTIONS.NAMESPACES_LOADING:
-            return {...state, loadingNamespaces: true, namespaces: []}
+            return {...state, loadingNamespaces: true, loadingQueries: true, namespaces: []}
         case QUERY_ACTIONS.NAMESPACES_LOADED:
             return {...state, loadingNamespaces: false, namespaces: action.value}
         case QUERY_ACTIONS.QUERIES_LOADING:
