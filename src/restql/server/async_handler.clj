@@ -29,6 +29,21 @@
                                 :query      query
                                 :query-opts (plugin/get-query-opts-with-plugins query-opts)))
 
+(defn strip-nils [map]
+  (reduce-kv (fn [r k v]
+               (if (nil? v)
+                 r
+                 (assoc r k v))) {} map))
+
+(defn additional-headers [query]
+  (let [data (edn/read-string query)
+        metadata (meta data)
+        cache-control {"cache-control" (:cache-control metadata)}]
+    (strip-nils
+      (into {} cache-control))))
+
+(defn put-additional-headers [query headers]
+  (into headers (additional-headers query)))
 
 (defn handle-request [req result-ch error-ch]
   (try+
@@ -48,9 +63,10 @@
           timeout-ch ([] (warn {:session uid} "request handler timed out") (>! error-ch {:status 500 :body "Request timed out"}))
           exception-ch ([err] (>! error-ch (util/error-output err)) )
           query-ch ([result]
-            (let [output (->> result
-                              ;(select (flatten query))
-                              (assoc response :body))]
+            (let [output (-> response
+                             (assoc :body result)
+                             (update :headers (partial put-additional-headers query-entry)))]
+                  (assoc response :body result)
               (info {:session uid} " finishing request handler")
               (>! result-ch output))))))
     (catch [:type :validation-error] {:keys [message]}
@@ -86,7 +102,6 @@
                                         "restQL Query finished")
                                  (send! channel err)))))))
 
-
 (defn run-saved-query
   [req]
   (with-channel req channel
@@ -101,9 +116,9 @@
                              "restql-query-revision" rev} (:headers req))
           params (-> req :query-params keywordize-keys)
           query-entry (find-query query-ns id rev)
-          query-with-params (interpolate query-entry params) ; Interpolating parameters
-          query-with-headers (interpolate query-with-params headers) ; Interpolating headers
-          query (->> query-with-headers util/parse (util/merge-headers req-headers))
+          context (into (:headers req) (:query-params req) )
+          interpolated-query (util/parse query-entry context)
+          query (util/merge-headers req-headers interpolated-query)
           time-before (System/currentTimeMillis)
           [result-ch error-ch] (process-query query params)]
           (info "Query" id "rev" rev "retrieved")
@@ -113,7 +128,8 @@
                       (info {:time (- (System/currentTimeMillis) time-before )
                              :success true}
                             "restQL Query finished")
-                      (send! channel {:headers {"Content-Type" "application/json"}
+                      (send! channel {:headers (into {"Content-Type" "application/json"}
+                                                     (additional-headers interpolated-query))
                                       :body result}))
           error-ch ([err]
                      (error {:time (- (System/currentTimeMillis) time-before )
