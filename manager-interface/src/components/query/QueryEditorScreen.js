@@ -3,10 +3,6 @@ import React, { Component } from 'react';
 
 // Bootstrap
 import {
-    OverlayTrigger,
-    Tooltip,
-    Row,
-    Col,
     Navbar,
     Button,
     FormGroup
@@ -14,31 +10,10 @@ import {
 
 import 'bootstrap/dist/css/bootstrap.css';
 
-// Code editor
-import CodeMirror from 'react-codemirror';
-import 'codemirror/lib/codemirror.css';
-// Code Theme
-import 'codemirror/theme/eclipse.css';
-// Code language
-import 'codemirror/mode/javascript/javascript';
-// Code folders
-import 'codemirror/addon/fold/foldgutter.css';
-import 'codemirror/addon/fold/brace-fold';
-import 'codemirror/addon/fold/foldgutter';
-
-// Code Completion
-import 'codemirror/addon/hint/show-hint';
-import 'codemirror/addon/hint/show-hint.css';
-
-import '../../codemirror/restql';
-
 // API Calls and processing
 import {
   loadNamespaces,
-  loadRevisions,
   loadRevision,
-  runQuery,
-  saveQuery,
   processResult
 } from '../../api/restQLAPI';
 
@@ -46,164 +21,41 @@ import {
 import { connect } from 'react-redux';
 import { QUERY_ACTIONS } from '../../reducers/queryReducer';
 
+// Application Logic
+import { 
+  // UI Operations
+  handleNewQuery,
+  handleShowModal,
+
+  
+  // Listeners
+  handleParamsChange,
+  handleNamespaceChange,
+  handleQueryNameChange,
+  handleQueryStringChange,
+
+  // Business logic operations
+  handleLoadNamespaces,
+  handleRunQuery,
+  handleSaveQuery,
+  handleLoadRevisions,
+  handleLoadQueryRevision,
+
+} from '../../actions/queryActionCreator';
+
 // CSS for this screen and logo
 import './QueryEditorScreen.css';
 import Logo from '../restQL-logo.svg';
 
 // Custom Components for this screen
-import SaveModal from './SaveModal';
 import QuerySidebar from './QuerySidebar';
+import QueryEditor from './QueryEditor';
 
 class QueryEditorScreen extends Component {
   
   constructor(props) {
     super(props);
-    this.loadNamespaces();
-  }
-
-  newQuery = () => {
-		this.props.dispatch({
-			type: QUERY_ACTIONS.INITIAL_STATE
-		});
-
-		this.loadNamespaces();
-	}
-
-	loadNamespaces = () => {
-		this.props.dispatch({type: QUERY_ACTIONS.NAMESPACES_LOADING});
-
-		loadNamespaces((response)=>{
-			let result = processResult(response);
-
-			if(result.error !== undefined) {
-				this.props.dispatch({type: QUERY_ACTIONS.NAMESPACES_LOADED, value: []});
-				alert('Error loading namespaces: ' + result.error);
-			}
-			else {
-				this.props.dispatch({type: QUERY_ACTIONS.NAMESPACES_LOADED, value: result});
-			}
-		});
-	}
-
-  loadRevisions = () => {
-    this.props.dispatch({type: QUERY_ACTIONS.REVISIONS_LOADING});
-
-    loadRevisions(this.props.namespace, this.props.queryName, (response)=>{
-      let result = processResult(response);
-      
-      if(result.error !== undefined) {
-        this.props.dispatch({
-          type: QUERY_ACTIONS.REVISIONS_LOADED, value: []
-        });
-      }
-      else {
-        this.props.dispatch({
-          type: QUERY_ACTIONS.REVISIONS_LOADED,
-          value: result.revisions
-        });
-      }
-    });
-  }
-
-  loadQueryRevision = (rev) => {
-    this.props.dispatch({type: QUERY_ACTIONS.QUERY_LOADING});
-
-    loadRevision(this.props.namespace, this.props.queryName, rev, (response)=>{
-      if(response.error === null) {
-				this.props.dispatch({
-					type: QUERY_ACTIONS.QUERY_LOADED,
-					queryName: this.props.queryName,
-					value: response.body.text
-				});
-			}
-			else {
-				this.props.dispatch({
-					type: QUERY_ACTIONS.QUERY_ERROR,
-					value: response.body.text
-				});
-			}
-    });
-  }
-  
-  handleChange = (text) => {
-    this.props.dispatch({
-      type: QUERY_ACTIONS.READ_QUERY,
-      value: text
-    });
-  }
-
-  handleParamsChange = (evt) => {
-    this.props.dispatch({
-      type: QUERY_ACTIONS.READ_QUERY_PARAMS,
-      value: evt.target.value
-    });
-  }
-
-  handleRun = () => {
-    const {queryString, queryParams} = this.props;
-
-    this.props.dispatch({
-      type: QUERY_ACTIONS.RUNNING_QUERY
-    });
-
-    runQuery(queryString, queryParams, this.handleResult);
-  }
-
-  handleResult = (result) => {
-    let processed = processResult(result);
-    let processedString = JSON.stringify(processed, null, 2);
-
-    if(processed.error !== undefined) {
-      this.props.dispatch({
-        type: QUERY_ACTIONS.QUERY_ERROR,
-        value: processedString
-      });
-    }
-    else {
-      this.props.dispatch({
-        type: QUERY_ACTIONS.QUERY_SUCCESS,
-        value: processedString
-      });
-    }
-  }
-
-  showModal = () => {
-    this.props.dispatch({
-      type: QUERY_ACTIONS.TOGGLE_SAVE_MODAL,
-    });
-  }
-
-  handleSave = () => {
-    const query = this.props.queryString;
-    const { namespace, queryName } = this.props;
-
-    this.props.dispatch({
-      type: QUERY_ACTIONS.SAVING_QUERY
-    });
-
-    saveQuery(namespace, queryName, query, (result) => {
-      let processed = processResult(result);
-      let processedString = JSON.stringify(processed, null, 2);
-
-      if(result.error) {
-        this.props.dispatch({
-          type: QUERY_ACTIONS.QUERY_ERROR,
-          value: processedString
-        });
-      }
-      else {
-        this.props.dispatch({
-          type: QUERY_ACTIONS.QUERY_SAVED,
-          value: processedString
-        });
-
-        this.props.dispatch({
-					type: QUERY_ACTIONS.LOAD_REVISIONS,
-				});
-
-        this.loadNamespaces();
-      }
-    });
+    handleLoadNamespaces();
   }
 
   toggleSidebar = () => {
@@ -213,108 +65,7 @@ class QueryEditorScreen extends Component {
 	}
 
 
-  renderRevisionCombo = () => {
-    if(this.props.revisions.length > 0) {
-      let options = [];
-
-      for(let i=this.props.revisions.length; i>0; i--) {
-        options.push(
-          (<option key={i} onClick={()=> this.loadQueryRevision(i)}>{i}</option>)
-        )
-      }
-
-      return (
-        <select className="revisionPicker">
-          {options}
-        </select>
-      );
-    }
-  }
-
-  editorContent = () => {
-    
-    const baseOptions = {
-      lineNumbers: true,
-      tabSize: 2,
-      mode: 'restql',
-      theme: 'eclipse',
-      foldGutter: true,
-      gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter", "CodeMirror-brace-fold"]
-    }
-    
-    const editorOptions = {
-      ...baseOptions,
-      extraKeys: {
-        'Shift-Enter': this.handleRun,
-        'Ctrl-S': this.showModal,
-        'Cmd-S': this.showModal,
-        'Ctrl-Space': 'autocomplete',
-      },
-      readOnly: this.props.running
-    };
-    
-    const resultOptions = {
-      ...baseOptions,
-      mode: 'javascript',
-      readOnly: true,
-    };
-
-    const runTooltip = (
-      <Tooltip id="run-tooltip">
-        <strong>Shift+Enter</strong>
-      </Tooltip>
-    );
-
-    return (
-      <Row>
-        <Col sm={12} md={6} className="queryCol">
-          <div className="queryTitle">
-            <h3>
-              Query
-              {this.props.shouldLoadRevisions ? this.loadRevisions() : this.renderRevisionCombo() }
-            </h3>  
-          </div>
-          
-            
-          <CodeMirror className="queryInput"
-                  value={this.props.queryString}
-                  onChange={this.handleChange}
-                  options={editorOptions}/>  
-          
-          <div className="from-group">
-            <label>Parameters</label>
-            <input type="text"
-                    className="form-control"
-                    value={this.props.queryParams}
-                    placeholder="name=test&age=18"
-                    onChange={this.handleParamsChange} />
-          </div>
-
-          <div className="options">
-            <OverlayTrigger placement="bottom" overlay={runTooltip}>
-                <Button bsStyle="success"
-                        onClick={this.handleRun}>Run Query</Button>
-            </OverlayTrigger>
-
-            <SaveModal onSave={this.handleSave} tooltip="Ctrl+S" />
-
-          </div>
-          
-        </Col>
-
-        <Col sm={12} md={6}>
-          <h3>Result</h3>
-          <CodeMirror value={this.props.resultString}
-                  options={resultOptions}/>
-        </Col>
-      </Row>
-    );
-  }
-
   render() {
-    
-    const editor = this.editorContent();
-
     return (
       <QuerySidebar className="QueryEditorScreen">
         <Navbar>
@@ -329,8 +80,9 @@ class QueryEditorScreen extends Component {
           <Navbar.Collapse>
             <Navbar.Form pullRight>
               <FormGroup controlId="formInlineName">
+                {/* TODO: Refactor the sidebar! */}
                 <Button onClick={this.toggleSidebar} bsStyle="default">Queries</Button>
-                <Button bsStyle="danger" onClick={this.newQuery}>New Query</Button>
+                <Button bsStyle="danger" onClick={handleNewQuery}>New Query</Button>
               </FormGroup>
             </Navbar.Form>
           </Navbar.Collapse>
@@ -338,7 +90,35 @@ class QueryEditorScreen extends Component {
 
         
         <div className="container">
-            {editor}
+            <QueryEditor
+                // General props
+                revisions={this.props.revisions}
+                namespace={this.props.namespace}
+                queryName={this.props.queryName}
+                queryString={this.props.queryString}
+                queryParams={this.props.queryParams}
+                resultString={this.props.resultString}
+                running={this.props.running}
+                
+                // Modal options and listeners
+                showModal={this.props.showModal}
+                toggleModal={handleShowModal}
+                handleNamespaceChange={handleNamespaceChange}
+                handleQueryNameChange={handleQueryNameChange}
+
+                // RevisionCombo props
+                shouldLoadRevisions={this.props.shouldLoadRevisions}
+                loadRevisions={handleLoadRevisions}
+                handleLoadQueryRevision={handleLoadQueryRevision}
+
+                // Listeners to run query
+                onQueryStringChange={handleQueryStringChange}
+                onParamsChange={handleParamsChange} 
+
+                // Actions                
+                handleRun={handleRunQuery}
+                handleSaveQuery={handleSaveQuery}
+                handleRunQuery={handleRunQuery} />
         </div>
         
       </QuerySidebar>

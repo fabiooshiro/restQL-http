@@ -1,36 +1,18 @@
 import React, { Component } from 'react';
 import {Modal, Button, OverlayTrigger, Tooltip} from 'react-bootstrap';
 
-// Redux actions
-import { connect } from 'react-redux';
-import { QUERY_ACTIONS } from '../../reducers/queryReducer';
-
-class SaveModal extends Component {
+export default class SaveModal extends Component {
   
-  toggleModal = () => {
-    this.props.dispatch({
-      type: QUERY_ACTIONS.TOGGLE_SAVE_MODAL,
-    })
-  }
-
-	handleNamespaceChange = (evt) => {
-		this.props.dispatch({type: QUERY_ACTIONS.NAMESPACE_CHANGED, value: evt.target.value});
-	}
-
-	handleQueryNameChange = (evt) => {
-		this.props.dispatch({type: QUERY_ACTIONS.QUERY_NAME_CHANGED, value: evt.target.value});
-	}
-
 	handleSave = () => {
 		let callback = this.props.onSave;
 		callback();
 
-		this.toggleModal();
+		this.props.toggleModal();
 	}
 
 	render() {
 
-		const button = (<Button bsStyle="info" onClick={this.toggleModal} >Save Query</Button>);
+		const button = (<Button bsStyle="info" onClick={this.props.toggleModal} >Save Query</Button>);
 
 		const saveTooltip = (
 			<Tooltip id="save-tooltip">
@@ -49,7 +31,7 @@ class SaveModal extends Component {
 				
 				{buttonWithTooltip}
 
-				<Modal show={this.props.showModal} onHide={this.close}>
+				<Modal show={this.props.show} onHide={this.props.toggleModal}>
 					<Modal.Header>
 						<Modal.Title>Save Query</Modal.Title>
 					</Modal.Header>
@@ -59,7 +41,7 @@ class SaveModal extends Component {
 							<input type="text"
 										className="form-control"
 										value={this.props.namespace}
-										onChange={this.handleNamespaceChange} />
+										onChange={this.props.handleNamespaceChange} />
 						</div>
 
 						<div className="form-group">
@@ -67,13 +49,13 @@ class SaveModal extends Component {
 							<input type="text"
 										className="form-control"
 										value={this.props.queryName}
-										onChange={this.handleQueryNameChange} />
+										onChange={this.props.handleQueryNameChange} />
 						</div>
 					</Modal.Body>
 
 					<Modal.Footer>
 						<Button bsStyle="success" onClick={this.handleSave}>Save</Button>
-						<Button onClick={this.toggleModal}>Close</Button>
+						<Button onClick={this.props.toggleModal}>Close</Button>
 					</Modal.Footer>
 				</Modal>
 			</span>
@@ -81,11 +63,3 @@ class SaveModal extends Component {
 	}
 
 }
-
-const mapStateToProps = (state, ownProps) => ({
-    showModal: state.queryReducer.showModal,
-	queryName: state.queryReducer.queryName,
-    namespace: state.queryReducer.namespace,
-});
-
-export default connect(mapStateToProps, null)(SaveModal);
