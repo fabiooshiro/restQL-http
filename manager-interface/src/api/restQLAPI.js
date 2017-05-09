@@ -1,6 +1,27 @@
 // This makes requests to restQL manager API
 const request = require('superagent');
 
+
+// Processing URL Query Params (Browser) for dev
+function getRuntimeTarget() {
+    var url = require('url');
+    var url_parts = url.parse(window.location.href, true);
+    var url_query = url_parts.query;
+
+    if(url_query.targetRuntime) {
+        const targetRuntime = (
+            url_query.targetRuntime.indexOf('http://') === -1 ?
+            'http://' + url_query.targetRuntime :
+            url_query.targetRuntime
+        );
+
+        return targetRuntime;
+    }
+
+    return '';
+}
+
+
 // Processing request
 export function processResult(response) {
     if(response.error !== null) {
@@ -22,7 +43,7 @@ export function processResult(response) {
 
 // Running Queries
 export function runQuery(queryString, queryParams='', callback) {
-    const runQueryUrl = '/run-query?' + queryParams;
+    const runQueryUrl = getRuntimeTarget() + '/run-query?' + queryParams;
 
     request
         .post(runQueryUrl)
@@ -39,7 +60,7 @@ export function runQuery(queryString, queryParams='', callback) {
 
 // Saving a query
 export function saveQuery(namespace, queryName, queryString, callback) {
-    const saveQueryUrl = '/ns/' + namespace + '/query/' + queryName;
+    const saveQueryUrl = getRuntimeTarget() + '/ns/' + namespace + '/query/' + queryName;
     
     request
         .post(saveQueryUrl)
@@ -56,7 +77,7 @@ export function saveQuery(namespace, queryName, queryString, callback) {
 
 // Loading namespaces
 export function loadNamespaces(callback) {
-    const loadNamespacesUrl = '/namespaces';
+    const loadNamespacesUrl = getRuntimeTarget() + '/namespaces';
     
     request
         .get(loadNamespacesUrl)
@@ -74,7 +95,7 @@ export function loadNamespaces(callback) {
 
 // Loading Queries
 export function loadQueries(namespace, callback) {
-    const loadQueriesUrl = '/ns/' + namespace;
+    const loadQueriesUrl = getRuntimeTarget() + '/ns/' + namespace;
     
     request
         .get(loadQueriesUrl)
@@ -92,7 +113,7 @@ export function loadQueries(namespace, callback) {
 // Loading all query revisions
 export function loadRevisions(namespace, query, callback) {
     
-    const revisionsUrl = '/ns/' + namespace + '/query/' + query;
+    const revisionsUrl = getRuntimeTarget() + '/ns/' + namespace + '/query/' + query;
 
     request
         .get(revisionsUrl)
@@ -112,7 +133,7 @@ export function loadRevisions(namespace, query, callback) {
 export function loadRevisionByUrl(revisionUrl, callback) {
     
     request
-        .get(''+revisionUrl)
+        .get(getRuntimeTarget()+revisionUrl)
         .set('Content-Type', 'text/plain')
         .set('Accept', 'application/json')
         .send()
@@ -127,7 +148,8 @@ export function loadRevisionByUrl(revisionUrl, callback) {
 // Loading a query revision
 export function loadRevision(namespace, queryName, revision, callback) {
     
-    const revisionUrl = '/ns/' + namespace
+    const revisionUrl = getRuntimeTarget()
+                        + '/ns/' + namespace
                         + '/query/' + queryName
                         + '/revision/' + revision;
 

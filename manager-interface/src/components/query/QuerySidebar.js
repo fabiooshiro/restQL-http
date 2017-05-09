@@ -1,17 +1,9 @@
 import React, { Component } from 'react';
 
 import Sidebar from 'react-sidebar';
-import { Collapse } from 'react-bootstrap';
-
-// Redux actions
-import { connect } from 'react-redux';
-import { QUERY_ACTIONS } from '../../reducers/queryReducer';
 
 import Logo from '../restQL-logo.svg';
-
-// API Calls and processing
-import { loadQueries, loadRevisionByUrl, processResult } from '../../api/restQLAPI';
-
+import SidebarQueries from './SidebarQueries';
 
 const styles = {
   overlay: {
@@ -55,68 +47,11 @@ const styles = {
 };
 
 
-class QuerySidebar extends Component {
+export default class QuerySidebar extends Component {
 
 	constructor(props) {
 		super(props);
 		this.index = 0;
-	}
-
-	toggleSidebar = () => {
-		this.props.dispatch({
-			type: QUERY_ACTIONS.TOGGLE_SIDEBAR,
-		});
-	}
-
-	loadQueries = (namespace) => {
-		this.props.dispatch({
-			type: QUERY_ACTIONS.QUERIES_LOADING,
-			value: namespace
-		});
-
-		loadQueries(namespace, (response)=>{
-
-			let result = processResult(response);
-
-			if(result.error !== undefined) {
-				this.props.dispatch({type: QUERY_ACTIONS.QUERIES_LOADED, value: []});
-				alert('Error loading queries: ' + result.error);
-			}
-			else {
-				this.props.dispatch({
-					type: QUERY_ACTIONS.QUERIES_LOADED,
-					value: result.queries
-				});
-			}
-
-		});
-	}
-
-	loadQuery = (queryName, queryUrl) => {
-		this.props.dispatch({
-			type: QUERY_ACTIONS.QUERY_LOADING
-		});
-
-		loadRevisionByUrl(queryUrl, (response)=>{
-			if(response.error === null) {
-				this.props.dispatch({
-					type: QUERY_ACTIONS.QUERY_LOADED,
-					queryName: queryName,
-					value: response.body.text
-				});
-
-				this.props.dispatch({
-					type: QUERY_ACTIONS.LOAD_REVISIONS,
-				});
-			}
-			else {
-				this.props.dispatch({
-					type: QUERY_ACTIONS.QUERY_ERROR,
-					value: response.body.text
-				});
-			}
-			
-		})
 	}
 
 	renderNamespaces = () => {
@@ -125,17 +60,12 @@ class QuerySidebar extends Component {
 				if(val._id !== null && val._id.trim() !== '')
 					return (
 						<li key={index}>
-							<a onClick={() => this.loadQueries(val._id)}>{val._id}</a>
-							<ul className="queries">
-								<Collapse in={!this.props.loadingQueries}>
-									<div>
-									{
-										this.props.namespace === val._id  ? 
-										this.renderQueries() : ''
-									}
-									</div>
-								</Collapse>
-							</ul>
+							<a onClick={this.props.loadQueries.bind(this, val._id)}>{val._id}</a>
+							<SidebarQueries loadingQueries={this.props.loadingQueries}
+											queries={this.props.queries}
+											namespace={val._id}
+											collapsedNamespace={this.props.namespace}
+											loadQuery={this.props.loadQuery} />
 						</li>
 					);
 				else
@@ -155,21 +85,6 @@ class QuerySidebar extends Component {
 		}
 	}
 	
-	renderQueries = () => {
-		if(!this.props.loadingQueries && Array.isArray(this.props.queries)) {
-			return this.props.queries.map((val, index) => {
-				return (
-					<li key={index}>
-						<a onClick={() => this.loadQuery(val.id, val['last-revision'])}>{val.id}</a>
-					</li>
-				);
-			});
-		}
-		else {
-			return '';
-		}
-	}
-
 	render() {
 		const sidebarContent = (
 			<div>
@@ -187,7 +102,7 @@ class QuerySidebar extends Component {
 			<Sidebar styles={styles}
 					 sidebar={sidebarContent}
                		 open={this.props.showSidebar}
-               		 onSetOpen={this.toggleSidebar}>
+               		 onSetOpen={this.props.toggleSidebar}>
 			
 				{this.props.children}
 			</Sidebar>
@@ -195,15 +110,3 @@ class QuerySidebar extends Component {
 	}
 
 }
-
-const mapStateToProps = (state, ownProps) => ({
-    loadingNamespaces: state.queryReducer.loadingNamespaces,
-	loadingQueries: state.queryReducer.loadingQueries,
-	
-	showSidebar: state.queryReducer.showSidebar,
-	namespaces: state.queryReducer.namespaces,
-	namespace: state.queryReducer.namespace,
-	queries: state.queryReducer.queries,
-});
-
-export default connect(mapStateToProps, null)(QuerySidebar);

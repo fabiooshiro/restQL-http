@@ -8,12 +8,9 @@
     "prop-types": "^15.5.8",
     "react": "^15.5.4",
     "react-bootstrap": "^0.30.8",
-    "react-burger-menu": "^1.12.0",
     "react-codemirror": "^0.3.0",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.3",
-    "react-router": "^3.0.3",
-    "react-router-redux": "^4.0.8",
     "react-sidebar": "^2.3.2",
     "redux": "^3.6.0",
     "superagent": "^3.5.2"
