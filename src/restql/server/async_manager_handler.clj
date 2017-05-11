@@ -1,5 +1,6 @@
 (ns restql.server.async-manager-handler
   (:require [compojure.core :as c]
+            [clojure.walk :refer [keywordize-keys]]
             [restql.core.log :refer [info warn error]]
             [restql.server.logger :refer [log generate-uuid!]]
             [restql.server.request-util :as util]
@@ -70,9 +71,16 @@
   (let [id (-> req :params :id)
         query-ns (-> req :params :namespace)
         query (util/extract-body req)
+
+        ; Retrieving tenant (env is always prioritized)
+        tenant (some-> req
+                       :query-params
+                       keywordize-keys
+                       :tenant)
+
         metadata {} ] ;(-> query edn/read-string meta) ]
     {:status 201
-     :headers {"Location" (->> (dbcore/save-query query-ns id query)
+     :headers {"Location" (->> (dbcore/save-query query-ns id query (runner/find-mappings tenant))
                                :size
                                (util/make-revision-link query-ns id))}
      :body {

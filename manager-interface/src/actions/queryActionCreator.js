@@ -104,6 +104,7 @@ export function handleSaveQuery(){
 
   const dispatch = store.dispatch;
   const { namespace, queryName, query } = store.getState().queryReducer;
+  const { tenant } = store.getState().environmentReducer;
 
   dispatch({
     type: QUERY_ACTIONS.SAVING_QUERY
@@ -118,7 +119,7 @@ export function handleSaveQuery(){
     });
   }
 
-  saveQuery(namespace, queryName, query, (result) => {
+  saveQuery(tenant, namespace, queryName, query, (result) => {
     let processed = processResult(result);
     let processedString = JSON.stringify(processed, null, 2);
 

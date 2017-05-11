@@ -78,8 +78,11 @@ export function runQuery(queryString, queryParams='', tenant=null, callback) {
 }
 
 // Saving a query
-export function saveQuery(namespace, queryName, queryString, callback) {
-    const saveQueryUrl = getRuntimeTarget() + '/ns/' + namespace + '/query/' + queryName;
+export function saveQuery(tenant, namespace, queryName, queryString, callback) {
+    const saveQueryUrl = getRuntimeTarget()
+                         + '/ns/' + namespace
+                         + '/query/' + queryName
+                         + (tenant ? '?tenant=' + tenant : '');
     
     request
         .post(saveQueryUrl)
