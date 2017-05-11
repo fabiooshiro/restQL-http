@@ -74,12 +74,13 @@ export function handleRunQuery() {
 
     const dispatch = store.dispatch;
     const {query, queryParams} = store.getState().queryReducer;
+    const {tenant} = store.getState().environmentReducer;
 
     dispatch({
       type: QUERY_ACTIONS.RUNNING_QUERY
     });
 
-    runQuery(query, queryParams, (result)=>{
+    runQuery(query, queryParams, tenant, (result)=>{
         let processed = processResult(result);
         let processedString = JSON.stringify(processed, null, 2);
 

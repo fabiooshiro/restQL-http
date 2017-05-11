@@ -32,6 +32,8 @@ import {
 
 } from '../../actions/queryActionCreator';
 
+import { handleLoadTenants, handleSetTenant } from '../../actions/environmentActionCreator';
+
 // CSS for this screen and logo
 import './QueryEditorScreen.css';
 import Logo from '../restQL-logo.svg';
@@ -46,6 +48,7 @@ class QueryEditorScreen extends Component {
   constructor(props) {
     super(props);
     handleLoadNamespaces();
+    handleLoadTenants();
   }
 
 
@@ -78,6 +81,11 @@ class QueryEditorScreen extends Component {
                 queryParams={this.props.queryParams}
                 resultString={this.props.resultString}
                 running={this.props.running}
+
+                // Env props
+                tenant={this.props.tenant}
+                tenants={this.props.tenants}
+                handleSetTenant={handleSetTenant}
                 
                 // Modal options and listeners
                 showModal={this.props.showModal}
@@ -121,6 +129,10 @@ const mapStateToProps = (state, ownProps) => ({
     shouldLoadRevisions: state.queryReducer.shouldLoadRevisions,
     showModal: state.queryReducer.showModal,
     showSidebar: state.queryReducer.showSidebar,
+
+    // Env configurations
+    tenants: state.environmentReducer.tenants,
+    tenant: state.environmentReducer.tenant,
 });
 
 export default connect(mapStateToProps, null)(QueryEditorScreen);

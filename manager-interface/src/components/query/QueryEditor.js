@@ -30,6 +30,7 @@ import '../../codemirror/restql';
 // Module Components
 import SaveModal from './SaveModal';
 import RevisionCombo from './RevisionCombo';
+import TenantCombo from './TenantCombo';
 
 
 export default class QueryEditor extends Component {
@@ -84,20 +85,31 @@ export default class QueryEditor extends Component {
                   </h3>
               </div>
 
-
               <CodeMirror className="queryInput"
                           value={this.props.queryString}
                           onChange={this.props.onQueryStringChange}
                           options={editorOptions}/>
 
-              <div className="from-group">
-                  <label>Parameters</label>
-                  <input type="text"
-                         className="form-control"
-                         value={this.props.queryParams}
-                         placeholder="name=test&age=18"
-                         onChange={this.props.onParamsChange} />
-              </div>
+              <Row>
+                <Col sm={12} md={9}>
+                  <div className="from-group">
+                      <label>Parameters</label>
+                      <input type="text"
+                            className="form-control"
+                            value={this.props.queryParams}
+                            placeholder="name=test&age=18"
+                            onChange={this.props.onParamsChange} />
+                  </div>
+                </Col>
+
+                <Col sm={12} md={3}>
+                  <TenantCombo className="from-group" 
+                              tenants={this.props.tenants}
+                              handleSetTenant={this.props.handleSetTenant} />
+                      
+                </Col>
+              </Row>
+              
 
               <div className="options">
                   <OverlayTrigger placement="bottom" overlay={runTooltip}>

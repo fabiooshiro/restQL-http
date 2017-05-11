@@ -41,9 +41,28 @@ export function processResult(response) {
 }
 
 
+// Tenant operations
+export function loadTenants(callback){
+    const loadTenantsUrl = getRuntimeTarget() + '/tenants';
+
+    request
+        .get(loadTenantsUrl)
+        .set('Content-Type', 'text/plain')
+        .set('Accept', 'application/json')
+        .end((err,body)=>{
+            return callback({
+                error: err,
+                body: (body.body !== undefined ? body.body : body)
+            });
+        });
+}
+
+
 // Running Queries
-export function runQuery(queryString, queryParams='', callback) {
-    const runQueryUrl = getRuntimeTarget() + '/run-query?' + queryParams;
+export function runQuery(queryString, queryParams='', tenant=null, callback) {
+    const runQueryUrl = getRuntimeTarget() + '/run-query?'
+                        + queryParams
+                        + (tenant ? '&tenant='+tenant: '');
 
     request
         .post(runQueryUrl)
