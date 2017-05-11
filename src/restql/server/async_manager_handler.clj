@@ -17,13 +17,17 @@
             [ring.middleware.file :refer [wrap-file]]
             [slingshot.slingshot :refer [try+]]))
 
+(def mapped-tenants (cache/cached (fn [] (dbcore/find-tenants {}))))
 
-(defn list-mapped-resources []
+
+(defn list-mapped-tenants []
   {:status 200
-   :body {:resources (filter
-                       (fn [key]
-                         (util/valid-url? (env key)))
-                       (keys env))}})
+   :body {:tenants (mapped-tenants)}})
+
+(defn list-mapped-resources [req]
+  (let [tenant (some-> req :params :tenant)]
+    {:status 200
+     :body {:resources (runner/find-mappings tenant)}}))
 
 (defn list-namespaces []
   {:status 200 :body (dbcore/list-namespaces {})})
@@ -82,7 +86,8 @@
   (c/GET "/resource-status" [] "OK")
 
   ; Route to check mapped resources
-  (c/GET "/resources" [] (list-mapped-resources))
+  (c/GET "/tenants" [] (list-mapped-tenants))
+  (c/GET "/resources/:tenant" req (list-mapped-resources req))
 
   ; Route to validate a query
   (c/POST "/validate-query" req (util/validate-request req))

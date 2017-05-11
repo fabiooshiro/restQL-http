@@ -23,8 +23,15 @@
 (def find-query (cache/cached (fn [query-ns id rev]
                                  (-> (dbcore/find-query-by-id-and-revision query-ns id rev) :text))))
 
-(defn process-query [query query-opts]
-  (restql/execute-query-channel :mappings env
+(def find-mappings (cache/cached (fn [id] (cond
+                                            (nil? id) (util/filter-valid-urls env)
+                                            :else (-> (dbcore/find-tenant-by-id id)
+                                                     :mappings
+                                                     (into env)
+                                                     util/filter-valid-urls)))))
+
+(defn process-query [query query-opts tenant]
+  (restql/execute-query-channel :mappings (find-mappings tenant)
                                 :encoders   {}
                                 :query      query
                                 :query-opts (plugin/get-query-opts-with-plugins query-opts)))
@@ -52,10 +59,15 @@
           response {:headers headers}
           req-headers (into {"restql-query-control" "ad-hoc"} (:headers req))
           params (-> req :query-params keywordize-keys)
+
+          ; Retrieving tenant (env is always prioritized)
+          env-tenant (some-> env :tenant)
+          tenant (if (nil? env-tenant) (some-> params :tenant) env-tenant)
+
           query-entry (util/parse-req req)
           query (->> query-entry (util/merge-headers req-headers))
           debugging (-> req :query-params (get "_debug") boolean)
-          [query-ch exception-ch] (process-query query {:debugging debugging})
+          [query-ch exception-ch] (process-query query {:debugging debugging} tenant)
           timeout-ch (timeout 10000)]
       (info {:session uid} "starting request handler")
       (go
@@ -115,6 +127,11 @@
                              "restql-query-id" id
                              "restql-query-revision" rev} (:headers req))
           params (-> req :query-params keywordize-keys)
+
+          ; Retrieving tenant (env is always prioritized)
+          env-tenant (some-> env :tenant)
+          tenant (if (nil? env-tenant) (some-> params :tenant) env-tenant)
+
           query-entry (find-query query-ns id rev)
           context (into (:headers req) (:query-params req) )
           interpolated-query (util/parse query-entry context)

@@ -22,7 +22,7 @@
 (defn add-headers-to-object [headers query-obj]
   (if (nil? (query-obj :with-headers))
     (into query-obj {:with-headers (into {} (filter header-allowed? headers))})
-    (into query-obj {:with-headers (into (query-obj :with-headers) (into {} (filter header-allowed? headers)))} )))
+    (into query-obj {:with-headers (into (query-obj :with-headers) (into {} (filter header-allowed? headers)))})))
 
 (defn merge-headers [headers query]
   (let [query-vec (edn/read-string query)
@@ -30,7 +30,7 @@
     (->>
       (reduce-kv (fn [m k v]
                    (into [k (add-headers-to-object headers v)] m)) [] query-edn)
-      str )))
+      str)))
 
 (defn parse [text context]
   (parser/parse-query (str text "\n") :pretty true :context context))
@@ -79,6 +79,13 @@
 (defn valid-url? [url-str]
   (let [validator (UrlValidator.)]
     (.isValid validator url-str)))
+
+(defn filter-valid-urls [mp]
+  (reduce-kv
+    (fn [m k v]
+      (if (valid-url? v) (into m {k v}) m))
+    {}
+    (into {} mp)))
 
 (defn make-revision-link [query-ns id rev]
   (str "/run-query/" query-ns "/" id "/" rev))

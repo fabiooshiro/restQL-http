@@ -13,6 +13,10 @@
 (def list-namespaces db/list-namespaces)
 (def find-all-queries-by-namespace db/find-all-queries-by-namespace)
 
+;re-exporting tenant methods
+(def find-tenants db/find-tenants)
+(def find-tenant-by-id db/find-tenant-by-id)
+
 (defn save-query [query-ns id query]
   (let [parsed-query (-> query (util/parse {}) edn/read-string)]
     (if (validator/validate {:mappings env} parsed-query)

@@ -26,6 +26,13 @@
        (check-conn!)
        ~@body))))
 
+(defquery find-tenant-by-id [id :with db]
+          (mc/find-one-as-map db "tenant" {:_id id}))
+
+(defquery find-tenants [{} :with db]
+          (->> (mc/find-maps db "tenant" {}) (map :_id)))
+
+
 (defquery list-namespaces [{} :with db]
   (let [namespaces (mc/aggregate db "query" [{$group {:_id "$namespace"}}])]
     namespaces))
