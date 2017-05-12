@@ -39,8 +39,11 @@
         with-rule    (->> query-clauses (find-first :WithRule) produce)
         only-rule    (->> query-clauses (find-first :OnlyRule) produce)
         hide-rule    (->> query-clauses (find-first :HideRule) produce)
+        flags-rule   (->> query-clauses (find-first :FlagsRule) produce)
         ]
-    (str alias " {:from " resource header-rule timeout-rule with-rule only-rule hide-rule "}")))
+    (str alias
+         flags-rule
+         " {:from " resource header-rule timeout-rule with-rule only-rule hide-rule "}")))
 
 
 (defn produce-from-rule [from-rule-items]
@@ -179,6 +182,16 @@
       (first produced-args)
       (str "[" (join " " produced-args) "]"))))
 
+(defn produce-flags-rule [content]
+  (let [flags (map produce content)]
+    (str " ^{" (join " " flags) "}")))
+
+(defn produce-flag-rule [content]
+  (-> content first produce))
+
+(defn produce-ignore-error-flag []
+  ":ignore-errors \"ignore\"")
+
 
 (defn produce [tree]
   (if (nil? tree) ""
@@ -239,5 +252,9 @@
       :OnlyRuleItemModifierName    (join-chars "" content)
       :OnlyRuleItemModifierArgList (produce-only-rule-item-modifier-arg-list content)
       :OnlyRuleItemModifierArg     (join-chars "" content)
+
+      :FlagsRule                   (produce-flags-rule content)
+      :FlagRule                    (produce-flag-rule content)
+      :IgnoreErrorsFlag            (produce-ignore-error-flag)
 
       (str "<UNKNOWN RULE>" (pr-str {:tag tag :content content}))))))

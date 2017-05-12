@@ -22,6 +22,7 @@
 
 (defn handle-produce [tree context]
   (binding [*restql-variables* (if (nil? context) {} context)]
+    (println (produce tree))
     (produce tree)))
 
 (defn parse-query [query-text & {:keys [pretty context]}]
@@ -29,3 +30,4 @@
     (if (insta/failure? result)
       (handle-error result)
       (handle-success (handle-produce result context) :pretty pretty))))
+

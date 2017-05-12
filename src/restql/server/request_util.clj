@@ -25,12 +25,13 @@
     (into query-obj {:with-headers (into (query-obj :with-headers) (into {} (filter header-allowed? headers)))})))
 
 (defn merge-headers [headers query]
-  (let [query-vec (edn/read-string query)
-        query-edn (apply hash-map query-vec)]
-    (->>
-      (reduce-kv (fn [m k v]
-                   (into [k (add-headers-to-object headers v)] m)) [] query-edn)
-      str)))
+  (let [data (->> query edn/read-string (partition 2))
+        binds (map first data)
+        items (map second data)
+        items-with-headers (map (partial add-headers-to-object headers) items)
+        data-with-headers (flatten (map vector binds items-with-headers)) ]
+    (binding [*print-meta* true]
+      (pr-str (into [] data-with-headers)))))
 
 (defn parse [text context]
   (parser/parse-query (str text "\n") :pretty true :context context))

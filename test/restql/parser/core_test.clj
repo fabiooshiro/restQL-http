@@ -4,7 +4,6 @@
 
 (deftest testing-edn-string-production
 
-
   (testing "Testing simple query"
     (is (= (read-string (parse-query "from heroes as hero"))
            [:hero {:from :heroes}])))
@@ -17,6 +16,10 @@
     (is (= (parse-query "use cache-control = 900
                                       from heroes as hero")
            "^{:cache-control 900} [:hero {:from :heroes}]")))
+
+  (testing "Testing simple query with ignore errors"
+    (is (= (parse-query "from heroes as hero ignore-errors")
+           "[:hero ^{:ignore-errors \"ignore\"} {:from :heroes}]")))
 
   (testing "Testing multiple query"
     (is (= (read-string (parse-query "from heroes as hero

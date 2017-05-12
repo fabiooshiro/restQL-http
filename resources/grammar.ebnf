@@ -17,7 +17,7 @@ QueryBlock =
   QueryItem (WS LS WS QueryItem)*;
 
 QueryItem =
-  WS FromRule WS (HeaderRule WS)? (TimeoutRule WS)? (WithRule WS)? ( (OnlyRule | HideRule) WS)?;
+  WS FromRule WS (HeaderRule WS)? (TimeoutRule WS)? (WithRule WS)? ( (OnlyRule | HideRule) WS)? (FlagsRule WS)?;
 
 
 <FromRule> =
@@ -146,6 +146,14 @@ OnlyRuleItemModifierArg =
 HideRule =
   KW_HIDE;
 
+FlagsRule =
+  FlagRule (WS LS WS FlagRule)*
+
+FlagRule =
+  IgnoreErrorsFlag
+
+IgnoreErrorsFlag =
+  KW_IGNORE_ERRORS
 
 <KW_USE> =
   <"use">;
@@ -170,6 +178,9 @@ HideRule =
 
 <KW_HIDE> =
   <"hidden">;
+
+<KW_IGNORE_ERRORS> =
+  <"ignore-errors">
 
 <EQUALS_SIGN> =
   <"=">;
