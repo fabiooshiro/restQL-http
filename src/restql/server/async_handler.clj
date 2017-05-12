@@ -56,7 +56,6 @@
   (try+
     (let [uid (generate-uuid!)
           headers {"Content-Type" "application/json"}
-          response {:headers headers}
           req-headers (into {"restql-query-control" "ad-hoc"} (:headers req))
           params (-> req :query-params keywordize-keys)
 
@@ -75,12 +74,10 @@
           timeout-ch ([] (warn {:session uid} "request handler timed out") (>! error-ch {:status 500 :body "Request timed out"}))
           exception-ch ([err] (>! error-ch (util/error-output err)) )
           query-ch ([result]
-            (let [output (-> response
-                             (assoc :body result)
-                             (update :headers (partial put-additional-headers query-entry)))]
-                  (assoc response :body result)
-              (info {:session uid} " finishing request handler")
-              (>! result-ch output))))))
+            (info {:session uid} " finishing request handler")
+            (>! result-ch {:body result
+                           :headers (put-additional-headers query-entry headers)
+                           :status (util/calculate-response-status-code result)})))))
     (catch [:type :validation-error] {:keys [message]}
       (go (>! error-ch (util/json-output 400 {:error "VALIDATION_ERROR" :message message}))))
     (catch [:type :parse-error] {:keys [line column]}

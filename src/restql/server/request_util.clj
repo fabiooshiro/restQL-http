@@ -106,3 +106,43 @@
         (json-output 200 "valid")))
     (catch [:type :validation-error] {:keys [message]}
       (json-output 400 message))))
+
+(defn should-ignore-errors [item]
+  (-> item
+      :metadata
+      :ignore-errors
+      (= "ignore")))
+
+(defn higher-value [a b]
+  (cond
+    (nil? a) b
+    (nil? b) a
+    (> a b) a
+    :else b))
+
+(defn calculate-response-status-code [result]
+  (let [statuses (as-> result x
+                 (json/read-str x :key-fn keyword)
+                 (vals x)
+                 (flatten x)
+                 (filter should-ignore-errors x)
+                 (map (comp :status :details) x))]
+    (reduce higher-value 200 statuses)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
