@@ -69,7 +69,7 @@
 
 (defn produce-timeout-rule [content]
   (let [value (->> content (find-first :TimeoutRuleValue) produce)]
-    (str ":timeout " value)))
+    (str " :timeout " value)))
 
 (defn produce-with-rule [with-rule-items]
   (let [produced-items (map produce with-rule-items)]

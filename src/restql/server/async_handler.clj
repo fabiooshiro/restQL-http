@@ -137,7 +137,7 @@
           interpolated-query (util/parse query-entry context)
           query (util/merge-headers req-headers interpolated-query)
           time-before (System/currentTimeMillis)
-          [result-ch error-ch] (process-query query params)]
+          [result-ch error-ch] (process-query query params tenant)]
           (info "Query" id "rev" rev "retrieved")
       (go
         (alt!
