@@ -24,6 +24,8 @@ function getRuntimeTarget() {
 
 // Processing request
 export function processResult(response) {
+    return JSON.parse(response.body.text);
+    /*
     if(response.error !== null) {
         return { error: response.error.message };
     }
@@ -38,6 +40,7 @@ export function processResult(response) {
     else {
         return { error: 'Something got really wrong!'};
     }
+    */
 }
 
 

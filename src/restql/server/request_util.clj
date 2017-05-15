@@ -108,7 +108,9 @@
       (json-output 400 message))))
 
 (defn should-ignore-errors [item]
+  (println "\n\nshould-ignore-errors\n\n" (-> item :details :metadata (= "ignore")))
   (-> item
+      :details
       :metadata
       :ignore-errors
       (= "ignore")))
@@ -125,24 +127,28 @@
                  (json/read-str x :key-fn keyword)
                  (vals x)
                  (flatten x)
-                 (filter should-ignore-errors x)
+                 (filter (complement should-ignore-errors) x)
                  (map (comp :status :details) x))]
     (reduce higher-value 200 statuses)))
 
+(defn map-values [f m]
+  (reduce-kv (fn [r k v] (assoc r k (f v)) ) {} m))
 
+(defn format-response-details [details]
+  (dissoc details :headers))
 
+(defn format-response-value [item]
+  (let [details (-> item :details format-response-details)]
+    (assoc item
+           :details details)))
 
+(defn format-response-item [item]
+  (cond
+    (sequential? item) (map format-response-value item)
+    :else (format-response-value item)))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+(defn format-response-body [result]
+  (as-> result x
+    (json/read-str x :key-fn keyword)
+    (map-values format-response-item x)
+    (json/write-str x)))

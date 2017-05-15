@@ -75,7 +75,7 @@
           exception-ch ([err] (>! error-ch (util/error-output err)) )
           query-ch ([result]
             (info {:session uid} " finishing request handler")
-            (>! result-ch {:body result
+            (>! result-ch {:body (util/format-response-body result)
                            :headers (put-additional-headers query-entry headers)
                            :status (util/calculate-response-status-code result)})))))
     (catch [:type :validation-error] {:keys [message]}
@@ -144,7 +144,8 @@
                             "restQL Query finished")
                       (send! channel {:headers (into {"Content-Type" "application/json"}
                                                      (additional-headers interpolated-query))
-                                      :body result}))
+                                      :status (util/calculate-response-status-code result)
+                                      :body (util/format-response-body result)}))
           error-ch ([err]
                      (error {:time (- (System/currentTimeMillis) time-before )
                              :success false}
