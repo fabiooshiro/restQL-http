@@ -1,6 +1,8 @@
 restQL is a microservice query language that makes easy to fetch information from multiple services in the most efficient manner.
 
-Example:
+There is no need of any implementation server side, just configure the service endpoints, run restQL server and start querying.
+
+Query example:
 
 ```restql
 from hero as protagonist
