@@ -20,3 +20,7 @@ tags
 newrelic.yml
 dist/
 restql-*.zip
+.classpath
+.project
+.settings/
+
