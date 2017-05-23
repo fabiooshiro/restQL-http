@@ -21,7 +21,7 @@ QueryItem =
 
 
 <FromRule> =
-  KW_FROM WS FromResource (WS KW_AS WS ResultAlias)?;
+  KW_FROM WS FromResource (WS_MAND KW_AS WS_MAND ResultAlias)?;
 
 FromResource =
   Identifier;
@@ -31,14 +31,14 @@ ResultAlias =
 
 
 TimeoutRule =
-  KW_TIMEOUT WS TimeoutRuleValue;
+  WS_MAND KW_TIMEOUT WS_MAND TimeoutRuleValue;
 
 TimeoutRuleValue =
   Integer;
 
 
 HeaderRule =
-  KW_HEADERS WS HeaderRuleItem (WS LS WS HeaderRuleItem)*;
+  WS_MAND KW_HEADERS WS_MAND HeaderRuleItem (WS LS WS HeaderRuleItem)*;
 
 HeaderRuleItem =
   HeaderName WS EQUALS_SIGN WS HeaderValue;
@@ -53,7 +53,7 @@ LiteralHeaderValue =
   String;
 
 WithRule =
-  KW_WITH WS WithRuleItem (WS LS WS WithRuleItem)*;
+  WS_MAND KW_WITH WS_MAND WithRuleItem (WS LS WS WithRuleItem)*;
 
 WithRuleItem =
   WithParamName WS EQUALS_SIGN WS WithParamValue;
@@ -119,7 +119,7 @@ WithModifierFunctionArg =
   Primitive;
 
 OnlyRule =
-  KW_ONLY WS OnlyRuleItem (WS LS WS OnlyRuleItem)*;
+  WS_MAND KW_ONLY WS OnlyRuleItem (WS LS WS OnlyRuleItem)*;
 
 OnlyRuleItem =
   OnlyRuleItemName OnlyRuleItemModifierList;
@@ -144,13 +144,13 @@ OnlyRuleItemModifierArg =
   Primitive;
 
 HideRule =
-  KW_HIDE;
+  WS_MAND KW_HIDE;
 
 FlagsRule =
   FlagRule (WS LS WS FlagRule)*
 
 FlagRule =
-  IgnoreErrorsFlag
+  WS_MAND IgnoreErrorsFlag
 
 IgnoreErrorsFlag =
   KW_IGNORE_ERRORS
@@ -265,13 +265,19 @@ Null =
 <Letter> =
   #"\w";
 
+<NL> =
+  <"\n">;
+
 (*List Separator*)
 <LS> =
-  <"\n"> | <","> | Comment;
+  NL | <","> | Comment;
 
 (*White Space*)
 <WS> =
   (SPACE | Comment)*;
+
+<WS_MAND> =
+  (SPACE | Comment | NL)+;
 
 <SPACE> =
   <#"\s">;
