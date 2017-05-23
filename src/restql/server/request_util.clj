@@ -108,7 +108,6 @@
       (json-output 400 message))))
 
 (defn should-ignore-errors [item]
-  (println "\n\nshould-ignore-errors\n\n" (-> item :details :metadata (= "ignore")))
   (-> item
       :details
       :metadata
