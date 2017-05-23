@@ -32,6 +32,13 @@ export default class TenantCombo extends Component {
                     <select className="form-control" onChange={this.props.handleSetTenant}>
                         {options}
                     </select>
+										<div>
+											<a className="btn btn-default" 
+												href={"/resources/" +this.props.tenant} 
+												target="_blank">
+												Resources
+											</a>
+										</div>
                 </div>
 				
 			);

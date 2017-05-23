@@ -100,33 +100,32 @@ export default class QueryEditor extends Component {
                             placeholder="name=test&age=18"
                             onChange={this.props.onParamsChange} />
                   </div>
+
+                  <div className="options">
+                      <OverlayTrigger placement="bottom" overlay={runTooltip}>
+                          <Button bsStyle="success"
+                                  onClick={this.props.handleRunQuery}>Run Query</Button>
+                      </OverlayTrigger>
+
+                      <SaveModal onSave={this.props.handleSaveQuery}
+                                namespace={this.props.namespace}
+                                queryName={this.props.queryName}
+                                handleNamespaceChange={this.props.handleNamespaceChange}
+                                handleQueryNameChange={this.props.handleQueryNameChange}
+                                show={this.props.showModal}
+                                toggleModal={this.props.toggleModal}
+                                tooltip="Ctrl+S" />
+
+                  </div>
                 </Col>
 
                 <Col sm={12} md={3}>
                   <TenantCombo className="from-group" 
+                              tenant={this.props.tenant}
                               tenants={this.props.tenants}
                               handleSetTenant={this.props.handleSetTenant} />
-                      
                 </Col>
               </Row>
-              
-
-              <div className="options">
-                  <OverlayTrigger placement="bottom" overlay={runTooltip}>
-                      <Button bsStyle="success"
-                              onClick={this.props.handleRunQuery}>Run Query</Button>
-                  </OverlayTrigger>
-
-                  <SaveModal onSave={this.props.handleSaveQuery}
-                             namespace={this.props.namespace}
-                             queryName={this.props.queryName}
-                             handleNamespaceChange={this.props.handleNamespaceChange}
-                             handleQueryNameChange={this.props.handleQueryNameChange}
-                             show={this.props.showModal}
-                             toggleModal={this.props.toggleModal}
-                             tooltip="Ctrl+S" />
-
-              </div>
 
               </Col>
 
