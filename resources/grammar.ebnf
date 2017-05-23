@@ -5,7 +5,7 @@ UseBlock =
   UseRule (WS LS WS UseRule)*;
 
 UseRule =
-  KW_USE WS UseRuleKey WS EQUALS_SIGN WS UseRuleValue;
+  KW_USE WS_MAND UseRuleKey WS EQUALS_SIGN WS UseRuleValue;
 
 UseRuleKey =
   Identifier;
@@ -17,7 +17,12 @@ QueryBlock =
   QueryItem (WS LS WS QueryItem)*;
 
 QueryItem =
-  WS FromRule WS (HeaderRule WS)? (TimeoutRule WS)? (WithRule WS)? ( (OnlyRule | HideRule) WS)? (FlagsRule WS)?;
+  WS FromRule 
+  (WS_MAND HeaderRule)? 
+  (WS_MAND TimeoutRule)? 
+  (WS_MAND WithRule)? 
+  (WS_MAND (OnlyRule | HideRule))? 
+  (WS_MAND FlagsRule)?;
 
 
 <FromRule> =
@@ -31,14 +36,14 @@ ResultAlias =
 
 
 TimeoutRule =
-  WS_MAND KW_TIMEOUT WS_MAND TimeoutRuleValue;
+  KW_TIMEOUT WS_MAND TimeoutRuleValue;
 
 TimeoutRuleValue =
   Integer;
 
 
 HeaderRule =
-  WS_MAND KW_HEADERS WS_MAND HeaderRuleItem (WS LS WS HeaderRuleItem)*;
+  KW_HEADERS WS_MAND HeaderRuleItem (WS LS WS HeaderRuleItem)*;
 
 HeaderRuleItem =
   HeaderName WS EQUALS_SIGN WS HeaderValue;
@@ -53,7 +58,7 @@ LiteralHeaderValue =
   String;
 
 WithRule =
-  WS_MAND KW_WITH WS_MAND WithRuleItem (WS LS WS WithRuleItem)*;
+  KW_WITH WS_MAND WithRuleItem (WS LS WS WithRuleItem)*;
 
 WithRuleItem =
   WithParamName WS EQUALS_SIGN WS WithParamValue;
@@ -119,7 +124,7 @@ WithModifierFunctionArg =
   Primitive;
 
 OnlyRule =
-  WS_MAND KW_ONLY WS OnlyRuleItem (WS LS WS OnlyRuleItem)*;
+  KW_ONLY WS_MAND OnlyRuleItem (WS LS WS OnlyRuleItem)*;
 
 OnlyRuleItem =
   OnlyRuleItemName OnlyRuleItemModifierList;
@@ -144,16 +149,16 @@ OnlyRuleItemModifierArg =
   Primitive;
 
 HideRule =
-  WS_MAND KW_HIDE;
+  KW_HIDE;
 
 FlagsRule =
-  FlagRule (WS LS WS FlagRule)*
+  FlagRule (WS LS WS FlagRule)*;
 
 FlagRule =
-  WS_MAND IgnoreErrorsFlag
+  IgnoreErrorsFlag;
 
 IgnoreErrorsFlag =
-  KW_IGNORE_ERRORS
+  KW_IGNORE_ERRORS;
 
 <KW_USE> =
   <"use">;
