@@ -17,7 +17,10 @@
 (def find-tenants db/find-tenants)
 (def find-tenant-by-id db/find-tenant-by-id)
 
-(defn save-query [query-ns id query mappings]
+(defn save-query
+  "Validates a given query and saves it into the database"
+  [query-ns id query mappings]
+
   (let [parsed-query (-> query (util/parse {}) edn/read-string)]
     (if (validator/validate {:mappings mappings} parsed-query)
       (db/save-query query-ns id {:text query})

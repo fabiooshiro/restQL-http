@@ -8,24 +8,15 @@
 (def search-cache (atom (cache/fifo-cache-factory {} :threshold 100)))
 (def DEFAULT_TTL (if (contains? env :cache-ttl) (read-string (env :cache-ttl)) 60000))
 
-(defn build-cache [limit]
-  (atom (cache/fifo-cache-factory {} :threshold limit)))
+(defn cached
+  "Verifies if a given function is cached, executing and saving on the cache
+   if not cached or returning the cached value"
+  [function]
 
-(defn cacheable [fun acache key]
-  (if (cache/has? @acache key)
-    (cache/lookup @acache key)
-    (let [res (fun)]
-      (when-not (nil? res)
-        (reset! acache (cache/miss @acache key res))
-        res))))
-
-(defn cached [function]
   (memo/ttl function {} :ttl/threshold DEFAULT_TTL))
 
-(defn clear-cache [cached-fn]
+(defn clear-cache
+  "Clears the cache"
+  [cached-fn]
+
   (memo/memo-clear! cached-fn))
-
-(defmacro defcached [fname using cache-atom args & body]
-  `(defn ~fname ~args
-     (cacheable (fn [] ~@body) ~cache-atom ~args)))
-

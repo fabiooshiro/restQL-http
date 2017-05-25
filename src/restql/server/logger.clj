@@ -3,7 +3,10 @@
             [clojure.string :as string]
             [restql.core.log :as log]))
 
-(defn generate-uuid! []
+(defn generate-uuid!
+  "Generates a random UUID"
+  []
+
   (.toString (java.util.UUID/randomUUID)))
 
 (def logger (chan (sliding-buffer 10000)))

@@ -6,16 +6,25 @@
 
 (defonce conn-data (atom nil))
 
-(defn connect! [uri]
+(defn connect!
+  "Connects to the MongoDB"
+  [uri]
+
   (when (nil? @conn-data)
   (reset! conn-data (mg/connect-via-uri uri))))
 
-(defn disconnect! []
+(defn disconnect!
+  "Disconnects from the MongoDB"
+  []
+
   (when-not (nil? @conn-data)
     (mg/disconnect (:conn @conn-data))
     (reset! conn-data nil)))
 
-(defn check-conn! []
+(defn check-conn!
+  "Checks the MongoDB connection"
+  []
+
   (when (nil? (:db @conn-data))
     (throw+ {:type :db-not-connected})))
 

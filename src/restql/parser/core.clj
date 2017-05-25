@@ -8,23 +8,35 @@
 (def query-parser
   (insta/parser (io/resource "grammar.ebnf") :output-format :enlive))
 
-(defn handle-success [result & {:keys [pretty]}]
+(defn handle-success
+  "Handles parsing success"
+  [result & {:keys [pretty]}]
+
   (if pretty
       (pretty-print result)
       result))
 
-(defn handle-error [result]
+(defn handle-error
+  "Handles any parsing errors"
+  [result]
+
   (let [error (insta/get-failure result)]
     (throw+ {:type :parse-error
              :reason (:reason error)
              :line (:line error)
              :column (:column error)})))
 
-(defn handle-produce [tree context]
+(defn handle-produce
+  "Produces the EDN query of a given restQL query"
+  [tree context]
+
   (binding [*restql-variables* (if (nil? context) {} context)]
     (produce tree)))
 
-(defn parse-query [query-text & {:keys [pretty context]}]
+(defn parse-query
+  "Parses the restQL query"
+  [query-text & {:keys [pretty context]}]
+
   (let [result (query-parser query-text)]
     (if (insta/failure? result)
       (handle-error result)

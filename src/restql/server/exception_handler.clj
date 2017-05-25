@@ -3,7 +3,10 @@
             [clojure.tools.logging :as log]
             [ring.util.response :refer [response]]))
 
-(defn wrap-exception-handling [handler]
+(defn wrap-exception-handling
+  "Exception handling middleware for concise exception responses"
+  [handler]
+
   (fn [request]
     (try+
       (handler request)

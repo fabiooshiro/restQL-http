@@ -8,11 +8,15 @@
          (atom nil))
 
 (defn start!
+  "Starts the manager"
   ([] (start! 3030))
   ([port]
    (reset! server (server/run-server #'am/app {:port port}))))
 
-(defn stop! []
+(defn stop!
+  "Stops the manager"
+  []
+
   (when-not (nil? @server)
     (@server :timeout 100)
     (reset! server nil)))

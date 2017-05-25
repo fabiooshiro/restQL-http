@@ -193,7 +193,10 @@
   ":ignore-errors \"ignore\"")
 
 
-(defn produce [tree]
+(defn produce
+  "Produces a query EDN of a restQL grammar tree"
+  [tree]
+
   (if (nil? tree) ""
     (let [{:keys [tag content]} tree]
       (case tag
