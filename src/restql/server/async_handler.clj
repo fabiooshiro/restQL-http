@@ -66,7 +66,12 @@
           query-entry (util/parse-req req)
           query (->> query-entry (util/merge-headers req-headers))
           debugging (-> req :query-params (get "_debug") boolean)
-          [query-ch exception-ch] (process-query query {:debugging debugging} tenant)
+
+          opts {:debugging debugging
+                :tenant tenant
+                :info {:type :ad-hoc}}
+
+          [query-ch exception-ch] (process-query query opts tenant)
           timeout-ch (timeout 10000)]
       (info {:session uid} "starting request handler")
       (go
@@ -124,18 +129,26 @@
                              "restql-query-id" id
                              "restql-query-revision" rev} (:headers req))
           params (-> req :query-params keywordize-keys)
+          debugging (-> params (get "_debug") boolean)
 
           ; Retrieving tenant (env is always prioritized)
           env-tenant (some-> env :tenant)
           tenant (if (nil? env-tenant) (some-> params :tenant) env-tenant)
+
+          opts {:debugging debugging
+                :tenant tenant
+                :info {:type :saved
+                       :namespace query-ns
+                       :id id
+                       :revision rev}}
 
           query-entry (find-query query-ns id rev)
           context (into (:headers req) (:query-params req) )
           interpolated-query (util/parse query-entry context)
           query (util/merge-headers req-headers interpolated-query)
           time-before (System/currentTimeMillis)
-          [result-ch error-ch] (process-query query params tenant)]
-          (info "Query" id "rev" rev "retrieved")
+          [result-ch error-ch] (process-query query opts tenant)]
+          (info "Query" query-ns "/" id "rev" rev "retrieved")
       (go
         (alt!
           result-ch ([result]
