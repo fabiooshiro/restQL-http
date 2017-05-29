@@ -20,7 +20,7 @@
                  [ring/ring-json "0.4.0"]
                  [org.clojure/java.classpath "0.2.3"]
                  [com.novemberain/monger "3.0.2"]
-                 [com.b2wdigital/restql-core "0.6.0"]
+                 [com.b2wdigital/restql-core "0.7.0"]
                  [commons-validator "1.5.1"]]
   :plugins [[lein-expectations "0.0.8"]
             [lein-autoexpect "1.4.0"]
@@ -33,11 +33,10 @@
   :uberjar-name "restql-server-standalone.jar"
   :profiles {:uberjar {:aot :all
                        :env {:port "9000"
-                             :manager-port "9001"}}
+                             :manager-port "9001"
+			     :cache-ttl "30000"}}
              :dev {:env {:port "9000"
                          :manager-port "9001"
                          :cache-ttl "30000"
                          :cards "http://api.magicthegathering.io/v1/cards"
-                         :heroes "http://localhost:3000/heroes/:name"
-                         :request-bin "http://requestb.in/1co0ai51"
                          :mongo-url "mongodb://localhost:27017/restql-server" }}})
