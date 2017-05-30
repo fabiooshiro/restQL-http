@@ -129,6 +129,22 @@
     {}
     (into {} mp)))
 
+(defn get-base-url
+  "Gets the base url of a given url string
+   or nil if not valid.
+    E.g.:
+      url-str: http://www.example.com/123/abc?x=5
+      return: http://www.example.com"
+  [url-str]
+
+  (if (valid-url? url-str)
+    (let [uriObj (new java.net.URI url-str)
+          scheme (.getScheme uriObj)
+          host (.getHost uriObj)]
+      (str scheme "://" host))
+    nil))
+
+
 (defn make-revision-link
   "Returns a revision route"
   [query-ns id rev]
