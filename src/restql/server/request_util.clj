@@ -140,8 +140,10 @@
   (if (valid-url? url-str)
     (let [uriObj (new java.net.URI url-str)
           scheme (.getScheme uriObj)
-          host (.getHost uriObj)]
-      (str scheme "://" host))
+          host (.getHost uriObj)
+          port (.getPort uriObj)
+          portString (if (= -1 port) 80 port)]
+      (str scheme "://" host ":" portString))
     nil))
 
 
