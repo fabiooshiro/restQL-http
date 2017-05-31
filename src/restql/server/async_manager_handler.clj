@@ -6,6 +6,7 @@
             [restql.server.request-util :as util]
             [restql.server.database.core :as dbcore]
             [restql.server.cache :as cache]
+            [restql.server.network :as net]
             [restql.server.exception-handler :refer [wrap-exception-handling]]
             [restql.server.async-handler :as runner]
             [clojure.edn :as edn]
@@ -28,7 +29,11 @@
 (defn list-mapped-resources [req]
   (let [tenant (some-> req :params :tenant)]
     {:status 200
-     :body {:resources (runner/find-mappings tenant)}}))
+     :body {:resources (reduce-kv
+                          (fn [m k v] (assoc m k {:url v
+                                                  :status (net/check-availability v)}))
+                          {}
+                          (runner/find-mappings tenant))}}))
 
 (defn list-namespaces []
   {:status 200 :body (dbcore/list-namespaces {})})

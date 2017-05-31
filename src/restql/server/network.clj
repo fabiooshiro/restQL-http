@@ -27,4 +27,4 @@
   ([resource-url check-path]
     (let [check-url (str (get-base-url resource-url) check-path)
           response (http/get check-url)]
-      (util/status-code-ok @response))))
+      (some-> @response :status))))
