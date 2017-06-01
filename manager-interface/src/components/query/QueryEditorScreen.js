@@ -32,7 +32,12 @@ import {
 
 } from '../../actions/queryActionCreator';
 
-import { handleLoadTenants, handleSetTenant } from '../../actions/environmentActionCreator';
+import {
+    handleLoadTenants,
+    handleSetTenant,
+    handleLoadResources,
+    toggleResourcesModal,
+} from '../../actions/environmentActionCreator';
 
 // CSS for this screen and logo
 import './QueryEditorScreen.css';
@@ -86,6 +91,10 @@ class QueryEditorScreen extends Component {
                 tenant={this.props.tenant}
                 tenants={this.props.tenants}
                 handleSetTenant={handleSetTenant}
+                resources={this.props.resources}
+                showResourcesModal={this.props.showResourcesModal}
+                handleLoadResources={handleLoadResources}
+                toggleResourcesModal={toggleResourcesModal}
                 
                 // Modal options and listeners
                 showModal={this.props.showModal}
@@ -133,6 +142,8 @@ const mapStateToProps = (state, ownProps) => ({
     // Env configurations
     tenants: state.environmentReducer.tenants,
     tenant: state.environmentReducer.tenant,
+    showResourcesModal: state.environmentReducer.showResourcesModal,
+    resources: state.environmentReducer.resources,
 });
 
 export default connect(mapStateToProps, null)(QueryEditorScreen);

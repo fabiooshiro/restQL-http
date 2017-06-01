@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 
 import TenantOption from './TenantOption';
+import ResourcesModal from './ResourcesModal';
 
 
 export default class TenantCombo extends Component {
@@ -32,13 +33,17 @@ export default class TenantCombo extends Component {
                     <select className="form-control" onChange={this.props.handleSetTenant}>
                         {options}
                     </select>
-										<div>
-											<a className="btn btn-default" 
-												href={"/resources/" +this.props.tenant} 
-												target="_blank">
-												Resources
-											</a>
-										</div>
+
+					<div>
+						<a className="btn btn-default" 
+							onClick={this.props.handleLoadResources}>
+							Resources
+						</a>
+						<ResourcesModal show={this.props.show}
+										toggleModal={this.props.toggleModal}
+										tenant={this.props.tenant}
+										resources={this.props.resources} />
+					</div>
                 </div>
 				
 			);

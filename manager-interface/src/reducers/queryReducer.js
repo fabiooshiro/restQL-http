@@ -21,7 +21,7 @@ export const initialState = {
 
 // Enum for query actions
 export const QUERY_ACTIONS = {
-    INITIAL_STATE: 'INITIAL_STATE',
+    INITIAL_STATE: 'QUERY_INITIAL_STATE',
 
     READ_QUERY: 'READ_QUERY',
     READ_QUERY_PARAMS: 'READ_QUERY_PARAMS',

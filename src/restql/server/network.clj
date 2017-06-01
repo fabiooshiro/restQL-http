@@ -26,5 +26,8 @@
   ([resource-url] (check-availability resource-url "/resource-status"))
   ([resource-url check-path]
     (let [check-url (str (get-base-url resource-url) check-path)
-          response (http/get check-url)]
+          timeout 250
+          response (http/get check-url {:timeout timeout
+                                        :idle-timeout timeout
+                                        :connect-timeout timeout})]
       (some-> @response :status))))

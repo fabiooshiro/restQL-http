@@ -6,7 +6,11 @@
 // Redux actions
 import { ENVIRONMENT_ACTIONS } from '../reducers/environmentReducer';
 
-import { loadTenants } from '../api/restQLAPI';
+import { loadTenants, loadResourcesFromTenant } from '../api/restQLAPI';
+
+export function toggleResourcesModal() {
+	window.store.dispatch({type: ENVIRONMENT_ACTIONS.TOGGLE_RESOURCES_MODAL});
+}
 
 export function handleLoadTenants() {
   const store = window.store;
@@ -27,4 +31,20 @@ export function handleLoadTenants() {
 
 export function handleSetTenant(evt) {
 	window.store.dispatch({type: ENVIRONMENT_ACTIONS.SET_TENANT, value: evt.target.value});
+}
+
+export function handleLoadResources(evt) {
+	const store = window.store;
+  	const dispatch = store.dispatch;
+
+	const tenant = store.getState().environmentReducer.tenant;
+
+	dispatch({type: ENVIRONMENT_ACTIONS.CLEAR_RESOURCES});
+
+	toggleResourcesModal();
+
+	loadResourcesFromTenant(tenant, (result)=>{
+		const resources = (result.body ? result.body.resources : []);
+		dispatch({type: ENVIRONMENT_ACTIONS.LOAD_RESOURCES, value: resources});
+	});
 }

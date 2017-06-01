@@ -60,6 +60,21 @@ export function loadTenants(callback){
         });
 }
 
+export function loadResourcesFromTenant(tenant, callback){
+    const loadTenantResourcesUrl = getRuntimeTarget() + '/resources/' + tenant;
+
+    request
+        .get(loadTenantResourcesUrl)
+        .set('Content-Type', 'text/plain')
+        .set('Accept', 'application/json')
+        .end((err,body)=>{
+            return callback({
+                error: err,
+                body: (body.text !== undefined ? JSON.parse(body.text) : body)
+            });
+        });
+}
+
 
 // Running Queries
 export function runQuery(queryString, queryParams='', tenant=null, callback) {

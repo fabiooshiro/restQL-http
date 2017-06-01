@@ -116,3 +116,18 @@
     font-weight: normal;
     color: #fff;
 }
+
+/* Resources styling */
+.status-success {
+  color: #2f7f2f;
+  font-weight: bold;
+}
+
+.status-error {
+  color: #6f1f1f;
+  font-weight: bold;
+}
+
+.resource-url {
+  font-style: italic;
+}
