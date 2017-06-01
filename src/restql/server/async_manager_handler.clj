@@ -21,19 +21,23 @@
 
 (def mapped-tenants (cache/cached (fn [] (dbcore/find-tenants {}))))
 
+(def mapped-resources-with-check (cache/cached
+  (fn [mappings]
+    {:status 200
+     :body {:resources (reduce-kv
+                          (fn [m k v] (assoc m k {:url v
+                                                  :status (net/check-availability v)}))
+                          {}
+                          mappings)}})))
 
 (defn list-mapped-tenants []
   {:status 200
    :body {:tenants (mapped-tenants)}})
 
 (defn list-mapped-resources [req]
-  (let [tenant (some-> req :params :tenant)]
-    {:status 200
-     :body {:resources (reduce-kv
-                          (fn [m k v] (assoc m k {:url v
-                                                  :status (net/check-availability v)}))
-                          {}
-                          (runner/find-mappings tenant))}}))
+  (with-channel req channel
+    (let [tenant (some-> req :params :tenant)]
+      (send! channel (mapped-resources-with-check (runner/find-mappings tenant))))))
 
 (defn list-namespaces []
   {:status 200 :body (dbcore/list-namespaces {})})
@@ -101,6 +105,7 @@
   ; Route to check mapped resources
   (c/GET "/tenants" [] (list-mapped-tenants))
   (c/GET "/resources/:tenant" req (list-mapped-resources req))
+  (c/GET "/resources" req (list-mapped-resources req))
 
   ; Route to validate a query
   (c/POST "/validate-query" req (util/validate-request req))
