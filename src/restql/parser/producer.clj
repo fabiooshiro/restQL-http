@@ -1,5 +1,6 @@
 (ns restql.parser.producer
-  (:require [clojure.string :refer [join]]))
+  (:require [clojure.string :refer [join]]
+            [restql.parser.only-rule-formatter :as only]))
 
 (def ^:dynamic *restql-variables* {})
 
@@ -156,17 +157,18 @@
 (defn produce-hide-rule []
   " :select :none")
 
-
 (defn produce-only-rule [only-rule-items]
   (let [produced-items (map produce only-rule-items)]
-    (str " :select #{" (join " " produced-items) "}")))
+    (str " " (only/format produced-items))))
 
 (defn produce-only-rule-item [only-rule-item]
   (let [item-name (->> only-rule-item (find-first :OnlyRuleItemName) produce)
         modifiers (->> only-rule-item (find-first :OnlyRuleItemModifierList) produce)]
-    (if (seq modifiers)
-      (str "[:" item-name " " (join " " modifiers) "]")
-      (str ":" item-name))))
+    {:path item-name
+     :modifiers modifiers}))
+
+(defn produce-only-rule-item-name [content]
+  (map produce content))
 
 (defn produce-only-rule-item-modifer-list [modifier-list]
   (map produce modifier-list))
@@ -174,7 +176,7 @@
 (defn produce-only-rule-item-modifier [modifier]
   (let [name (->> modifier (find-first :OnlyRuleItemModifierName) produce)
         args (->> modifier (find-first :OnlyRuleItemModifierArgList) produce)]
-    (str "{:" name " " args "}")))
+    (hash-map (keyword name) args)))
 
 (defn produce-only-rule-item-modifier-arg-list [arg-list]
   (let [produced-args (map produce arg-list)]
@@ -249,7 +251,8 @@
 
       :OnlyRule                    (produce-only-rule content)
       :OnlyRuleItem                (produce-only-rule-item content)
-      :OnlyRuleItemName            (join-chars "" content)
+      :OnlyRuleItemName            (produce-only-rule-item-name content)
+      :OnlyRuleItemPath            (join-chars "" content)
       :OnlyRuleItemModifierList    (produce-only-rule-item-modifer-list content)
       :OnlyRuleItemModifier        (produce-only-rule-item-modifier content)
       :OnlyRuleItemModifierName    (join-chars "" content)

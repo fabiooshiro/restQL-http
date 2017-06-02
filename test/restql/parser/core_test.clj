@@ -88,6 +88,10 @@
     (is (= (read-string (parse-query "from heroes as hero with id = 1 only id, name"))
            [:hero {:from :heroes :with {:id 1} :select #{:id :name}}])))
 
+  (testing "Testing query with only selection of inner elements"
+    (is (= (read-string (parse-query "from heroes as hero with id = 1 only skills.id, skills.name, name"))
+           [:hero {:from :heroes :with {:id 1} :select #{:name [:skills #{:id :name}]}}])))
+
   (testing "Testing query with paramater with dot and chaining"
     (is (= (read-string (parse-query "from heroes as hero with weapon.id = weapon.id"))
            [:hero {:from :heroes :with {:weapon.id [:weapon :id]}}])))
