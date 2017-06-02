@@ -4,9 +4,9 @@ const request = require('superagent');
 
 // Processing URL Query Params (Browser) for dev
 function getRuntimeTarget() {
-    var url = require('url');
-    var url_parts = url.parse(window.location.href, true);
-    var url_query = url_parts.query;
+    const url = require('url');
+    const url_parts = url.parse(window.location.href, true);
+    const url_query = url_parts.query;
 
     if(url_query.targetRuntime) {
         const targetRuntime = (
@@ -25,22 +25,6 @@ function getRuntimeTarget() {
 // Processing request
 export function processResult(response) {
     return JSON.parse(response.body.text);
-    /*
-    if(response.error !== null) {
-        return { error: response.error.message };
-    }
-    else if(response.body.statusCode >= 200 && response.body.statusCode < 300) {
-        try {
-            return JSON.parse(response.body.text);
-        }
-        catch(e) {
-            return { error: 'Invalid JSON Response' };
-        }
-    }
-    else {
-        return { error: 'Something got really wrong!'};
-    }
-    */
 }
 
 
