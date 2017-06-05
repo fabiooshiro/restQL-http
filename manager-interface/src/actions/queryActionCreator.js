@@ -19,9 +19,11 @@ import {
 } from '../api/restQLAPI';
 
 
+const store = require('../store/storeConfig').store;
+
 // UI State manipulation
 export function handleNewQuery() {
-  window.store.dispatch({
+  store.dispatch({
     type: QUERY_ACTIONS.INITIAL_STATE
   });
 
@@ -30,13 +32,13 @@ export function handleNewQuery() {
 
 
 export function handleShowModal () {
-  window.store.dispatch({
+  store.dispatch({
     type: QUERY_ACTIONS.TOGGLE_SAVE_MODAL,
   });
 }
 
 export function handleToggleSidebar() {
-  window.store.dispatch({
+  store.dispatch({
     type: QUERY_ACTIONS.TOGGLE_SIDEBAR,
   });
 }
@@ -44,23 +46,23 @@ export function handleToggleSidebar() {
 
 // Listeners
 export function handleNamespaceChange(evt) {
-  window.store.dispatch({type: QUERY_ACTIONS.NAMESPACE_CHANGED, value: evt.target.value});
+  store.dispatch({type: QUERY_ACTIONS.NAMESPACE_CHANGED, value: evt.target.value});
 }
 
 export function handleQueryNameChange(evt) {
-  window.store.dispatch({type: QUERY_ACTIONS.QUERY_NAME_CHANGED, value: evt.target.value});
+  store.dispatch({type: QUERY_ACTIONS.QUERY_NAME_CHANGED, value: evt.target.value});
 }
 
 
 export function handleQueryStringChange(text) {
-  window.store.dispatch({
+  store.dispatch({
     type: QUERY_ACTIONS.READ_QUERY,
     value: text
   });
 }
 
 export function handleParamsChange(evt) {
-  window.store.dispatch({
+  store.dispatch({
     type: QUERY_ACTIONS.READ_QUERY_PARAMS,
     value: evt.target.value
   });
@@ -69,8 +71,6 @@ export function handleParamsChange(evt) {
 
 // Async API Calls
 export function handleRunQuery() {
-
-    const store = window.store;
 
     const dispatch = store.dispatch;
     const {query, queryParams} = store.getState().queryReducer;
@@ -100,7 +100,6 @@ export function handleRunQuery() {
 }
 
 export function handleSaveQuery(){
-  const store = window.store;
 
   const dispatch = store.dispatch;
   const { namespace, queryName, query } = store.getState().queryReducer;
@@ -145,7 +144,6 @@ export function handleSaveQuery(){
 }
 
 export function handleLoadNamespaces(){
-  const store = window.store;
   const dispatch = store.dispatch;
   
   dispatch({type: QUERY_ACTIONS.NAMESPACES_LOADING});
@@ -164,7 +162,6 @@ export function handleLoadNamespaces(){
 };
 
 export function handleLoadRevisions(){
-  const store = window.store;
   const dispatch = store.dispatch;
 
   const { namespace, queryName } = store.getState().queryReducer;
@@ -189,7 +186,6 @@ export function handleLoadRevisions(){
 }
 
 export function handleLoadQueryRevision(evt) {
-  const store = window.store;
   const dispatch = store.dispatch;
 
   const { namespace, queryName } = store.getState().queryReducer;
@@ -214,7 +210,6 @@ export function handleLoadQueryRevision(evt) {
 }
 
 export function handleLoadQueries(namespace, evt) {
-  const store = window.store;
   const dispatch = store.dispatch;
   
   dispatch({
@@ -241,9 +236,7 @@ export function handleLoadQueries(namespace, evt) {
 }
 
 export function handleLoadQuery(query, evt) {
-  const store = window.store;
   const dispatch = store.dispatch;
-  
 
   dispatch({
     type: QUERY_ACTIONS.QUERY_LOADING

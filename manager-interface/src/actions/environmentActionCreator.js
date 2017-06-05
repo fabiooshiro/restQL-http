@@ -8,8 +8,9 @@ import { ENVIRONMENT_ACTIONS } from '../reducers/environmentReducer';
 
 import { loadTenants, loadResourcesFromTenant } from '../api/restQLAPI';
 
+const store = require('../store/storeConfig').store;
+
 export function handleActiveTenant(tenantKey) {
-	const store = window.store;
 	const dispatch = store.dispatch;
 
 	const tenants = store.getState().environmentReducer.tenants;
@@ -21,7 +22,6 @@ export function handleActiveTenant(tenantKey) {
 }
 
 export function handleLoadTenants() {
-  const store = window.store;
   const dispatch = store.dispatch;
 
 	loadTenants((result)=>{
@@ -41,13 +41,14 @@ export function handleSetTenant(evt) {
 
 	const { tenants } = window.store.getState().environmentReducer;
 
-	window.store.dispatch({type: ENVIRONMENT_ACTIONS.SET_ACTIVE_TENANT, value: evt.target.value});
-	window.store.dispatch({type: ENVIRONMENT_ACTIONS.SET_TENANT, value: tenants[evt.target.value]});
+	store.dispatch({type: ENVIRONMENT_ACTIONS.SET_ACTIVE_TENANT, value: evt.target.value});
+	store.dispatch({type: ENVIRONMENT_ACTIONS.SET_TENANT, value: tenants[evt.target.value]});
+
+	handleActiveTenant(evt.target.value);
 }
 
 export function handleLoadResources(evt) {
-	const store = window.store;
-  	const dispatch = store.dispatch;
+	const dispatch = store.dispatch;
 
 	const tenant = store.getState().environmentReducer.tenant;
 

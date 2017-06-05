@@ -34,11 +34,8 @@ class ResourcesEditorScreen extends Component {
 
     if(this.props.tenants.length === 0)
         handleLoadTenants();
-  }
-
-  componentDidMount() {
-      if(this.props.resources.length === 0)
-        handleActiveTenant();
+    if(this.props.resources.length === 0)
+        handleLoadResources();
   }
 
   render() {
