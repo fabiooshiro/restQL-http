@@ -1,5 +1,6 @@
 (ns restql.server.network
   (:require [restql.server.request-util :as util]
+            [clojure.core.async :refer [chan go go-loop >! <! alt!! alt! timeout]]
             [org.httpkit.client :as http]))
 
 (defn get-base-url
@@ -20,22 +21,56 @@
     nil))
 
 
-(defn check-availability
-  "Checks if a server is available"
-  
-  ([resource-url] (check-availability resource-url "/resource-status"))
-  ([resource-url check-path]
-    (let [check-url (str (get-base-url resource-url) check-path)
-          timeout 250
-          response (http/get check-url {:timeout timeout
-                                        :idle-timeout timeout
-                                        :connect-timeout timeout})]
-      (some-> response))))
+(defn perform-request!
+  "Performs the check request"
+  [url timeout]
 
-(defn resolve-status-response
-  "Given a response promise, get it's status."
-  [promise]
+  (let [output (chan)]
+    (http/get (str url "/resource-status")
+              {:connect-timeout timeout
+               :timeout timeout
+               :idle-timeout (/ 5 timeout)}
+              (fn [{:keys [status]}]
+                (go (>! output (if (nil? status) 500 status)))))
+    output))
+
+(defn start-requester!
+  "Starts a new async requester"
+  [{:keys [url name]} timeout-value aggr-ch]
   
-  (-> promise
-      deref
-      :status))
+  (go
+    (alt!
+      (timeout timeout-value) 
+        ([_] (>! aggr-ch {:url url :name name :status 408}))
+
+      (perform-request! url timeout-value)
+        ([status] (>! aggr-ch {:url url :name name :status status})))))
+
+
+(defn start-aggregator!
+  "Starts a new aggregator"
+  [init-count aggr-ch result-ch]
+  
+  (go-loop [count init-count
+            state []]
+    (if (> count 0)
+      (recur
+        (dec count)
+        (conj state (<! aggr-ch)))
+      (>! result-ch state))))
+
+(defn check-availabilities
+  "Does the async check"
+  [mappings global-timeout]
+
+  (let [input (map (fn [[k v]] {:name k :url (get-base-url v)}) mappings)
+        size (count input)
+        aggr-ch (chan)
+        result-ch (chan)]
+
+  (doseq [item input] (start-requester! item 500 aggr-ch))
+  (start-aggregator! size aggr-ch result-ch)
+  
+  (alt!! 
+    result-ch                ([result] result)
+    (timeout global-timeout) ([_] {:error :timeout}))))

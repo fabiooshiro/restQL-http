@@ -21,18 +21,6 @@
 
 (def mapped-tenants (cache/cached (fn [] (dbcore/find-tenants {}))))
 
-(defn mapped-resources-with-check [mappings]
-  (->>
-    (reduce-kv
-      (fn [m k v] (into m [{:name k
-                            :url v
-                            :request (net/check-availability v)}]))
-        []
-        mappings)
-    (map (fn [v]
-            (-> v 
-              (assoc :status (net/resolve-status-response (:request v)))
-              (dissoc :request))))))
 
 (defn list-mapped-tenants []
   {:status 200
@@ -41,9 +29,9 @@
 (defn list-mapped-resources [req]
   (with-channel req channel
     (let [tenant (some-> req :params :tenant)
-          resources (runner/find-mappings tenant)
-          mappings (mapped-resources-with-check resources)]
-      (send! channel {:status 200 :body (json/write-str {:resources mappings})}))))
+          mappings (runner/find-mappings tenant)
+          resources (net/check-availabilities mappings 10000)]
+      (send! channel {:status 200 :body (json/write-str {:resources resources})}))))
 
 (defn list-namespaces []
   {:status 200 :body (dbcore/list-namespaces {})})
