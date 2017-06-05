@@ -29,7 +29,8 @@ export function handleLoadTenants() {
 
 		if(!result.error && tenants.length > 0) {
 			dispatch({type: ENVIRONMENT_ACTIONS.LOAD_TENANTS, value: tenants});
-			dispatch({type: ENVIRONMENT_ACTIONS.SET_TENANT, value: tenants[0]})
+			dispatch({type: ENVIRONMENT_ACTIONS.SET_ACTIVE_TENANT, value: 0});
+			dispatch({type: ENVIRONMENT_ACTIONS.SET_TENANT, value: tenants[0]});
 		}
 		else {
 			dispatch({type: ENVIRONMENT_ACTIONS.LOAD_TENANTS, value: []});
@@ -50,11 +51,13 @@ export function handleSetTenant(evt) {
 export function handleLoadResources(evt) {
 	const dispatch = store.dispatch;
 
-	const tenant = store.getState().environmentReducer.tenant;
+	const { tenants, tenant, activeTenant } = store.getState().environmentReducer;
+
+	const currentTenant = (tenant !== null ? tenant : tenants[activeTenant]);
 
 	dispatch({type: ENVIRONMENT_ACTIONS.CLEAR_RESOURCES});
 
-	loadResourcesFromTenant(tenant, (result)=>{
+	loadResourcesFromTenant(currentTenant, (result)=>{
 		const resources = (result.body ? result.body.resources : []);
 		dispatch({type: ENVIRONMENT_ACTIONS.LOAD_RESOURCES, value: resources});
 	});

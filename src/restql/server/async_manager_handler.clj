@@ -22,12 +22,17 @@
 (def mapped-tenants (cache/cached (fn [] (dbcore/find-tenants {}))))
 
 (defn mapped-resources-with-check [mappings]
-  (reduce-kv
-    (fn [m k v] (into m [{:name k
-                          :url v
-                          :status (net/check-availability v)}]))
-      []
-      mappings))
+  (->>
+    (reduce-kv
+      (fn [m k v] (into m [{:name k
+                            :url v
+                            :request (net/check-availability v)}]))
+        []
+        mappings)
+    (map (fn [v]
+            (-> v 
+              (assoc :status (net/resolve-status-response (:request v)))
+              (dissoc :request))))))
 
 (defn list-mapped-tenants []
   {:status 200

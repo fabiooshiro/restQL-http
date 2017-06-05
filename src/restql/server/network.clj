@@ -30,4 +30,12 @@
           response (http/get check-url {:timeout timeout
                                         :idle-timeout timeout
                                         :connect-timeout timeout})]
-      (some-> @response :status))))
+      (some-> response))))
+
+(defn resolve-status-response
+  "Given a response promise, get it's status."
+  [promise]
+  
+  (-> promise
+      deref
+      :status))

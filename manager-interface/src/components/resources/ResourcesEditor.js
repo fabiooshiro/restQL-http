@@ -46,7 +46,15 @@ export default class ResourcesEditor extends Component {
                 
         }
         else
-            return (<p>Fetching data...</p>);
+            return (
+                <Row>
+                    <h1>No tenant</h1>
+                    <hr />
+                    <Col xs={12}>
+                        <p>Fetching data...</p>
+                    </Col>
+                </Row>
+            );
     }
 
 }
