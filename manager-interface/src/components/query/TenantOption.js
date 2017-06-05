@@ -5,8 +5,8 @@ export default class TenantOption extends Component {
 
   render() {
     return (
-      <option value={this.props.value} >
-        {this.props.value}
+      <option value={this.props.value}>
+        {this.props.text}
       </option>
     );
   }

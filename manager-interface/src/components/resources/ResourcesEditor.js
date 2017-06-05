@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import {Modal, Button, Row, Col} from 'react-bootstrap';
+import {Row, Col} from 'react-bootstrap';
 
-export default class ResourcesModal extends Component {
+export default class ResourcesEditor extends Component {
 
     mapResources = (res, className) => {
         return (
@@ -15,8 +15,7 @@ export default class ResourcesModal extends Component {
         );
     }
 
-
-    renderResourcesList = () => {
+    render() {
         if(this.props.resources.length > 0) {
             const resourceSuccessList = this.props.resources
                 .filter((res) => res.status === 200)
@@ -28,6 +27,9 @@ export default class ResourcesModal extends Component {
 
             return (
                 <Row>
+                    <h1>{this.props.tenant}</h1>
+                    <hr />
+                     
                     <Col sm={12} md={6}>
                         <h4>Reachable Resources</h4>
                         <hr/>
@@ -45,25 +47,6 @@ export default class ResourcesModal extends Component {
         }
         else
             return (<p>Fetching data...</p>);
-    }
-
-    render() {
-        const resourcesList = this.renderResourcesList();
-
-        return (
-            <Modal bsSize="lg" show={this.props.show} onHide={this.props.toggleModal}>
-                <Modal.Header>
-                    <Modal.Title>Resources for {this.props.tenant}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {resourcesList}
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <Button onClick={this.props.toggleModal}>Close</Button>
-                </Modal.Footer>
-            </Modal>
-        )
     }
 
 }

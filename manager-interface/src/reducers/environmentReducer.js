@@ -3,7 +3,7 @@ export const initialState = {
     tenant: null,
     tenants: [],
     resources: [],
-    showResourcesModal: false,
+    activeTenant: 0,
 };
 
 // Enum for query actions
@@ -15,7 +15,7 @@ export const ENVIRONMENT_ACTIONS = {
     LOAD_RESOURCES: 'LOAD_RESOURCES',
     CLEAR_RESOURCES: 'CLEAR_RESOURCES',
 
-    TOGGLE_RESOURCES_MODAL: 'TOGGLE_RESOURCES_MODAL',
+    SET_ACTIVE_TENANT: 'SET_ACTIVE_TENANT',
 };
 
 const environmentReducer = (state = initialState, action) => {
@@ -26,14 +26,14 @@ const environmentReducer = (state = initialState, action) => {
             return {...state, tenant: action.value};
         case ENVIRONMENT_ACTIONS.LOAD_RESOURCES:
             return {...state, resources: action.value };
-
-        case ENVIRONMENT_ACTIONS.TOGGLE_RESOURCES_MODAL:
-            return {...state, showResourcesModal: !state.showResourcesModal}
         case ENVIRONMENT_ACTIONS.CLEAR_RESOURCES:
             return {...state, resources: []};
 
         case ENVIRONMENT_ACTIONS.INITIAL_STATE:
             return initialState;
+
+        case ENVIRONMENT_ACTIONS.SET_ACTIVE_TENANT:
+            return {...state, activeTenant: action.value };
 
         default:
             return state;

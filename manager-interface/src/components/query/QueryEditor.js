@@ -123,11 +123,9 @@ export default class QueryEditor extends Component {
                   <TenantCombo className="from-group" 
                               tenant={this.props.tenant}
                               tenants={this.props.tenants}
-                              resources={this.props.resources}
-                              show={this.props.showResourcesModal}
-                              toggleModal={this.props.toggleResourcesModal}
-                              handleLoadResources={this.props.handleLoadResources}
-                              handleSetTenant={this.props.handleSetTenant} />
+                              handleSetTenant={this.props.handleSetTenant}
+                              activeTenant={this.props.activeTenant}
+                              resourcesLink={this.props.resourcesLink} />
                 </Col>
               </Row>
 

@@ -1,9 +1,8 @@
 // React
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import TenantOption from './TenantOption';
-import ResourcesModal from './ResourcesModal';
-
 
 export default class TenantCombo extends Component {
 
@@ -15,7 +14,10 @@ export default class TenantCombo extends Component {
 
         for(let i=0; i<tenants.length; i++) {
           	options.push(
-				<TenantOption key={tenants[i]} value={tenants[i]} />
+				<TenantOption activeTenant={this.props.activeTenant}
+							  key={i}
+							  value={i}
+							  text={tenants[i]} />
 			)
         }
 
@@ -30,19 +32,17 @@ export default class TenantCombo extends Component {
 			return (
                 <div className={this.props.className}>
                     <label>Tenant</label>
-                    <select className="form-control" onChange={this.props.handleSetTenant}>
+                    <select className="form-control"
+							onChange={this.props.handleSetTenant}
+							value={this.props.activeTenant}>
                         {options}
                     </select>
 
 					<div>
-						<a className="btn btn-default" 
-							onClick={this.props.handleLoadResources}>
+						<Link to={this.props.resourcesLink}
+							  className="btn btn-md btn-default">
 							Resources
-						</a>
-						<ResourcesModal show={this.props.show}
-										toggleModal={this.props.toggleModal}
-										tenant={this.props.tenant}
-										resources={this.props.resources} />
+						</Link>
 					</div>
                 </div>
 				

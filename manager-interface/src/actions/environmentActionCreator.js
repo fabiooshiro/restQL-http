@@ -8,8 +8,16 @@ import { ENVIRONMENT_ACTIONS } from '../reducers/environmentReducer';
 
 import { loadTenants, loadResourcesFromTenant } from '../api/restQLAPI';
 
-export function toggleResourcesModal() {
-	window.store.dispatch({type: ENVIRONMENT_ACTIONS.TOGGLE_RESOURCES_MODAL});
+export function handleActiveTenant(tenantKey) {
+	const store = window.store;
+	const dispatch = store.dispatch;
+
+	const tenants = store.getState().environmentReducer.tenants;
+	
+	dispatch({type: ENVIRONMENT_ACTIONS.SET_ACTIVE_TENANT, value: tenantKey});
+	dispatch({type: ENVIRONMENT_ACTIONS.SET_TENANT, value: tenants[tenantKey]});
+
+	handleLoadResources(null);
 }
 
 export function handleLoadTenants() {
@@ -30,7 +38,11 @@ export function handleLoadTenants() {
 }
 
 export function handleSetTenant(evt) {
-	window.store.dispatch({type: ENVIRONMENT_ACTIONS.SET_TENANT, value: evt.target.value});
+
+	const { tenants } = window.store.getState().environmentReducer;
+
+	window.store.dispatch({type: ENVIRONMENT_ACTIONS.SET_ACTIVE_TENANT, value: evt.target.value});
+	window.store.dispatch({type: ENVIRONMENT_ACTIONS.SET_TENANT, value: tenants[evt.target.value]});
 }
 
 export function handleLoadResources(evt) {
@@ -40,8 +52,6 @@ export function handleLoadResources(evt) {
 	const tenant = store.getState().environmentReducer.tenant;
 
 	dispatch({type: ENVIRONMENT_ACTIONS.CLEAR_RESOURCES});
-
-	toggleResourcesModal();
 
 	loadResourcesFromTenant(tenant, (result)=>{
 		const resources = (result.body ? result.body.resources : []);

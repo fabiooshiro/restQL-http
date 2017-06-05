@@ -7,6 +7,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 // Redux actions
 import { connect } from 'react-redux';
 
+import { getRuntimeTarget } from '../../api/restQLAPI';
+
 // Application Logic
 import { 
   // UI Operations
@@ -35,8 +37,6 @@ import {
 import {
     handleLoadTenants,
     handleSetTenant,
-    handleLoadResources,
-    toggleResourcesModal,
 } from '../../actions/environmentActionCreator';
 
 // CSS for this screen and logo
@@ -53,7 +53,9 @@ class QueryEditorScreen extends Component {
   constructor(props) {
     super(props);
     handleLoadNamespaces();
-    handleLoadTenants();
+
+    if(this.props.tenants.length === 0)
+      handleLoadTenants();
   }
 
 
@@ -91,10 +93,8 @@ class QueryEditorScreen extends Component {
                 tenant={this.props.tenant}
                 tenants={this.props.tenants}
                 handleSetTenant={handleSetTenant}
-                resources={this.props.resources}
-                showResourcesModal={this.props.showResourcesModal}
-                handleLoadResources={handleLoadResources}
-                toggleResourcesModal={toggleResourcesModal}
+                activeTenant={this.props.activeTenant}
+                resourcesLink={'/resources-editor?targetRuntime=' + getRuntimeTarget()}
                 
                 // Modal options and listeners
                 showModal={this.props.showModal}
@@ -142,8 +142,7 @@ const mapStateToProps = (state, ownProps) => ({
     // Env configurations
     tenants: state.environmentReducer.tenants,
     tenant: state.environmentReducer.tenant,
-    showResourcesModal: state.environmentReducer.showResourcesModal,
-    resources: state.environmentReducer.resources,
+    activeTenant: state.environmentReducer.activeTenant,
 });
 
 export default connect(mapStateToProps, null)(QueryEditorScreen);

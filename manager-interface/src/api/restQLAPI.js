@@ -3,7 +3,7 @@ const request = require('superagent');
 
 
 // Processing URL Query Params (Browser) for dev
-function getRuntimeTarget() {
+export function getRuntimeTarget() {
     const url = require('url');
     const url_parts = url.parse(window.location.href, true);
     const url_query = url_parts.query;
