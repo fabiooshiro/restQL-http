@@ -31,7 +31,7 @@
                :timeout timeout
                :idle-timeout (/ 5 timeout)}
               (fn [{:keys [status]}]
-                (go (>! output (if (nil? status) 500 status)))))
+                (go (>! output (if (nil? status) 0 status)))))
     output))
 
 (defn start-requester!

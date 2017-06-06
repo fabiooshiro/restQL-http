@@ -36,6 +36,8 @@ class ResourcesEditorScreen extends Component {
         handleLoadTenants();
   }
 
+  sortFn = (a, b) => a.name > b.name;
+
   render() {
 
     return (
@@ -51,7 +53,7 @@ class ResourcesEditorScreen extends Component {
                         activeTenant={this.props.activeTenant}
                         tenants={this.props.tenants}
                         tenant={this.props.tenant}
-                        resources={this.props.resources} />
+                        resources={this.props.resources.sort(this.sortFn)} />
                 </Col>
 
                 <Col xs={8} md={10}>
