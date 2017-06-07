@@ -38,7 +38,7 @@
   (let [tenant (some-> req :params :tenant)
         resource-name (some-> req :body :name)
         resource-url (some-> req :body :url)
-        key (some-> req :headers keywordize-keys :authorization-key)]
+        key (some-> req :body :authorization-key)]
     (if (or
           (nil? tenant)
           (nil? resource-name)

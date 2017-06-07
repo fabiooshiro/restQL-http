@@ -59,6 +59,26 @@ export function loadResourcesFromTenant(tenant, callback){
         });
 }
 
+export function updateResource(authorizationKey, tenant, resource, callback) {
+    const updateTenantResourceUrl = getRuntimeTarget()
+                                    + '/resources/' + tenant
+                                    + '/update';
+
+    const requestBody = {...resource, 'authorization-key': authorizationKey };
+
+    request
+        .post(updateTenantResourceUrl)
+        .set('Accept', 'application/json')
+        .set('Content-Type', 'application/json')
+        .send(requestBody)
+        .end((err,body)=>{
+            return callback({
+                error: err,
+                body: body
+            })
+        });
+}
+
 
 // Running Queries
 export function runQuery(queryString, queryParams='', tenant=null, callback) {

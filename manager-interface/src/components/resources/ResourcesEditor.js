@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 
-import {Row, Col} from 'react-bootstrap';
+import {Row, Col, Button} from 'react-bootstrap';
+import 'font-awesome/css/font-awesome.min.css';
+import FontAwesome from 'react-fontawesome';
+
+import SaveResourceModal from './SaveResourceModal';
 
 export default class ResourcesEditor extends Component {
 
@@ -10,7 +14,14 @@ export default class ResourcesEditor extends Component {
                 <p className={className}>
                     {res.name} - {res.status || 'ERROR'}
                 </p>
-                <p className="resource-url">{res.url}</p>
+                <p className="resource-url">
+                    {res['base-url']}
+                    <Button className="btn-xs"
+                            bsStyle="success"
+                            onClick={() => this.props.setActiveResourceAndToggleModal(res)}>
+                        <FontAwesome name="pencil" />
+                    </Button>
+                </p>
             </li>
         );
     }
@@ -41,6 +52,18 @@ export default class ResourcesEditor extends Component {
                         <hr/>
                         <ul>{resourceErrorList}</ul>
                     </Col>
+
+                    <SaveResourceModal authorizationKey={this.props.authorizationKey}
+                                       activeResource={this.props.activeResource}
+                                       tenant={this.props.tenant}
+                                       toggleModal={this.props.handleToggleSaveResourceModal}
+                                       show={this.props.showSaveResourceModal}
+                                       resourceUpdated={this.props.resourceUpdated}
+                                       updateMessage={this.props.updateMessage}
+                                       handleAuthorizationKeyChanged={this.props.handleAuthorizationKeyChanged}
+                                       handleResourceNameChanged={this.props.handleResourceNameChanged}
+                                       handleResourceUrlChanged={this.props.handleResourceUrlChanged}
+                                       handleSave={this.props.handleSaveResource} />
                 </Row>
             );
                 

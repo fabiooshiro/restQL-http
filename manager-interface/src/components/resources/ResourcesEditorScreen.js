@@ -16,6 +16,12 @@ import {
     handleActiveTenant,
     handleLoadTenants,
     handleLoadResources,
+    setActiveResourceAndToggleModal,
+    handleToggleSaveResourceModal,
+    handleAuthorizationKeyChanged,
+    handleResourceNameChanged,
+    handleResourceUrlChanged,
+    handleSaveResource
 } from '../../actions/environmentActionCreator';
 
 // CSS for this screen and logo
@@ -34,6 +40,8 @@ class ResourcesEditorScreen extends Component {
 
     if(this.props.tenants.length === 0)
         handleLoadTenants();
+    if(this.props.resources.length === 0)
+        handleLoadResources();
   }
 
   sortFn = (a, b) => a.name > b.name;
@@ -59,7 +67,19 @@ class ResourcesEditorScreen extends Component {
                 <Col xs={8} md={10}>
                     <ResourcesEditor
                         tenant={this.props.tenant}
-                        resources={this.props.resources} />
+                        resources={this.props.resources}
+                        activeResource={this.props.activeResource}
+                        showSaveResourceModal={this.props.showSaveResourceModal}
+                        authorizationKey={this.props.authorizationKey}
+                        resourceUpdated={this.props.resourceUpdated}
+                        updateMessage={this.props.updateMessage}
+
+                        setActiveResourceAndToggleModal={setActiveResourceAndToggleModal}
+                        handleToggleSaveResourceModal={handleToggleSaveResourceModal}
+                        handleAuthorizationKeyChanged={handleAuthorizationKeyChanged}
+                        handleResourceNameChanged={handleResourceNameChanged}
+                        handleResourceUrlChanged={handleResourceUrlChanged}
+                        handleSaveResource={handleSaveResource} />
                 </Col>
             </Row> 
         </div>
@@ -75,6 +95,12 @@ const mapStateToProps = (state, ownProps) => ({
     tenant: state.environmentReducer.tenant,
     activeTenant: state.environmentReducer.activeTenant,
     resources: state.environmentReducer.resources,
+    activeResource: state.environmentReducer.activeResource,
+    showSaveResourceModal: state.environmentReducer.showSaveResourceModal,
+    
+    authorizationKey: state.environmentReducer.authorizationKey,
+    updateMessage: state.environmentReducer.updateMessage,
+    resourceUpdated: state.environmentReducer.resourceUpdated,
 });
 
 export default connect(mapStateToProps, null)(ResourcesEditorScreen);

@@ -1,3 +1,7 @@
 .resourcesMenu {
     padding: 15px;
 }
+
+.btn-xs {
+    margin-left: 5px;
+}

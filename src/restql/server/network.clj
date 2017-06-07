@@ -36,15 +36,15 @@
 
 (defn start-requester!
   "Starts a new async requester"
-  [{:keys [url name]} timeout-value aggr-ch]
+  [{:keys [name url base-url]} timeout-value aggr-ch]
   
   (go
     (alt!
       (timeout timeout-value) 
-        ([_] (>! aggr-ch {:url url :name name :status 408}))
+        ([_] (>! aggr-ch {:url url :base-url base-url :name name :status 408}))
 
-      (perform-request! url timeout-value)
-        ([status] (>! aggr-ch {:url url :name name :status status})))))
+      (perform-request! base-url timeout-value)
+        ([status] (>! aggr-ch {:url url :base-url base-url :name name :status status})))))
 
 
 (defn start-aggregator!
@@ -63,7 +63,7 @@
   "Does the async check"
   [mappings global-timeout]
 
-  (let [input (map (fn [[k v]] {:name k :url (get-base-url v)}) mappings)
+  (let [input (map (fn [[k v]] {:name k :url v :base-url (get-base-url v)}) mappings)
         size (count input)
         aggr-ch (chan)
         result-ch (chan)]
