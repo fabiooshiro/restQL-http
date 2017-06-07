@@ -7,6 +7,7 @@
             [restql.server.database.core :as dbcore]
             [restql.server.cache :as cache]
             [restql.server.network :as net]
+            [restql.server.authorization :as auth]
             [restql.server.exception-handler :refer [wrap-exception-handling]]
             [restql.server.async-handler :as runner]
             [clojure.edn :as edn]
@@ -32,6 +33,19 @@
           mappings (runner/find-mappings tenant)
           resources (net/check-availabilities mappings 10000)]
       (send! channel {:status 200 :body (json/write-str {:resources resources})}))))
+
+(defn update-tenant-resource [req]
+  (let [tenant (some-> req :params :tenant)
+        resource-name (some-> req :body :name)
+        resource-url (some-> req :body :url)
+        key (some-> req :headers keywordize-keys :authorization-key)]
+    (if (or
+          (nil? tenant)
+          (nil? resource-name)
+          (nil? resource-url)
+          (= false (auth/is-authorized? key)))
+      {:status 422 :body {:error "Bad request"}}
+      {:status 200 :body (dbcore/save-resource tenant resource-name resource-url)})))
 
 (defn list-namespaces []
   {:status 200 :body (dbcore/list-namespaces {})})
@@ -100,6 +114,7 @@
   (c/GET "/tenants" [] (list-mapped-tenants))
   (c/GET "/resources/:tenant" req (list-mapped-resources req))
   (c/GET "/resources" req (list-mapped-resources req))
+  (c/POST "/resources/:tenant/update" req (update-tenant-resource req))
 
   ; Route to validate a query
   (c/POST "/validate-query" req (util/validate-request req))

@@ -1,7 +1,7 @@
 (ns restql.server.database.persistence
   (:require [monger.core :as mg]
             [monger.collection :as mc]
-            [monger.operators :refer [$inc $push $slice $group]]
+            [monger.operators :refer [$inc $push $slice $group $set]]
             [slingshot.slingshot :refer [throw+]]))
 
 (defonce conn-data (atom nil))
@@ -45,6 +45,15 @@
 (defquery list-namespaces [{} :with db]
   (let [namespaces (mc/aggregate db "query" [{$group {:_id "$namespace"}}])]
     namespaces))
+
+(defquery save-resource [tenant resource-name resource-url :with db]
+  (let [mapping-str (str "mappings." resource-name)
+        mapping-key (keyword mapping-str)]
+    (mc/find-and-modify db "tenant"
+                {:_id tenant}
+                {$set {mapping-key resource-url}}
+                {:upsert false :return-new true})))
+  
 
 (defquery save-query [query-ns id query :with db]
   (mc/find-and-modify db "query"

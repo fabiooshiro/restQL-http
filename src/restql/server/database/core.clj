@@ -16,6 +16,7 @@
 ;re-exporting tenant methods
 (def find-tenants db/find-tenants)
 (def find-tenant-by-id db/find-tenant-by-id)
+(def save-resource db/save-resource)
 
 (defn save-query
   "Validates a given query and saves it into the database"
