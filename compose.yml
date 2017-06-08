@@ -1,0 +1,13 @@
+restql:
+  image: restql-server:alpine
+  restart: always
+  environment:
+    - mongo-url=mongodb://mongodb:27017/restql
+    - planets=http://swapi.co/api/planets/
+  links:
+    - mongodb
+  ports:
+    - "0.0.0.0:9000:9000"
+
+mongodb:
+  image: mongo:3.4
