@@ -1,24 +1,21 @@
-FROM clojure:lein-2.7.1
-
-RUN apt-get update
-RUN apt-get install -y zip
-RUN apt-get install -y unzip
-
-RUN apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_7.x | bash
-RUN apt-get install -y nodejs
-
-COPY . /opt/source
-WORKDIR /opt/source
-
-RUN ./scripts/build-dist.sh
-
-RUN mkdir /opt/app
-RUN cp restql-server.zip /opt/app
-WORKDIR /opt/app
-RUN unzip restql-server.zip
-RUN rm restql-server.zip
+FROM clojure:lein-2.7.1-alpine
 
 ENV PORT=9000
 EXPOSE $PORT
+
+WORKDIR /opt/source
+COPY . /opt/source
+
+RUN apk add --update zip curl nodejs && \
+    ./scripts/build-dist.sh && \
+    mkdir -p /opt/app/ && \
+    cp restql-server.zip /opt/app/ && \
+    cd /opt/app/ && \
+    unzip restql-server.zip && \
+    rm restql-server.zip && \
+    rm -rf /opt/source/ && \
+    apk del --purge zip nodejs curl
+
+WORKDIR /opt/app
+
 ENTRYPOINT eval "exec bin/run.sh"
