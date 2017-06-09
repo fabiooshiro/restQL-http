@@ -15,7 +15,7 @@ export default class ResourcesEditor extends Component {
                     {res.name} - {res.status || 'ERROR'}
                 </p>
                 <p className="resource-url">
-                    {res['base-url']}
+                    {res['url']}
                     <Button className="btn-xs"
                             bsStyle="success"
                             onClick={() => this.props.setActiveResourceAndToggleModal(res)}>
