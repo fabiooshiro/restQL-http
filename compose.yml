@@ -11,3 +11,12 @@ restql:
 
 mongodb:
   image: mongo:3.4
+
+nginx:
+  image: nginx:1.12-alpine
+  volumes:
+    - ./docker/nginx/:/etc/nginx/conf.d/
+  links:
+    - restql
+  ports:
+    - 8080:80
