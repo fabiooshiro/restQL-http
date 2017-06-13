@@ -36,11 +36,22 @@ export default class ResourcesEditor extends Component {
                 .filter((res) => res.status !== 200)
                 .map((res) => this.mapResources(res, 'status-error'));
 
+            const newResource = {name: '', url: '', 'base-url': ''};
+
             return (
                 <Row>
                     <h1>{this.props.tenant}</h1>
                     <hr />
-                     
+
+                    <Col xs={12} className="btn-separator">
+                        <Row>
+                            <Button bsStyle="success"
+                                    onClick={() => this.props.setActiveResourceAndToggleModal(newResource)}>
+                                Add New Resource
+                            </Button>
+                        </Row>
+                    </Col>
+                    
                     <Col sm={12} md={6}>
                         <h4>Reachable Resources</h4>
                         <hr/>
