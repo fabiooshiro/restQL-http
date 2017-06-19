@@ -226,3 +226,9 @@
     (json/read-str x :key-fn keyword)
     (map-values format-response-item x)
     (json/write-str x)))
+
+(defn is-contextual? 
+  "Filters if a given map key is contextual"
+  [prefix [k v]]
+  (->> k str (re-find (re-pattern prefix))))
+

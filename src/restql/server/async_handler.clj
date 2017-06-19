@@ -67,9 +67,14 @@
           query (->> query-entry (util/merge-headers req-headers))
           debugging (-> req :query-params (get "_debug") boolean)
 
-          opts {:debugging debugging
+          base-opts {:debugging debugging
                 :tenant tenant
                 :info {:type :ad-hoc}}
+
+          forward-params (if (nil? (:forward-prefix env))
+                            {}
+                            (into {} (filter (partial util/is-contextual? (:forward-prefix env)) params)))
+          opts (into {:forward-params forward-params} base-opts)
 
           [query-ch exception-ch] (process-query query opts tenant)
           timeout-ch (timeout 10000)]
