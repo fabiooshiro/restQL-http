@@ -1,3 +1,5 @@
+http://restql.b2w.io/
+
 restQL is a microservice query language that makes easy to fetch information from multiple services in the most efficient manner.
 
 There is no need of any implementation server side, just configure the service endpoints, run restQL server and start querying.
