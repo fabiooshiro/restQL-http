@@ -20,7 +20,7 @@
                  [ring/ring-json "0.4.0"]
                  [org.clojure/java.classpath "0.2.3"]
                  [com.novemberain/monger "3.0.2"]
-                 [com.b2wdigital/restql-core "0.8.0"]
+                 [com.b2wdigital/restql-core "1.0.0"]
                  [prismatic/schema "1.1.6"]
                  [commons-validator "1.5.1"]]
   :plugins [[lein-expectations "0.0.8"]
