@@ -1,6 +1,6 @@
 (ns restql.server.async-handler
   (:require [compojure.core :as c]
-            [clojure.walk :refer [keywordize-keys]]
+            [clojure.walk :refer [keywordize-keys stringify-keys]]
             [restql.core.api.restql-facade :as restql]
             [restql.core.log :refer [info warn error]]
             [restql.server.logger :refer [log generate-uuid!]]
@@ -9,6 +9,7 @@
             [restql.server.cache :as cache]
             [restql.server.exception-handler :refer [wrap-exception-handling]]
             [restql.server.plugin.core :as plugin]
+            [restql.server.response :as resp]
             [clojure.edn :as edn]
             [clojure.data.json :as json]
             [environ.core :refer [env]]
@@ -49,8 +50,12 @@
     (strip-nils
       (into {} cache-control))))
 
-(defn put-additional-headers [query headers]
-  (into headers (additional-headers query)))
+(defn make-headers [interpolated-query result]
+  (->
+    (resp/extract-alias-suffixed-headers result)
+    (into {"Content-Type" "application/json"})
+    (into (additional-headers interpolated-query))
+    (stringify-keys)))
 
 (defn handle-request [req result-ch error-ch]
   (try+
@@ -86,7 +91,7 @@
           query-ch ([result]
             (info {:session uid} " finishing request handler")
             (>! result-ch {:body (util/format-response-body result)
-                           :headers (put-additional-headers query-entry headers)
+                           :headers (make-headers query-entry result)
                            :status (util/calculate-response-status-code result)})))))
     (catch [:type :validation-error] {:keys [message]}
       (go (>! error-ch (util/json-output 400 {:error "VALIDATION_ERROR" :message message}))))
@@ -160,8 +165,7 @@
                       (info {:time (- (System/currentTimeMillis) time-before )
                              :success true}
                             "restQL Query finished")
-                      (send! channel {:headers (into {"Content-Type" "application/json"}
-                                                     (additional-headers interpolated-query))
+                      (send! channel {:headers (make-headers interpolated-query result)
                                       :status (util/calculate-response-status-code result)
                                       :body (util/format-response-body result)}))
           error-ch ([err]
