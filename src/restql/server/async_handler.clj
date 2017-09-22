@@ -2,6 +2,7 @@
   (:require [compojure.core :as c]
             [clojure.walk :refer [keywordize-keys stringify-keys]]
             [restql.core.api.restql-facade :as restql]
+            [restql.core.encoders.core :refer [base-encoders]]
             [restql.core.log :refer [info warn error]]
             [restql.server.logger :refer [log generate-uuid!]]
             [restql.server.request-util :as util]
@@ -33,7 +34,7 @@
 
 (defn process-query [query query-opts tenant]
   (restql/execute-query-channel :mappings (find-mappings tenant)
-                                :encoders   {}
+                                :encoders   base-encoders
                                 :query      query
                                 :query-opts (plugin/get-query-opts-with-plugins query-opts)))
 
