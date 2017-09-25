@@ -40,4 +40,5 @@
                          :manager-port "9001"
                          :cache-ttl "30000"
                          :cards "http://api.magicthegathering.io/v1/cards"
-                         :mongo-url "mongodb://localhost:27017/restql-server" }}})
+                         :mongo-url "mongodb://localhost:27017/restql-server" }
+                   :plugins [[lein-cloverage "1.0.9"]]}})
