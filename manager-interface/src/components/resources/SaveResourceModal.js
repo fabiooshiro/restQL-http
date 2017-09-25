@@ -7,7 +7,6 @@ export default class SaveResourcesModal extends Component {
 	render() {
 
 		if(this.props.activeResource) {
-			const updated = this.props.resourceUpdated;
 			const message = this.props.updateMessage;
 
 			return (
