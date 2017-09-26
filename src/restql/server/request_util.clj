@@ -76,16 +76,6 @@
     (not (nil? (:status query-response)))
     (< (:status query-response) 300)))
 
-
-(defn is-success
-  "Verifies if the response is a success response"
-  [query-response]
-
-  (and
-    (status-code-ok query-response)
-    (nil? (:parse-error query-response))))
-
-
 (defn error-output
   "Creates an error output response from a given error"
   [err]
@@ -104,20 +94,16 @@
    :headers {"Content-Type" "application/json"}
    :body    (json/write-str {:message message})})
 
-(defn format-entry-query
-  "Formats a query entry"
-  [text metadata]
-
-  (let [data (into {} metadata)]
-    (assoc data :text text)))
-
-
 (defn valid-url?
   "Verifies if a given string is a valid URL"
   [url-str]
 
   (let [validator (UrlValidator.)]
-    (.isValid validator url-str)))
+    (or
+      (.isValid validator url-str)
+      (.startsWith url-str "http://localhost")
+      (.startsWith url-str "https://localhost"))))
+
 
 (defn filter-valid-urls
   "Filters all valid URLs of a given map"

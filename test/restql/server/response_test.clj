@@ -14,6 +14,17 @@
   (json/write-str (get-sample-response)))
 
 
+(deftest should-map-all-headers-to-aliases
+  (is (=
+        [{:jedis {:x-type "Jedi"
+                 :x-weapon "Light Saber"}}]
+        (map map-headers-to-aliases (get-sample-response)))))
+
+(deftest should-parse-if-query-response-is-map
+  (is (= {:jedis {:x-type "Jedi"
+                  :x-weapon "Light Saber"}}
+         (get-response-headers (get-sample-response)))))
+
 (deftest should-filter-only-x-headers
   (is (=
         {:x-type "Jedi"}
