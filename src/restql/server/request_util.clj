@@ -3,8 +3,8 @@
             [slingshot.slingshot :refer [try+]]
             [environ.core :refer [env]]
             [clojure.edn :as edn]
-            [restql.parser.core :as parser]
-            [restql.core.validator.core :as validator])
+            [restql.core.validator.core :as validator]
+            [restql.parser.core :as parser])
   (import [org.apache.commons.validator UrlValidator]))
 
 (def headers-blacklist
