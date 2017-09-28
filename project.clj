@@ -3,7 +3,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [http-kit "2.1.18"]
+                 [http-kit "2.2.0"]
                  [compojure "1.4.0"]
                  [instaparse "1.4.5"]
                  [environ "1.0.0"]
@@ -20,7 +20,7 @@
                  [ring/ring-json "0.4.0"]
                  [org.clojure/java.classpath "0.2.3"]
                  [com.novemberain/monger "3.0.2"]
-                 [com.b2wdigital/restql-core "1.1.0"]
+                 [com.b2wdigital/restql-core "2.0.0"]
                  [prismatic/schema "1.1.6"]
                  [commons-validator "1.5.1"]]
   :plugins [[lein-expectations "0.0.8"]
