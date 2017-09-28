@@ -180,7 +180,7 @@
 (c/defroutes
   routes
   ; Routes to health checking
-  (c/OPTIONS "/restql" request {:status 204} )
+  (c/OPTIONS "*" request {:status 204} )
   (c/GET "/health" [] "restql is healthy :)")
   (c/GET "/resource-status" [] "OK")
 

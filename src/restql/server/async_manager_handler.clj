@@ -107,6 +107,7 @@
 (c/defroutes
   routes
 
+  (c/OPTIONS "*" request {:status 204} )
   (c/GET "/health" [] "restql manager is healthy :)")
   (c/GET "/resource-status" [] "OK")
 
