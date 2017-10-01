@@ -13,7 +13,9 @@ from hero as heroList
         name = search.results.name
 ```
 
-More about restQL query language [here](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language) and [here](http://restql.b2w.io)
+You can learn more about restQL query language [here](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language) and [here](http://restql.b2w.io).
+
+We've also developed a game to help new comers: http://game.b2w.io/
 
 # Getting Started
 
