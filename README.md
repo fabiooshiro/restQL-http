@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/B2W-BIT/restQL-server.svg?branch=master)](https://travis-ci.org/B2W-BIT/restQL-server)
-[![codecov](https://codecov.io/gh/B2W-BIT/restQL-server/branch/master/graph/badge.svg)](https://codecov.io/gh/B2W-BIT/restQL-server)
 
 restQL-server is a server to run restQL queries, making easy to fetch information from multiple services in the most efficient manner. e.g:
 
