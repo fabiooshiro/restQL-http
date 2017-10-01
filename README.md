@@ -16,6 +16,8 @@ You can learn more about restQL query language [here](https://github.com/B2W-BIT
 
 We've also developed a game to help new comers: http://game.b2w.io/
 
+If you want to embed restQL directly into your JVM application you may want to check [restQL core](https://github.com/B2W-BIT/restQL-core) 
+
 # Getting Started
 
 ## Running restQL Server
