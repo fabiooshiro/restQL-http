@@ -1,0 +1,27 @@
+version: '3'
+services:
+  restql:
+    build: .
+    image: restql-server:alpine
+    restart: always
+    environment:
+      - mongo-url=mongodb://mongodb:27017/restql
+      - planets=http://swapi.co/api/planets/
+      - card=http://api.magicthegathering.io/v1/cards/:id
+    links:
+      - mongodb
+    ports:
+      - "0.0.0.0:9000:9000"
+
+  mongodb:
+    image: mongo:3.4
+    network_mode: host
+
+  nginx:
+    image: nginx:1.12-alpine
+    volumes:
+      - ./docker/nginx/:/etc/nginx/conf.d/
+    links:
+      - restql
+    ports:
+      - 8080:80
