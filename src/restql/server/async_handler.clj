@@ -1,7 +1,7 @@
 (ns restql.server.async-handler
   (:require [compojure.core :as c]
             [clojure.walk :refer [keywordize-keys stringify-keys]]
-            [restql.core.api.restql-facade :as restql]
+            [restql.core.api.restql :as restql]
             [restql.core.encoders.core :refer [base-encoders]]
             [restql.core.log :refer [info warn error]]
             [restql.server.logger :refer [log generate-uuid!]]

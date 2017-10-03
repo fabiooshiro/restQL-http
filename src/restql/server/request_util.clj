@@ -172,7 +172,6 @@
   [result]
 
   (let [statuses (as-> result x
-                 (json/read-str x :key-fn keyword)
                  (vals x)
                  (flatten x)
                  (filter (complement should-ignore-errors) x)
@@ -209,7 +208,6 @@
   [result]
 
   (as-> result x
-    (json/read-str x :key-fn keyword)
     (map-values format-response-item x)
     (json/write-str x)))
 

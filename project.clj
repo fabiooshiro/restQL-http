@@ -20,9 +20,10 @@
                  [ring/ring-json "0.4.0"]
                  [org.clojure/java.classpath "0.2.3"]
                  [com.novemberain/monger "3.0.2"]
-                 [com.b2wdigital/restql-core "2.0.0"]
+                 [com.b2wdigital/restql-core "2.1.0"]
                  [prismatic/schema "1.1.6"]
-                 [commons-validator "1.5.1"]]
+                 [commons-validator "1.5.1"]
+                 [org.clojure/tools.logging "0.4.0"]]
   :plugins [[lein-expectations "0.0.8"]
             [lein-autoexpect "1.4.0"]
             [lein-environ "1.0.0"]
@@ -40,5 +41,6 @@
                          :manager-port "9001"
                          :cache-ttl "30000"
                          :cards "http://api.magicthegathering.io/v1/cards"
+                         :card "http://api.magicthegathering.io/v1/cards/:id"
                          :mongo-url "mongodb://localhost:27017/restql-server" }
                    :plugins [[lein-cloverage "1.0.9"]]}})
