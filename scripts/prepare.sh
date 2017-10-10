@@ -23,7 +23,8 @@ export JAVA_AGENTS=$(for i in $(ls $JAVA_AGENTS_DIR/*.jar); do echo "-javaagent:
 export MAIN_JAR="$DIST_PATH/lib/restql-server.jar"
 
 export RUN_CLASSPATH="$MAIN_JAR:$JARS_PATH/*"
-export JAVA_CMD="java $JAVA_AGENTS -cp $RUN_CLASSPATH restql.server.core"
+export JAVA_OPTS=${JAVA_OPTS:-}
+export JAVA_CMD="java ${JAVA_OPTS} $JAVA_AGENTS -cp $RUN_CLASSPATH restql.server.core"
 
 echo "Running java with the following line:"
 echo $JAVA_CMD
