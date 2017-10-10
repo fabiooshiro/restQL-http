@@ -15,7 +15,8 @@
   (case level
     :info (log/info data)
     :warn (log/warn data)
-    :error (log/error data))
+    :error (log/error data)
+    :debug (log/debug data))
   (recur (<! logger)))
 
 (defn log [& texts]
@@ -29,3 +30,6 @@
 
 (defn error [& args]
   (go (>! logger {:level :error :data args})))
+
+(defn debug [& args]
+  (go (>! logger {:level :debug :data args})))
