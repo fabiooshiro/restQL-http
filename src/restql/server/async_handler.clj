@@ -21,9 +21,11 @@
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
             [slingshot.slingshot :refer [try+]]))
-
-(def find-query (cache/cached (fn [query-ns id rev]
-                                 (-> (dbcore/find-query-by-id-and-revision query-ns id rev) :text))))
+(defonce FIND_QUERY_TTL 86400000)
+(def find-query (cache/cached
+                  (fn [query-ns id rev]
+                    (-> (dbcore/find-query-by-id-and-revision query-ns id rev) :text))
+                  FIND_QUERY_TTL))
 
 (def find-mappings (cache/cached (fn [id] (cond
                                             (nil? id) (util/filter-valid-urls env)

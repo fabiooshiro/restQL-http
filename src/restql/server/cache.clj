@@ -11,9 +11,12 @@
 (defn cached
   "Verifies if a given function is cached, executing and saving on the cache
    if not cached or returning the cached value"
-  [function]
+  ([function]
 
-  (memo/ttl function {} :ttl/threshold DEFAULT_TTL))
+  (cached function DEFAULT_TTL))
+
+  ([function ttl]
+   (memo/ttl function {} :ttl/threshold ttl)))
 
 (defn clear-cache
   "Clears the cache"
