@@ -4,7 +4,8 @@
             [environ.core :refer [env]]
             [clojure.edn :as edn]
             [restql.core.validator.core :as validator]
-            [restql.parser.core :as parser])
+            [restql.parser.core :as parser]
+            [clojure.string :as str])
   (import [org.apache.commons.validator UrlValidator]))
 
 (def headers-blacklist
@@ -18,9 +19,8 @@
   "Filter to verify if the given header (k) is not on the headers-blacklist"
   [[k v]]
 
-  (let [header (.toLowerCase k)]
-    (not
-      (some #(= header %) headers-blacklist))))
+  (let [header (str/lower-case k)]
+    (not-any? #(= header %) headers-blacklist)))
 
 (defn add-headers-to-object
   "Adds or appends headers to a given query"
