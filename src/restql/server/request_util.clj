@@ -44,9 +44,11 @@
 
 (defn parse
   "Parse the given query text to EDN format"
-  [text context]
+  ([text context]
+   (parse text context false))
 
-  (parser/parse-query (str text "\n") :pretty true :context context))
+  ([text context pretty]
+  (parser/parse-query (str text "\n") :pretty pretty :context context)))
 
 (defn extract-body
   "Extracts the body from a given request"
