@@ -146,9 +146,12 @@
           ; Retrieving tenant (env is always prioritized)
           env-tenant (some-> env :tenant)
           tenant (if (nil? env-tenant) (some-> params :tenant) env-tenant)
-
+          forward-params (if (nil? (:forward-prefix env))
+                           {}
+                           (into {} (filter (partial util/is-contextual? (:forward-prefix env)) params)))
           opts {:debugging debugging
                 :tenant tenant
+                :forward-params forward-params
                 :info {:type :saved
                        :namespace query-ns
                        :id id
