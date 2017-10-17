@@ -2,7 +2,7 @@
   (:require [clojure.data.json :as json]
             [slingshot.slingshot :refer [try+]]
             [environ.core :refer [env]]
-            [clojure.edn :as edn]
+            [clojure.tools.reader.edn :as edn]
             [restql.core.validator.core :as validator]
             [restql.parser.core :as parser]
             [clojure.string :as str])
@@ -38,7 +38,7 @@
         binds (map first data)
         items (map second data)
         items-with-headers (map (partial add-headers-to-object headers) items)
-        data-with-headers (flatten (map vector binds items-with-headers)) ]
+        data-with-headers (flatten (map vector binds items-with-headers))]
     (binding [*print-meta* true]
       (pr-str (into [] data-with-headers)))))
 
@@ -48,7 +48,7 @@
    (parse text context false))
 
   ([text context pretty]
-  (parser/parse-query (str text "\n") :pretty pretty :context context)))
+   (parser/parse-query (str text "\n") :pretty pretty :context context)))
 
 (defn extract-body
   "Extracts the body from a given request"
@@ -174,14 +174,14 @@
   [result]
 
   (let [statuses (as-> result x
-                 (vals x)
-                 (flatten x)
-                 (filter (complement should-ignore-errors) x)
-                 (map (comp :status :details) x))]
+                       (vals x)
+                       (flatten x)
+                       (filter (complement should-ignore-errors) x)
+                       (map (comp :status :details) x))]
     (reduce higher-value 200 statuses)))
 
 (defn map-values [f m]
-  (reduce-kv (fn [r k v] (assoc r k (f v)) ) {} m))
+  (reduce-kv (fn [r k v] (assoc r k (f v))) {} m))
 
 (defn format-response-details
   "Formats the response details"
@@ -195,7 +195,7 @@
 
   (let [details (-> item :details format-response-details)]
     (assoc item
-           :details details)))
+      :details details)))
 
 (defn format-response-item
   "Formats a response item"
@@ -210,10 +210,10 @@
   [result]
 
   (as-> result x
-    (map-values format-response-item x)
-    (json/write-str x)))
+        (map-values format-response-item x)
+        (json/write-str x)))
 
-(defn is-contextual? 
+(defn is-contextual?
   "Filters if a given map key is contextual"
   [prefix [k v]]
   (->> k str (re-find (re-pattern prefix))))
