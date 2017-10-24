@@ -45,9 +45,11 @@
 (defn additional-headers [query]
   (let [data (edn/read-string query)
         metadata (meta data)
-        cache-control {"cache-control" (str "max-age="(:cache-control metadata))}]
-    (strip-nils
-      (into {} cache-control))))
+        cache-control-value (:cache-control metadata)]
+    (if (nil? cache-control-value)
+      {}
+      (strip-nils
+        (into {} {"cache-control" (str "max-age=" cache-control-value)})))))
 
 (defn make-headers [interpolated-query result]
   (->
