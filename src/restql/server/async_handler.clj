@@ -45,7 +45,7 @@
 (defn additional-headers [query]
   (let [data (edn/read-string query)
         metadata (meta data)
-        cache-control {"cache-control" (:cache-control metadata)}]
+        cache-control {"cache-control" (str "max-age="(:cache-control metadata))}]
     (strip-nils
       (into {} cache-control))))
 
