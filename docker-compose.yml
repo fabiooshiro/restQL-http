@@ -5,7 +5,7 @@ services:
     image: restql-server:alpine
     restart: always
     environment:
-      - mongo-url=mongodb://mongodb:27017/restql
+      - mongo_url=mongodb://mongodb:27017/restql
       - planets=http://swapi.co/api/planets/
       - card=http://api.magicthegathering.io/v1/cards/:id
     links:
