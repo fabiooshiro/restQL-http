@@ -25,7 +25,6 @@
 (defn add-headers-to-object
   "Adds or appends headers to a given query"
   [headers query-obj]
-
   (if (nil? (query-obj :with-headers))
     (into query-obj {:with-headers (into {} (filter header-allowed? headers))})
     (into query-obj {:with-headers (into (query-obj :with-headers) (into {} (filter header-allowed? headers)))})))
@@ -34,13 +33,13 @@
   "Merge a given headers map with the query :with-headers"
   [headers query]
 
-  (let [data (->> query edn/read-string (partition 2))
+  (let [data (partition 2 query)
         binds (map first data)
         items (map second data)
         items-with-headers (map (partial add-headers-to-object headers) items)
         data-with-headers (flatten (map vector binds items-with-headers))]
     (binding [*print-meta* true]
-      (pr-str (into [] data-with-headers)))))
+      (into [] data-with-headers))))
 
 (defn parse
   "Parse the given query text to EDN format"
@@ -140,9 +139,7 @@
   [req]
 
   (try+
-    (let [query (->>
-                  (parse-req req)
-                  edn/read-string)]
+    (let [query (parse-req req)]
       (if (validator/validate {:mappings env} query)
         (json-output 200 "valid")))
     (catch [:type :validation-error] {:keys [message]}

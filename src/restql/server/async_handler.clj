@@ -26,14 +26,14 @@
 (def find-mappings (cache/cached (fn [id] (cond
                                             (nil? id) (util/filter-valid-urls env)
                                             :else (-> (dbcore/find-tenant-by-id id)
-                                                     :mappings
-                                                     (into env)
-                                                     util/filter-valid-urls)))))
+                                                      :mappings
+                                                      (into env)
+                                                      util/filter-valid-urls)))))
 
 (defn process-query [query query-opts tenant]
   (restql/execute-query-channel :mappings (find-mappings tenant)
-                                :encoders   base-encoders
-                                :query      query
+                                :encoders base-encoders
+                                :query query
                                 :query-opts (plugin/get-query-opts-with-plugins query-opts)))
 
 (defn strip-nils [map]
@@ -43,8 +43,7 @@
                  (assoc r k v))) {} map))
 
 (defn additional-headers [query]
-  (let [data (edn/read-string query)
-        metadata (meta data)
+  (let [metadata (meta query)
         cache-control-value (:cache-control metadata)]
     (if (nil? cache-control-value)
       {}
@@ -74,12 +73,12 @@
           debugging (-> req :query-params (get "_debug") boolean)
 
           base-opts {:debugging debugging
-                :tenant tenant
-                :info {:type :ad-hoc}}
+                     :tenant    tenant
+                     :info      {:type :ad-hoc}}
 
           forward-params (if (nil? (:forward-prefix env))
-                            {}
-                            (into {} (filter (partial util/is-contextual? (:forward-prefix env)) params)))
+                           {}
+                           (into {} (filter (partial util/is-contextual? (:forward-prefix env)) params)))
           opts (into {:forward-params forward-params} base-opts)
 
           [query-ch exception-ch] (process-query query opts tenant)
@@ -88,18 +87,18 @@
       (go
         (alt!
           timeout-ch ([] (warn {:session uid} "request handler timed out") (>! error-ch {:status 500 :body "Request timed out"}))
-          exception-ch ([err] (>! error-ch (util/error-output err)) )
+          exception-ch ([err] (>! error-ch (util/error-output err)))
           query-ch ([result]
-            (debug {:session uid} " finishing request handler")
-            (>! result-ch {:body (util/format-response-body result)
-                           :headers (make-headers query-entry result)
-                           :status (util/calculate-response-status-code result)})))))
+                     (debug {:session uid} " finishing request handler")
+                     (>! result-ch {:body    (util/format-response-body result)
+                                    :headers (make-headers query-entry result)
+                                    :status  (util/calculate-response-status-code result)})))))
     (catch [:type :validation-error] {:keys [message]}
       (go (>! error-ch (util/json-output 400 {:error "VALIDATION_ERROR" :message message}))))
     (catch [:type :parse-error] {:keys [line column]}
       (go (>! error-ch (util/json-output 400 {:error "PARSE_ERROR" :line line :column column}))))
     (catch Exception e (.printStackTrace e)
-      (go (>! error-ch (util/json-output 400 {:error "UNKNOWN_ERROR" :message (.getMessage e)}))))))
+                       (go (>! error-ch (util/json-output 400 {:error "UNKNOWN_ERROR" :message (.getMessage e)}))))))
 
 (defn- parse-query [req]
   (try+
@@ -117,12 +116,12 @@
                   (go
                     (alt!
                       result-ch ([result]
-                                  (debug {:time (- (System/currentTimeMillis) time-before )
-                                         :success true}
-                                        "restQL Query finished")
+                                  (debug {:time    (- (System/currentTimeMillis) time-before)
+                                          :success true}
+                                         "restQL Query finished")
                                   (send! channel result))
                       error-ch ([err]
-                                 (error {:time (- (System/currentTimeMillis) time-before )
+                                 (error {:time    (- (System/currentTimeMillis) time-before)
                                          :success false}
                                         "restQL Query finished")
                                  (send! channel err)))))))
@@ -130,60 +129,60 @@
 (defn run-saved-query
   [req]
   (with-channel req channel
-    (debug "Trying to retrieve query" (-> req :params :id))
-    (let [id (-> req :params :id)
-          query-ns (-> req :params :namespace)
-          rev (-> req :params :rev read-string)
-          headers (-> req :headers)
-          req-headers (into {"restql-query-control" "saved"
-                             "restql-query-namespace" query-ns
-                             "restql-query-id" id
-                             "restql-query-revision" rev} (:headers req))
-          params (-> req :query-params keywordize-keys)
-          debugging (-> params (get "_debug") boolean)
+                (debug "Trying to retrieve query" (-> req :params :id))
+                (let [id (-> req :params :id)
+                      query-ns (-> req :params :namespace)
+                      rev (-> req :params :rev read-string)
+                      headers (-> req :headers)
+                      req-headers (into {"restql-query-control"   "saved"
+                                         "restql-query-namespace" query-ns
+                                         "restql-query-id"        id
+                                         "restql-query-revision"  rev} (:headers req))
+                      params (-> req :query-params keywordize-keys)
+                      debugging (-> params (get "_debug") boolean)
 
-          ; Retrieving tenant (env is always prioritized)
-          env-tenant (some-> env :tenant)
-          tenant (if (nil? env-tenant) (some-> params :tenant) env-tenant)
-          forward-params (if (nil? (:forward-prefix env))
-                           {}
-                           (into {} (filter (partial util/is-contextual? (:forward-prefix env)) params)))
-          opts {:debugging debugging
-                :tenant tenant
-                :forward-params forward-params
-                :info {:type :saved
-                       :namespace query-ns
-                       :id id
-                       :revision rev}}
+                      ; Retrieving tenant (env is always prioritized)
+                      env-tenant (some-> env :tenant)
+                      tenant (if (nil? env-tenant) (some-> params :tenant) env-tenant)
+                      forward-params (if (nil? (:forward-prefix env))
+                                       {}
+                                       (into {} (filter (partial util/is-contextual? (:forward-prefix env)) params)))
+                      opts {:debugging      debugging
+                            :tenant         tenant
+                            :forward-params forward-params
+                            :info           {:type      :saved
+                                             :namespace query-ns
+                                             :id        id
+                                             :revision  rev}}
 
-          query-entry (find-query query-ns id rev)
-          context (into (:headers req) (:query-params req) )
-          interpolated-query (util/parse query-entry context)
-          query (util/merge-headers req-headers interpolated-query)
-          time-before (System/currentTimeMillis)
-          [result-ch error-ch] (process-query query opts tenant)]
-          (debug "Query" query-ns "/" id "rev" rev "retrieved")
-      (go
-        (alt!
-          result-ch ([result]
-                      (debug {:time (- (System/currentTimeMillis) time-before )
-                             :success true}
-                            "restQL Query finished")
-                      (send! channel {:headers (make-headers interpolated-query result)
-                                      :status (util/calculate-response-status-code result)
-                                      :body (util/format-response-body result)}))
-          error-ch ([err]
-                     (error {:time (- (System/currentTimeMillis) time-before )
-                             :success false}
-                            "restQL Query finished")
-                     (send! channel err)))))))
+                      query-entry (find-query query-ns id rev)
+                      context (into (:headers req) (:query-params req))
+                      interpolated-query (util/parse query-entry context)
+                      query (util/merge-headers req-headers interpolated-query)
+                      time-before (System/currentTimeMillis)
+                      [result-ch error-ch] (process-query query opts tenant)]
+                  (debug "Query" query-ns "/" id "rev" rev "retrieved")
+                  (go
+                    (alt!
+                      result-ch ([result]
+                                  (debug {:time    (- (System/currentTimeMillis) time-before)
+                                          :success true}
+                                         "restQL Query finished")
+                                  (send! channel {:headers (make-headers interpolated-query result)
+                                                  :status  (util/calculate-response-status-code result)
+                                                  :body    (util/format-response-body result)}))
+                      error-ch ([err]
+                                 (error {:time    (- (System/currentTimeMillis) time-before)
+                                         :success false}
+                                        "restQL Query finished")
+                                 (send! channel err)))))))
 
 
 
 (c/defroutes
   routes
   ; Routes to health checking
-  (c/OPTIONS "*" request {:status 204} )
+  (c/OPTIONS "*" request {:status 204})
   (c/GET "/health" [] "restql is healthy :)")
   (c/GET "/resource-status" [] "OK")
 

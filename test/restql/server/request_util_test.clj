@@ -35,18 +35,18 @@
 
   (testing "Is query string with merged headers"
     (is (=
-          "[:foo {:from :foo, :with-headers {\"x-content\" \"bla\"}}]"
+          [:foo {:from :foo, :with-headers {"x-content" "bla"}}]
           (merge-headers {"x-content" "bla"
                           "host" "http://localhost:8080"}
-                         "[:foo {:from :foo}]")))))
+                         [:foo {:from :foo}])))))
 
 (deftest parse-restql-language-query
 
   (testing "Parse query should work for valid EDN"
     (is
-      (= "[:foo {:from :foo}\n:bar {:from :bar}]"
+      (= [:foo {:from :foo} :bar {:from :bar}]
          (parse "from foo\nfrom bar" {}))
-      (= "[:foo {:from :foo} :bar {:from :bar}]\n"
+      (= [:foo {:from :foo} :bar {:from :bar}]
          (parse "from foo\nfrom bar" {} true)))))
 
 (deftest extract-body-from-request
@@ -61,7 +61,7 @@
 
   (testing "Parse query should work for valid EDN"
     (is
-      (= "[:foo {:from :foo}\n:bazinga {:from :bar :with {:id \"123\"}}]"
+      (= [:foo {:from :foo} :bazinga {:from :bar :with {:id "123"}}]
          (parse-req {:params {"id" 123}
                      :headers {}
                      :body "test/resources/sample_query.rql"})))))
