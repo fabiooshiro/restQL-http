@@ -1,7 +1,7 @@
 (defproject restql-server "v2.2.2" :description "RestQL Server"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+            :url  "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [http-kit "2.2.0"]
                  [compojure "1.4.0"]
@@ -35,13 +35,11 @@
   :zip ["Dockerfile" {:file-name "restql-server-standalone.jar" :file-folder "target/uberjar"}]
   :uberjar-name "restql-server-standalone.jar"
   :profiles {:uberjar {:aot :all
-                       :env {:port "9000"
-                             :manager-port "9001"
-			     :cache-ttl "30000"}}
-             :dev {:env {:port "9000"
-                         :manager-port "9001"
-                         :cache-ttl "30000"
-                         :cards "http://api.magicthegathering.io/v1/cards"
-                         :card "http://api.magicthegathering.io/v1/cards/:id"
-                         :mongo-url "mongodb://localhost:27017/restql-server" }
-                   :plugins [[lein-cloverage "1.0.9"]]}})
+                       :env {:port      "9000"
+                             :cache-ttl "30000"}}
+             :dev     {:env     {:port      "9000"
+                                 :cache-ttl "30000"
+                                 :cards     "http://api.magicthegathering.io/v1/cards"
+                                 :card      "http://api.magicthegathering.io/v1/cards/:id"
+                                 :mongo-url "mongodb://localhost:27017/restql-server"}
+                       :plugins [[lein-cloverage "1.0.9"]]}})
