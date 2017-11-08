@@ -22,7 +22,7 @@
   "Validates a given query and saves it into the database"
   [query-ns id query mappings]
 
-  (let [parsed-query (-> query (util/parse {}) edn/read-string)]
+  (let [parsed-query (util/parse query {})]
     (if (validator/validate {:mappings mappings} parsed-query)
       (db/save-query query-ns id {:text query})
       (do (println query) (throw+ {:type :pdg-query-validation-error :data query})))))
