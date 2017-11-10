@@ -139,7 +139,7 @@
                                          "restql-query-id"        id
                                          "restql-query-revision"  rev} (:headers req))
                       params (-> req :query-params keywordize-keys)
-                      debugging (-> params (get "_debug") boolean)
+                      debugging (-> params (get :_debug false) boolean)
 
                       ; Retrieving tenant (env is always prioritized)
                       env-tenant (some-> env :tenant)
