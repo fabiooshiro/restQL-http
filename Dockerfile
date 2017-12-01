@@ -6,7 +6,7 @@ EXPOSE $PORT
 WORKDIR /opt/source
 COPY . /opt/source
 
-RUN apk add --update -q zip curl nodejs nodejs-npm && \
+RUN apk add --update -q --no-cache zip && \
     ./scripts/build-dist.sh && \
     mkdir -p /opt/app/ && \
     cp restql-server.zip /opt/app/ && \
@@ -14,7 +14,7 @@ RUN apk add --update -q zip curl nodejs nodejs-npm && \
     unzip restql-server.zip && \
     rm restql-server.zip && \
     rm -rf /opt/source/ && \
-    apk del --purge zip nodejs curl
+    apk del --purge zip
 
 WORKDIR /opt/app
 

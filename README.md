@@ -35,17 +35,6 @@ Post to http://your-server.ip:9000/run-query the following body:
 from planets as allPlanets
 ```
 
-## Running restQL Manager
-
-restQL Manager allows you to easily develop and test new queries, save resources endpoints, check resources status and save queries that can be used by clients just referencing the query's name.
-
-restQL manager requires MongoDB.
-
-1. Edit env.sh and set the appropriate MONGO_URL parameter,
-2. Run ./bin/manager.sh to start the manager.
-
-Access http://your-server.ip:9001/
-
 ## Next steps
 
 1. Learn restQL [query language](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language),
