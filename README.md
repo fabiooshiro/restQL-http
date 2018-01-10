@@ -16,7 +16,9 @@ To have a general view of restQL you may check [http://restql.b2w.io](http://res
 
 We've also developed a game to help new comers: http://game.b2w.io/
 
-If you want to embed restQL directly into your JVM application you may want to check [restQL-core](https://github.com/B2W-BIT/restQL-core) and [restQL-core-java](https://github.com/B2W-BIT/restQL-core-java)
+If you want to embed restQL directly into your JVM application you may want to check [restQL-core](https://github.com/B2W-BIT/restQL-core) and [restQL-core-java](https://github.com/B2W-BIT/restQL-core-java).
+
+To use saved queries just spin a [restQL-manager](https://github.com/B2W-BIT/restQL-manager) instance.
 
 # Getting Started
 
