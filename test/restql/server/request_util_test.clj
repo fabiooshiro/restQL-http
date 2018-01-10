@@ -166,7 +166,7 @@
   (testing "Format should remove headers"
     (is (=
           {:details {:metadata {:x 1}}}
-          (format-response-value {:details {:headers {"foo" "bar"} :metadata {:x 1}}})))))
+          (format-response-item {:details {:headers {"foo" "bar"} :metadata {:x 1}}})))))
 
 
 (deftest matching-contextual-items
