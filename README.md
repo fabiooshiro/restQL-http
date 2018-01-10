@@ -49,7 +49,6 @@ As prerequisites to build restQL-server from source we need:
 
 + Java 8
 + Leiningen
-+ MongoDB (To store and run saved queries)
 
 Build the server using the build script: `scripts/build-dist.sh`. 
 
