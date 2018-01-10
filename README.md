@@ -12,11 +12,11 @@ from hero as heroList
         name = search.results.name
 ```
 
-You can learn more about restQL query language [here](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language) and [here](http://restql.b2w.io).
+To have a general view of restQL you may check [http://restql.b2w.io](http://restql.b2w.io). You can learn more about restQL  query language [here](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language)
 
 We've also developed a game to help new comers: http://game.b2w.io/
 
-If you want to embed restQL directly into your JVM application you may want to check [restQL core](https://github.com/B2W-BIT/restQL-core) 
+If you want to embed restQL directly into your JVM application you may want to check [restQL-core](https://github.com/B2W-BIT/restQL-core) and [restQL-core-java](https://github.com/B2W-BIT/restQL-core-java)
 
 # Getting Started
 
