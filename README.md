@@ -18,7 +18,7 @@ We've also developed a game to help new comers: http://game.b2w.io/
 
 If you want to embed restQL directly into your JVM application you may want to check [restQL-core](https://github.com/B2W-BIT/restQL-core) and [restQL-core-java](https://github.com/B2W-BIT/restQL-core-java).
 
-To use saved queries just spin a [restQL-manager](https://github.com/B2W-BIT/restQL-manager) instance.
+To use saved queries just spin a [restQL-manager](https://github.com/B2W-BIT/restQL-manager) instance. Saved querie requires a MongoDB server.
 
 # Getting Started
 
