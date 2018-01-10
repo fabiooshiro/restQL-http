@@ -183,24 +183,18 @@
 (defn format-response-details
   "Formats the response details"
   [details]
-
-  (dissoc details :headers))
-
-(defn format-response-value
-  "Formats the response value"
-  [item]
-
-  (let [details (-> item :details format-response-details)]
-    (assoc item
-      :details details)))
+  (dissoc details :headers)
+)
 
 (defn format-response-item
   "Formats a response item"
   [item]
 
-  (cond
-    (sequential? item) (map format-response-value item)
-    :else (format-response-value item)))
+  (if (sequential? (:details item))
+    (assoc item :details (map format-response-details (:details item)))
+    (assoc item :details (format-response-details (:details item)))
+  )
+)
 
 (defn format-response-body
   "Formats the response body"

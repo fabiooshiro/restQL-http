@@ -27,14 +27,24 @@
   (doseq [p (plugin/get-loaded-plugins)]
     (info "Loaded: "(:name p))))
 
+(defn connect-to-mongo []
+  (if (:mongo-url env)
+    (do
+      (info "Connecting to MongoDB:" (:mongo-url env))
+      (db/connect! (:mongo-url env))
+    )
+  )
+)
+
 (defn -main
   "Runs the restQL-server"
   [& args]
 
   (let [port (get-port 9000)]
     (info "Starting the amazing restQL Server!")
-    (info "Connecting to MongoDB:" (:mongo-url env))
-    (db/connect! (:mongo-url env))
+
+    (connect-to-mongo)
+
     (info "Loading plugins")
     (plugin/load-plugins!)
     (display-loaded-plugins!)

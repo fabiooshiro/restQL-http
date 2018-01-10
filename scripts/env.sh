@@ -1,4 +1,5 @@
+#!/usr/bin/env bash
 export PORT=9000
 
 export MONGO_URL=mongodb://localhost:27017/restql-server
-export CARDS=http://api.magicthegathering.io/v1/cards
+export PLANETS=https://swapi.co/api/planets/:id
