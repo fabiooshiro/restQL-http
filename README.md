@@ -29,7 +29,7 @@ restQL Server allows you to post ad-hoc queries and to reference resources pre-c
 3. Edit the file env.sh with the resources you want to invoke,
 3. Run bin/run.sh.
 
-Post to http://your-server.ip:9000/run-query the following body:
+Post to http://your-server.ip:9000/run-query the body below and content-type text/plain:
 
 ```
 from planets as allPlanets
