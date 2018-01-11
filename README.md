@@ -14,7 +14,7 @@ from hero as heroList
 
 Useful links
 
-* [restql.b2w.io](http://restql.b2w.io): Project home page, useful to get a general grasp of restQL,
+* [restql.b2w.io](http://restql.b2w.io): Project home page, to get a general grasp of restQL,
 * [game.b2w.io](http://game.b2w.io): A game developed to teach the basics of restQL language,
 * [restQL-core](https://github.com/B2W-BIT/restQL-core): If you want to embed restQL directly into your Clojure application,
 * [restQL-core-java](https://github.com/B2W-BIT/restQL-core): If you want to embed restQL directly into your Java application,
