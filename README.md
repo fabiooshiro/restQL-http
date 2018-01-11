@@ -20,6 +20,7 @@ Useful links
 * [restQL-core-java](https://github.com/B2W-BIT/restQL-core): If you want to embed restQL directly into your Java application,
 * [restQL-manager](https://github.com/B2W-BIT/restQL-manager): To manage saved queries and resources endpoints. restQL-manager requires a MongoDB instance.
 * [Tackling microservice query complexity](https://medium.com/b2w-engineering/restql-tackling-microservice-query-complexity-27def5d09b40): Project motivation and history.
+* [Wiki](https://github.com/B2W-BIT/restQL-server/wiki): Project documentation.
 
 # Getting Started
 
