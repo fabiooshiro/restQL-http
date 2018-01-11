@@ -84,6 +84,8 @@ docker run -p 27017-27017 --name mongo-docker mongo
 docker run --link mongo-docker -p 9000:9000 -e JAVA_OPTS="-Dmongo-url=mongodb://mongo-docker:27017/restql-server -Dplanets=http://swapi.co/api/planets/" restql-server-img
 ```
 
+The MongoDB dependency is optional and is used to run saved queries.
+
 ## License
 
 Copyright © 2016-2017 B2W Digital
