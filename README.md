@@ -14,13 +14,15 @@ from hero as heroList
 
 Useful links
 
-* [restql.b2w.io](http://restql.b2w.io): Project home page, to get a grasp of restQL,
+* [restql.b2w.io](http://restql.b2w.io): Project home page,
 * [game.b2w.io](http://game.b2w.io): A game developed to teach the basics of restQL language,
 * [restQL-core](https://github.com/B2W-BIT/restQL-core): If you want to embed restQL directly into your Clojure application,
 * [restQL-core-java](https://github.com/B2W-BIT/restQL-core): If you want to embed restQL directly into your Java application,
 * [restQL-manager](https://github.com/B2W-BIT/restQL-manager): To manage saved queries and resources endpoints. restQL-manager requires a MongoDB instance.
 * [Tackling microservice query complexity](https://medium.com/b2w-engineering/restql-tackling-microservice-query-complexity-27def5d09b40): Project motivation and history.
 * [Wiki](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language): Project documentation.
+
+If you need help or assistance, we've just created a Google Groups: https://groups.google.com/forum/#!forum/restql
 
 # Getting Started
 
