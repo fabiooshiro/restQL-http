@@ -19,13 +19,13 @@ Links
 * [restQL-core](https://github.com/B2W-BIT/restQL-core): If you want to embed restQL directly into your Clojure application,
 * [restQL-core-java](https://github.com/B2W-BIT/restQL-core): If you want to embed restQL directly into your Java application,
 * [restQL-manager](https://github.com/B2W-BIT/restQL-manager): To manage saved queries and resources endpoints. restQL-manager requires a MongoDB instance.
+* [Tackling microservice query complexity](https://medium.com/b2w-engineering/restql-tackling-microservice-query-complexity-27def5d09b40): Project motivation and history
 * [Wiki](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language): Project documentation.
 
 Who're talking about restQL
 
 * [infoQ: restQL, a Microservices Query Language, Released on GitHub](https://www.infoq.com/news/2018/01/restql-released)
 * [infoQ: 微服务查询语言restQL已在GitHub上发布](http://www.infoq.com/cn/news/2018/01/restql-released)
-* [Medium: Tackling microservice query complexity](https://medium.com/b2w-engineering/restql-tackling-microservice-query-complexity-27def5d09b40)
 * [OSDN Mag: マイクロサービスクエリ言語「restQL 2.3」公開](https://mag.osdn.jp/18/01/12/160000)
 
 # Getting Started
