@@ -23,7 +23,7 @@ Useful links
 
 Articles
 
-* [restQL, a Microservices Query Language, Released on GitHub(]https://www.infoq.com/news/2018/01/restql-released)
+* [restQL, a Microservices Query Language, Released on GitHub](https://www.infoq.com/news/2018/01/restql-released)
 * [微服务查询语言restQL已在GitHub上发布](http://www.infoq.com/cn/news/2018/01/restql-released)
 * [Tackling microservice query complexity](https://medium.com/b2w-engineering/restql-tackling-microservice-query-complexity-27def5d09b40)
 * [restQL: Lidando com a complexidade de consultas a microservices](https://www.infoq.com/br/articles/restql-complexidade-consultas-microservices)
