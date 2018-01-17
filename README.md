@@ -12,7 +12,7 @@ from hero as heroList
         name = search.results.name
 ```
 
-Useful links
+Links
 
 * [restql.b2w.io](http://restql.b2w.io): Project home page,
 * [game.b2w.io](http://game.b2w.io): A game developed to teach the basics of restQL language,
@@ -21,7 +21,7 @@ Useful links
 * [restQL-manager](https://github.com/B2W-BIT/restQL-manager): To manage saved queries and resources endpoints. restQL-manager requires a MongoDB instance.
 * [Wiki](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language): Project documentation.
 
-Articles
+Who're talking about restQL
 
 * [restQL, a Microservices Query Language, Released on GitHub](https://www.infoq.com/news/2018/01/restql-released)
 * [微服务查询语言restQL已在GitHub上发布](http://www.infoq.com/cn/news/2018/01/restql-released)
