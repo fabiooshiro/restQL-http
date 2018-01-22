@@ -48,8 +48,7 @@ from planets as allPlanets
 ## Next steps
 
 1. Learn restQL [query language](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language),
-2. Learn about the [manager and saved queries](https://github.com/B2W-BIT/restQL-server/wiki/Manager-and-Saved-Queries),
-3. Get involved :)
+2. Get involved :) We're looking for contributors, if you're interested ping ricardo.mayerhofer@b2wdigital.com
 
 # Source and Docker
 
