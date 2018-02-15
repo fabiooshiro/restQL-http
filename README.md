@@ -41,12 +41,8 @@ restQL Server allows you to post ad-hoc queries and to reference resources pre-c
 
 Post to http://your-server.ip:9000/run-query the body below and content-type text/plain:
 
-```
-from planets as allPlanets
-```
-
 ```clojure
-curl -H "Content-Type: text/plain" localhost:9000/run-query -d "from planets"
+curl -H "Content-Type: text/plain" localhost:9000/run-query -d "from planets as allPlanets" 
 ```
 
 ## Next steps
