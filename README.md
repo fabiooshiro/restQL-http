@@ -45,6 +45,10 @@ Post to http://your-server.ip:9000/run-query the body below and content-type tex
 from planets as allPlanets
 ```
 
+```clojure
+curl -H "Content-Type: text/plain" localhost:9000/run-query -d "from planets"
+```
+
 ## Next steps
 
 1. Learn restQL [query language](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language),
