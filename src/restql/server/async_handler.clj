@@ -17,6 +17,7 @@
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
             [slingshot.slingshot :refer [try+]]))
+
 (defonce FIND_QUERY_TTL 86400000)
 (def find-query (cache/cached
                   (fn [query-ns id rev]
@@ -24,11 +25,10 @@
                   FIND_QUERY_TTL))
 
 (def find-mappings (cache/cached (fn [id] (cond
-                                            (nil? id) (util/filter-valid-urls env)
+                                            (nil? id) env
                                             :else (-> (dbcore/find-tenant-by-id id)
                                                       :mappings
-                                                      (into env)
-                                                      util/filter-valid-urls)))))
+                                                      (into env))))))
 
 (defn process-query [query query-opts tenant]
   (restql/execute-query-channel :mappings (find-mappings tenant)

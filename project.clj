@@ -1,4 +1,4 @@
-(defproject restql-server "v2.3" :description "restQL Server"
+(defproject restql-server "v2.3.1" :description "restQL Server"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url  "http://www.eclipse.org/legal/epl-v10.html"}
@@ -20,7 +20,7 @@
                  [ring/ring-json "0.4.0"]
                  [org.clojure/java.classpath "0.2.3"]
                  [com.novemberain/monger "3.0.2"]
-                 [b2wdigital/restql-core "2.3"]
+                 [b2wdigital/restql-core "2.3.1"]
                  [prismatic/schema "1.1.6"]
                  [commons-validator "1.5.1"]
                  [org.clojure/tools.logging "0.4.0"]

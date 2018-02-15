@@ -95,27 +95,6 @@
    :headers {"Content-Type" "application/json"}
    :body    (json/write-str {:message message})})
 
-(defn valid-url?
-  "Verifies if a given string is a valid URL"
-  [url-str]
-
-  (let [validator (UrlValidator.)]
-    (or
-      (.isValid validator url-str)
-      (.startsWith url-str "http://localhost")
-      (.startsWith url-str "https://localhost"))))
-
-
-(defn filter-valid-urls
-  "Filters all valid URLs of a given map"
-  [mp]
-
-  (reduce-kv
-    (fn [m k v]
-      (if (valid-url? v) (into m {k v}) m))
-    {}
-    (into {} mp)))
-
 (defn make-revision-link
   "Returns a revision route"
   [query-ns id rev]

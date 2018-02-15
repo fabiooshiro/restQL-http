@@ -88,29 +88,6 @@
            :body "{\"message\":{\"foo\":\"bar\"}}"}
           (json-output 200 {:foo "bar"})))))
 
-(deftest validating-and-filtering-urls
-
-  (testing "Should return true if valid url and false otherwise"
-    (is (=
-          [true true false false true]
-          (map valid-url? ["http://localhost:8080/run-query"
-                           "https://0.0.0.0:8080/run-query"
-                           "http://foo"
-                           "some-crazy-string"
-                           "http://www.google.com.br"]))))
-
-  (testing "Should filter invalid urls"
-    (is (=
-          {:self "http://localhost:8080/run-query"
-           :self-pub "https://0.0.0.0:8080/run-query"
-           :google "http://www.google.com.br"}
-          (filter-valid-urls {:self "http://localhost:8080/run-query"
-                              :self-pub "https://0.0.0.0:8080/run-query"
-                              :foo "http://foo"
-                              :crazy "some-crazy-string"
-                              :google "http://www.google.com.br"})))))
-
-
 (deftest handling-restql-manager-urls
 
   (testing "Creating correct revision link"
