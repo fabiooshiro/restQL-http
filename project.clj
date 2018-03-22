@@ -1,7 +1,7 @@
 (defproject restql-server "v2.3.2" :description "restQL Server"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
-            :url  "http://www.eclipse.org/legal/epl-v10.html"}
+            :url  "http://restql.b2w.io"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [http-kit "2.3.0-alpha4"]
                  [compojure "1.4.0"]
