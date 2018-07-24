@@ -50,6 +50,13 @@ curl -H "Content-Type: text/plain" localhost:9000/run-query -d "from planets as 
 1. Learn restQL [query language](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language),
 2. Get involved :) We're looking for contributors, if you're interested ping ricardo.mayerhofer@b2wdigital.com
 
+# Help and community
+
+If you need help you can reach the community on Telegram:
+- https://t.me/restQL (English)
+- https://t.me/restQLBR (Portuguese)
+
+
 # Source and Docker
 
 ## Building From Source Code
