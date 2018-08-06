@@ -14,6 +14,8 @@ from hero as heroList
 
 Links
 
+* [@restQL](https://t.me/restQL): restQL Telegram Group
+* [@restQLBR](https://t.me/restQLBR): Brazilian restQL Telegram Group
 * [restql.b2w.io](http://restql.b2w.io): Project home page,
 * [game.b2w.io](http://game.b2w.io): A game developed to teach the basics of restQL language,
 * [restQL-core](https://github.com/B2W-BIT/restQL-core): If you want to embed restQL directly into your Clojure application,
