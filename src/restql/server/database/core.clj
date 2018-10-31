@@ -4,7 +4,6 @@
             [clojure.edn :as edn]
             [restql.core.validator.core :as validator]
             [slingshot.slingshot :refer [throw+]]
-            [org.httpkit.client :as http]
             [restql.server.request-util :as util]))
 
 ;re-exporting find-query
