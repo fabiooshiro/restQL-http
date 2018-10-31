@@ -1,5 +1,5 @@
 (ns restql.server.server
-  (:require [org.httpkit.server :as server]
+  (:require [ring.adapter.jetty :as ring]
             [environ.core :refer [env]]
             [restql.core.log :refer [info]]
             [restql.server.async-handler :as a]))
@@ -9,9 +9,11 @@
 
 (defn start!
   "Starts the server"
-  ([] (start! 3000))
-  ([port]
-   (reset! server (server/run-server #'a/app {:port port}))))
+  ([] (start! 3000 30000))
+  ([port timeout]
+   (reset! server (ring/run-jetty #'a/app {:port port
+                                           :async? true
+                                           :async-timeout timeout}))))
 
 (defn stop!
   "Stops the server"
@@ -22,5 +24,5 @@
     (reset! server nil)))
 
 (comment
-  (start! 3000)
+  (start! 3000 30000)
   (stop!))

@@ -12,6 +12,11 @@
 
   (if (contains? env :port) (read-string (env :port))  default))
 
+(defn get-handler-timeout
+  "Gets a timeout for server hanldlers, or the default timeout"
+  [default]
+  (if (contains? env :handler-timeout) (read-string (env :hanldler-timeout)) default))
+
 (defn start-api?
   "Verifies if it should start the api"
   []
@@ -40,7 +45,8 @@
   "Runs the restQL-server"
   [& args]
 
-  (let [port (get-port 9000)]
+  (let [port (get-port 9000)
+        handler-timeout (get-handler-timeout 30000)]
     (info "Starting the amazing restQL Server!")
 
     (connect-to-mongo)
@@ -50,5 +56,5 @@
     (display-loaded-plugins!)
     (when (start-api?)
       (info "Starting server")
-      (server/start! port)
+      (server/start! port handler-timeout)
       (info "restQL Server running on port" port))))

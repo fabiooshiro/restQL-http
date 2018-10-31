@@ -1,5 +1,6 @@
 (ns restql.server.async-handler
   (:require [compojure.core :as c]
+            [compojure.route :as route]
             [clojure.walk :refer [keywordize-keys stringify-keys]]
             [restql.core.api.restql :as restql]
             [restql.core.encoders.core :refer [base-encoders]]
@@ -13,9 +14,7 @@
             [clojure.tools.reader.edn :as edn]
             [environ.core :refer [env]]
             [clojure.core.async :refer [chan go go-loop >! >!! <! alt! timeout]]
-            [org.httpkit.server :refer [with-channel send!]]
             [ring.middleware.params :refer [wrap-params]]
-            [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
             [slingshot.slingshot :refer [try+]]))
 
 (defonce FIND_QUERY_TTL 86400000)
@@ -100,106 +99,112 @@
     (catch Exception e (.printStackTrace e)
                        (go (>! error-ch (util/json-output 400 {:error "UNKNOWN_ERROR" :message (.getMessage e)}))))))
 
-(defn- parse-query [req]
-  (try+
-    {:status 200 :body (util/parse-req req)}
-    (catch [:type :parse-error] {:keys [line column reason]}
-      {:status 400 :body (str "Parsing error in line " line ", column " column "\n" reason)})))
+(defn- parse-query
+  [req respond raise]
+    (try+
+      (respond {:status 200 :body (util/parse-req req)})
+      (catch [:type :parse-error] {:keys [line column reason]}
+        (respond {:status 400 :body (str "Parsing error in line " line ", column " column "\n" reason)}))))
 
 (defn run-query
-  [req]
-  (with-channel req channel
-                (let [time-before (System/currentTimeMillis)
-                      result-ch (chan)
-                      error-ch (chan)]
-                  (handle-request req result-ch error-ch)
-                  (go
-                    (alt!
-                      result-ch ([result]
-                                  (debug {:time    (- (System/currentTimeMillis) time-before)
-                                          :success true}
-                                         "restQL Query finished")
-                                  (send! channel result))
-                      error-ch ([err]
-                                 (error {:time    (- (System/currentTimeMillis) time-before)
-                                         :success false}
-                                        "restQL Query finished")
-                                 (send! channel err)))))))
+  ([req respond raise]
+    (let [time-before (System/currentTimeMillis)
+          result-ch (chan)
+          error-ch (chan)]
+      (handle-request req result-ch error-ch)
+        (go
+          (alt!
+            result-ch ([result]
+                        (debug {:time    (- (System/currentTimeMillis) time-before)
+                                :success true}
+                          "restQL Query finished")
+                        (respond result))
+            error-ch ([err]
+                        (error {:time    (- (System/currentTimeMillis) time-before)
+                                :success false}
+                          "restQL Query finished")
+                        (respond err)))))))
 
 (defn run-saved-query
-  [req]
-  (with-channel req channel
-                (debug "Trying to retrieve query" (-> req :params :id))
-                (let [id (-> req :params :id)
-                      query-ns (-> req :params :namespace)
-                      rev (-> req :params :rev read-string)
-                      headers (-> req :headers)
-                      req-headers (into {"restql-query-control"   "saved"
-                                         "restql-query-namespace" query-ns
-                                         "restql-query-id"        id
-                                         "restql-query-revision"  rev} (:headers req))
-                      params (-> req :query-params keywordize-keys)
-                      debugging (-> params (get :_debug false) boolean)
+  [req respond raise]
+    (debug "Trying to retrieve query" (-> req :params :id))
+    (try+
+      (let [id (-> req :params :id)
+            query-ns (-> req :params :namespace)
+            rev (-> req :params :rev read-string)
+            headers (-> req :headers)
+            req-headers (into {"restql-query-control"   "saved"
+                                "restql-query-namespace" query-ns
+                                "restql-query-id"        id
+                                "restql-query-revision"  rev} (:headers req))
+            params (-> req :query-params keywordize-keys)
+            debugging (-> params (get :_debug false) boolean)
 
-                      ; Retrieving tenant (env is always prioritized)
-                      env-tenant (some-> env :tenant)
-                      tenant (if (nil? env-tenant) (some-> params :tenant) env-tenant)
-                      forward-params (if (nil? (:forward-prefix env))
-                                       {}
-                                       (into {} (filter (partial util/is-contextual? (:forward-prefix env)) params)))
-                      opts {:debugging      debugging
-                            :tenant         tenant
-                            :forward-params forward-params
-                            :info           {:type      :saved
-                                             :namespace query-ns
-                                             :id        id
-                                             :revision  rev}}
+            ; Retrieving tenant (env is always prioritized)
+            env-tenant (some-> env :tenant)
+            tenant (if (nil? env-tenant) (some-> params :tenant) env-tenant)
+            forward-params (if (nil? (:forward-prefix env))
+                              {}
+                              (into {} (filter (partial util/is-contextual? (:forward-prefix env)) params)))
+            opts {:debugging      debugging
+                  :tenant         tenant
+                  :forward-params forward-params
+                  :info           {:type      :saved
+                                    :namespace query-ns
+                                    :id        id
+                                    :revision  rev}}
 
-                      query-entry (find-query query-ns id rev)
-                      context (into (:headers req) (:query-params req))
-                      interpolated-query (util/parse query-entry context)
-                      query (util/merge-headers req-headers interpolated-query)
-                      time-before (System/currentTimeMillis)
-                      [result-ch error-ch] (process-query query opts tenant)]
-                  (debug "Query" query-ns "/" id "rev" rev "retrieved")
-                  (go
-                    (alt!
-                      result-ch ([result]
-                                  (debug {:time    (- (System/currentTimeMillis) time-before)
-                                          :success true}
-                                         "restQL Query finished")
-                                  (send! channel {:headers (make-headers interpolated-query result)
-                                                  :status  (util/calculate-response-status-code result)
-                                                  :body    (util/format-response-body result)}))
-                      error-ch ([err]
-                                 (error {:time    (- (System/currentTimeMillis) time-before)
-                                         :success false}
-                                        "restQL Query finished")
-                                 (send! channel err)))))))
+            query-entry (find-query query-ns id rev)
+            context (into (:headers req) (:query-params req))
+            interpolated-query (util/parse query-entry context)
+            query (util/merge-headers req-headers interpolated-query)
+            time-before (System/currentTimeMillis)
+            [result-ch error-ch] (process-query query opts tenant)]
+        (debug "Query" query-ns "/" id "rev" rev "retrieved")
+        (go
+          (alt!
+            result-ch ([result]
+                        (debug {:time    (- (System/currentTimeMillis) time-before)
+                                :success true}
+                                "restQL Query finished")
+                        (respond {:headers (make-headers interpolated-query result)
+                                  :status  (util/calculate-response-status-code result)
+                                  :body    (util/format-response-body result)}))
+            error-ch ([err]
+                        (error {:time    (- (System/currentTimeMillis) time-before)
+                                :success false}
+                              "restQL Query finished")
+                        (respond (str err))))))
+      (catch [:type :validation-error] {:keys [message]}
+        (respond (util/json-output 400 {:error "VALIDATION_ERROR" :message message})))
+      (catch [:type :parse-error] {:keys [line column]}
+        (respond (util/json-output 400 {:error "PARSE_ERROR" :line line :column column})))
+      (catch Exception e (.printStackTrace e)
+                        (respond (util/json-output 400 {:error "UNKNOWN_ERROR" :message (.getMessage e)})))))
 
 
 
 (c/defroutes
   routes
   ; Routes to health checking
-  (c/OPTIONS "*" request {:status 204})
+  (c/OPTIONS "*" [] {:status 204})
   (c/GET "/health" [] "restql is healthy :)")
   (c/GET "/resource-status" [] "OK")
 
   ; Route to validate a query
-  (c/POST "/validate-query" req (util/validate-request req))
+  (c/POST "/validate-query" [] util/validate-request)
 
   ; Route to run ad hoc queries
-  (c/POST "/run-query" req (run-query req))
+  (c/POST "/run-query" [] run-query)
 
   ; Route to check the parsing of the query
-  (c/POST "/parse-query" req (parse-query req))
+  (c/POST "/parse-query" [] parse-query)
 
-  (c/GET "/run-query/:namespace/:id/:rev" req (run-saved-query req)))
+  (c/GET "/run-query/:namespace/:id/:rev" [] run-saved-query)
+  
+  (route/not-found "route not found"))
 
 
 (def app (-> routes
              wrap-exception-handling
-             wrap-params
-             wrap-json-response
-             (wrap-json-body {:keywords? true})))
+             wrap-params))

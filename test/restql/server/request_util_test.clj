@@ -44,9 +44,9 @@
 
   (testing "Parse query should work for valid EDN"
     (is
-      (= [:foo {:from :foo} :bar {:from :bar}]
+      (= [:foo {:from :foo :method :get} :bar {:from :bar :method :get}]
          (parse "from foo\nfrom bar" {}))
-      (= [:foo {:from :foo} :bar {:from :bar}]
+      (= [:foo {:from :foo :method :get} :bar {:from :bar :method :get}]
          (parse "from foo\nfrom bar" {} true)))))
 
 (deftest extract-body-from-request
@@ -61,7 +61,7 @@
 
   (testing "Parse query should work for valid EDN"
     (is
-      (= [:foo {:from :foo} :bazinga {:from :bar :with {:id "123"}}]
+      (= [:foo {:from :foo :method :get} :bazinga {:from :bar :with {:id "123"} :method :get}]
          (parse-req {:params {"id" 123}
                      :headers {}
                      :body "test/resources/sample_query.rql"})))))
