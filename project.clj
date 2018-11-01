@@ -3,7 +3,7 @@
   :license {:name "Eclipse Public License"
             :url  "http://restql.b2w.io"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [b2wdigital/restql-core "2.5.1"]
+                 [b2wdigital/restql-core "2.5.3"]
                  [clj-http "3.9.1"]
                  [ring "1.7.1"]
                  [compojure "1.6.1"]
