@@ -31,12 +31,13 @@
                                                       :mappings
                                                       (into env))))))
 
-(defn process-query [query query-opts tenant http-client]
+(defn process-query [query query-opts tenant http-client http-conn-manager]
   (restql/execute-query-channel :mappings (find-mappings tenant)
                                 :encoders base-encoders
                                 :query query
                                 :query-opts (plugin/get-query-opts-with-plugins query-opts)
-                                :http-client http-client))
+                                :http-client http-client
+                                :http-conn-manager http-conn-manager))
 
 (defn strip-nils [map]
   (reduce-kv (fn [r k v]
@@ -59,7 +60,7 @@
     (into (additional-headers interpolated-query))
     (stringify-keys)))
 
-(defn handle-request [req http-client result-ch error-ch]
+(defn handle-request [http-client http-conn-manager req result-ch error-ch]
   (try+
     (let [uid (generate-uuid!)
           headers {"Content-Type" "application/json"}
@@ -83,7 +84,7 @@
                            (into {} (filter (partial util/is-contextual? (:forward-prefix env)) params)))
           opts (into {:forward-params forward-params} base-opts)
 
-          [query-ch exception-ch] (process-query query opts tenant http-client)
+          [query-ch exception-ch] (process-query query opts tenant http-client http-conn-manager)
           timeout-ch (timeout 10000)]
       (debug {:session uid} "starting request handler")
       (go
@@ -109,14 +110,14 @@
       (catch [:type :parse-error] {:keys [line column reason]}
         (respond {:status 400 :body (str "Parsing error in line " line ", column " column "\n" reason)}))))
 
-(defn run-query 
-  [http-client]
+(defn run-query
+  [http-client http-conn-manager]
   (partial
-    (fn ([req respond raise]
+    (fn [req respond raise]
       (let [time-before (System/currentTimeMillis)
             result-ch (chan)
             error-ch (chan)]
-        (handle-request req http-client result-ch error-ch)
+        (handle-request http-client http-conn-manager req result-ch error-ch)
           (go
             (alt!
               result-ch ([result]
@@ -128,11 +129,11 @@
                           (error {:time    (- (System/currentTimeMillis) time-before)
                                   :success false}
                             "restQL Query finished")
-                          (respond err)))))))))
+                          (respond err))))))))
 
 (defn run-saved-query
-  [http-client]
-  (partial 
+  [http-client http-conn-manager]
+  (partial
     (fn [req respond raise]
       (debug "Trying to retrieve query" (-> req :params :id))
       (try+
@@ -166,7 +167,7 @@
               interpolated-query (util/parse query-entry context)
               query (util/merge-headers req-headers interpolated-query)
               time-before (System/currentTimeMillis)
-              [result-ch error-ch] (process-query query opts tenant http-client)]
+              [result-ch error-ch] (process-query query opts tenant http-client http-conn-manager)]
           (debug "Query" query-ns "/" id "rev" rev "retrieved")
           (go
             (alt!
@@ -189,11 +190,7 @@
         (catch Exception e (.printStackTrace e)
                           (respond (util/json-output 400 {:error "UNKNOWN_ERROR" :message (.getMessage e)})))))))
 
-(defn create-http-client [opts]
-  (http-core/build-async-http-client {}
-    (http-conn/make-reuseable-async-conn-manager {:connect-timeout 5000
-                                                  :so-timeout 5000
-                                                  :default-per-route 100})))
+
 
 (c/defroutes
   routes
@@ -206,12 +203,20 @@
   (c/POST "/validate-query" [] util/validate-request)
 
   ; Route to run ad hoc queries
-  (c/POST "/run-query" [] (run-query (create-http-client {})))
+  (c/POST "/run-query" [] (let [cm (http-conn/make-reuseable-async-conn-manager {:connect-timeout 5000
+                                                                                 :so-timeout 5000
+                                                                                 :default-per-route 100})
+                                hc (http-core/build-async-http-client {} cm)]
+                          (run-query hc cm)))
 
   ; Route to check the parsing of the query
   (c/POST "/parse-query" [] parse-query)
 
-  (c/GET "/run-query/:namespace/:id/:rev" [] (run-saved-query (create-http-client {})))
+  (c/GET "/run-query/:namespace/:id/:rev" [] (let [cm (http-conn/make-reuseable-async-conn-manager {:connect-timeout 5000
+                                                                                 :so-timeout 5000
+                                                                                 :default-per-route 100})
+                                                  hc (http-core/build-async-http-client {} cm)]
+                                             (run-saved-query hc cm)))
   
   (route/not-found "route not found"))
 
