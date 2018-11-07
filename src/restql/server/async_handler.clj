@@ -59,8 +59,7 @@
 
 (defn handle-request [req result-ch error-ch]
   (try+
-    (let [uid (generate-uuid!)
-          headers {"Content-Type" "application/json"}
+    (let [headers {"Content-Type" "application/json"}
           req-headers (into {"restql-query-control" "ad-hoc"} (:headers req))
           params (-> req :query-params keywordize-keys)
 
@@ -83,13 +82,13 @@
 
           [query-ch exception-ch] (process-query query opts tenant)
           timeout-ch (timeout 10000)]
-      (log/debug {:session uid} "starting request handler")
+      (log/debug "starting request handler")
       (go
         (alt!
-          timeout-ch ([] (warn {:session uid} "request handler timed out") (>! error-ch {:status 500 :body "Request timed out"}))
+          timeout-ch ([] (log/warn "request handler timed out") (>! error-ch {:status 500 :body "Request timed out"}))
           exception-ch ([err] (>! error-ch (util/error-output err)))
           query-ch ([result]
-                     (log/debug {:session uid} " finishing request handler")
+                     (log/debug " finishing request handler")
                      (>! result-ch {:body    (util/format-response-body result)
                                     :headers (make-headers query-entry result)
                                     :status  (util/calculate-response-status-code result)})))))

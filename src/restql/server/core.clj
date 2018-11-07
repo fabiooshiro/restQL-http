@@ -1,8 +1,8 @@
 (ns restql.server.core
   (:require [restql.server.server :as server]
             [restql.server.plugin.core :as plugin]
+            [clojure.tools.logging :as log]
             [restql.server.database.persistence :as db]
-            [restql.core.log :refer [info]]
             [environ.core :refer [env]])
   (:gen-class))
 
@@ -30,12 +30,12 @@
   []
 
   (doseq [p (plugin/get-loaded-plugins)]
-    (info "Loaded: "(:name p))))
+    (log/info "Loaded: "(:name p))))
 
 (defn connect-to-mongo []
   (if (:mongo-url env)
     (do
-      (info "Connecting to MongoDB:" (:mongo-url env))
+      (log/info "Connecting to MongoDB:" (:mongo-url env))
       (db/connect! (:mongo-url env))
     )
   )
@@ -47,14 +47,14 @@
 
   (let [port (get-port 9000)
         handler-timeout (get-handler-timeout 30000)]
-    (info "Starting the amazing restQL Server!")
+    (log/info "Starting the amazing restQL Server!")
 
     (connect-to-mongo)
 
-    (info "Loading plugins")
+    (log/info "Loading plugins")
     (plugin/load-plugins!)
     (display-loaded-plugins!)
     (when (start-api?)
-      (info "Starting server")
+      (log/info "Starting server")
       (server/start! port handler-timeout)
-      (info "restQL Server running on port" port))))
+      (log/info "restQL Server running on port" port))))

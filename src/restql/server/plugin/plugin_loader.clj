@@ -1,7 +1,7 @@
 (ns restql.server.plugin.plugin-loader
   (:require [clojure.java.classpath :as cp]
             [clojure.java.io :as io]
-            [restql.core.log :refer [info]]
+            [clojure.tools.logging :as log]
             [cheshire.core :as json]))
 
 (defn is-plugin-properties-file? [path]
