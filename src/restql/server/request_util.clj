@@ -115,14 +115,13 @@
 
 (defn validate-request
   "Validates if a given request is valid"
-  [req respond raise]
-
+  [req]
   (try+
     (let [query (parse-req req)]
       (if (validator/validate {:mappings env} query)
-        (respond (json-output 200 "valid"))))
+        (json-output 200 "valid")))
     (catch [:type :validation-error] {:keys [message]}
-      (respond (json-output 400 message)))))
+      (json-output 400 message))))
 
 (defn should-ignore-errors
   "Searches for an ignore-errors meta on a given item
