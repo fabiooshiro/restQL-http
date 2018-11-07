@@ -1,7 +1,7 @@
 (ns restql.server.server
   (:require [aleph.http :as http]
             [environ.core :refer [env]]
-            [restql.core.log :refer [info]]
+            [clojure.tools.logging :as log]
             [restql.server.async-handler :as a]))
 
 (defonce server

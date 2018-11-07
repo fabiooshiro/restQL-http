@@ -4,7 +4,7 @@
             [clojure.walk :refer [keywordize-keys stringify-keys]]
             [restql.core.api.restql :as restql]
             [restql.core.encoders.core :refer [base-encoders]]
-            [restql.server.logger :refer [debug warn error generate-uuid!]]
+            [clojure.tools.logging :as log]
             [restql.server.request-util :as util]
             [restql.server.database.core :as dbcore]
             [restql.server.cache :as cache]
@@ -83,13 +83,13 @@
 
           [query-ch exception-ch] (process-query query opts tenant)
           timeout-ch (timeout 10000)]
-      (debug {:session uid} "starting request handler")
+      (log/debug {:session uid} "starting request handler")
       (go
         (alt!
           timeout-ch ([] (warn {:session uid} "request handler timed out") (>! error-ch {:status 500 :body "Request timed out"}))
           exception-ch ([err] (>! error-ch (util/error-output err)))
           query-ch ([result]
-                     (debug {:session uid} " finishing request handler")
+                     (log/debug {:session uid} " finishing request handler")
                      (>! result-ch {:body    (util/format-response-body result)
                                     :headers (make-headers query-entry result)
                                     :status  (util/calculate-response-status-code result)})))))
@@ -116,18 +116,18 @@
         (go
           (alt!
             result-ch ([result]
-                        (debug {:time    (- (System/currentTimeMillis) time-before)
+                        (log/debug {:time    (- (System/currentTimeMillis) time-before)
                                 :success true}
                           "restQL Query finished")
                         result)
             error-ch ([err]
-                        (error {:time    (- (System/currentTimeMillis) time-before)
+                        (log/error {:time    (- (System/currentTimeMillis) time-before)
                                 :success false}
                           "restQL Query finished")
                         err)))))))
 
 (defn run-saved-query [req]
-  (debug "Trying to retrieve query" (-> req :params :id))
+  (log/debug "Trying to retrieve query" (-> req :params :id))
   (try+
     (let [id (-> req :params :id)
           query-ns (-> req :params :namespace)
@@ -160,20 +160,20 @@
           query (util/merge-headers req-headers interpolated-query)
           time-before (System/currentTimeMillis)
           [result-ch error-ch] (process-query query opts tenant)]
-      (debug "Query" query-ns "/" id "rev" rev "retrieved")
+      (log/debug "Query" query-ns "/" id "rev" rev "retrieved")
       (m-stream/take!
         (m-stream/->source
           (go
             (alt!
               result-ch ([result]
-                          (debug {:time    (- (System/currentTimeMillis) time-before)
+                          (log/debug {:time    (- (System/currentTimeMillis) time-before)
                                   :success true}
                                   "restQL Query finished")
                           {:headers (make-headers interpolated-query result)
                                     :status  (util/calculate-response-status-code result)
                                     :body    (util/format-response-body result)})
               error-ch ([err]
-                          (error {:time    (- (System/currentTimeMillis) time-before)
+                          (log/error {:time    (- (System/currentTimeMillis) time-before)
                                   :success false}
                                 "restQL Query finished")
                           err))))))
