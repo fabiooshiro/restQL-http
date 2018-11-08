@@ -13,7 +13,8 @@
    "content-type"
    "content-length"
    "connection"
-   "origin"])
+   "origin"
+   "accept-encoding"])
 
 (defn header-allowed?
   "Filter to verify if the given header (k) is not on the headers-blacklist"
