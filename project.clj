@@ -5,6 +5,7 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [b2wdigital/restql-core "2.6.1-SNAPSHOT"]
                  [aleph "0.4.6"]
+                 [io.aleph/dirigiste "0.1.3"]
                  [compojure "1.6.1"]
                  [environ "1.0.0"]
                  [prismatic/schema "1.1.2"]

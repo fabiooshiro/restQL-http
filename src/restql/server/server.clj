@@ -1,8 +1,11 @@
 (ns restql.server.server
   (:require [aleph.http :as http]
+            [aleph.flow :as flow]
             [environ.core :refer [env]]
             [clojure.tools.logging :as log]
-            [restql.server.async-handler :as a]))
+            [restql.server.async-handler :as a])
+  (:import [java.util EnumSet]
+           [io.aleph.dirigiste Stats$Metric]))
 
 (defonce server
   (atom nil))
@@ -11,7 +14,13 @@
   "Starts the server"
   ([] (start! 3000 30000))
   ([port timeout]
-   (reset! server (http/start-server #'a/app {:port port}))))
+   (reset! server 
+      (http/start-server
+        #'a/app 
+        {:port port
+        :executor (flow/utilization-executor 0.7 1024
+                    {:metrics (EnumSet/of Stats$Metric/UTILIZATION)
+                     :control-period 2000})}))))
 
 (defn stop!
   "Stops the server"
