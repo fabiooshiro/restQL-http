@@ -1,7 +1,6 @@
 (ns restql.server.server
   (:require [aleph.http :as http]
             [aleph.flow :as flow]
-            [environ.core :refer [  ]]
             [clojure.tools.logging :as log]
             [restql.server.async-handler :as a])
   (:import [java.util EnumSet]
@@ -20,7 +19,8 @@
         {:port port
         :executor (flow/utilization-executor executor-utilization executor-max-threads
                     {:metrics (EnumSet/of Stats$Metric/UTILIZATION)
-                     :control-period 2000})}))))
+                     :control-period 1000
+                     :initial-thread-count (/ executor-max-threads 2)})}))))
 
 (defn stop!
   "Stops the server"
