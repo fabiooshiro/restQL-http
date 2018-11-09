@@ -1,7 +1,7 @@
 (ns restql.server.server
   (:require [aleph.http :as http]
             [aleph.flow :as flow]
-            [environ.core :refer [env]]
+            [environ.core :refer [  ]]
             [clojure.tools.logging :as log]
             [restql.server.async-handler :as a])
   (:import [java.util EnumSet]
@@ -12,13 +12,13 @@
 
 (defn start!
   "Starts the server"
-  ([] (start! 3000 30000))
-  ([port timeout]
+  ([] (start! {:port 3000}))
+  ([{:keys [port executor-utilization executor-max-threads]}]
    (reset! server 
       (http/start-server
         #'a/app 
         {:port port
-        :executor (flow/utilization-executor 0.7 1024
+        :executor (flow/utilization-executor executor-utilization executor-max-threads
                     {:metrics (EnumSet/of Stats$Metric/UTILIZATION)
                      :control-period 2000})}))))
 
