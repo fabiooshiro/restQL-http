@@ -1,6 +1,7 @@
 (ns restql.server.async-handler
   (:require [compojure.core :as c]
             [compojure.route :as route]
+            [compojure.response :refer [Renderable]]
             [clojure.walk :refer [keywordize-keys stringify-keys]]
             [restql.core.api.restql :as restql]
             [restql.core.encoders.core :refer [base-encoders]]
@@ -183,7 +184,9 @@
     (catch Exception e (.printStackTrace e)
       (util/json-output 400 {:error "UNKNOWN_ERROR" :message (.getMessage e)}))))
 
-
+(extend-protocol Renderable
+  manifold.deferred.IDeferred
+  (render [d _] d))
 
 (c/defroutes
   routes
