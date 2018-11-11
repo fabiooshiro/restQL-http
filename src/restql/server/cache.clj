@@ -5,7 +5,6 @@
             [environ.core :refer [env]]
             [clojure.core.memoize :as memo]))
 
-(def search-cache (atom (cache/fifo-cache-factory {} :threshold 100)))
 (def DEFAULT_TTL (if (contains? env :cache-ttl) (read-string (env :cache-ttl)) 60000))
 
 (defn cached
