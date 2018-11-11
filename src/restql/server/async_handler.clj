@@ -185,8 +185,11 @@
       (util/json-output 400 {:error "UNKNOWN_ERROR" :message (.getMessage e)}))))
 
 (extend-protocol Renderable
+  clojure.lang.IDeref
+  (render [d _] (manifold.deferred/->deferred d))
   manifold.deferred.IDeferred
-  (render [d _] d))
+  (render [d _] d)
+)
 
 (c/defroutes
   routes
