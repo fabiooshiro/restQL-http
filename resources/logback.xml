@@ -5,7 +5,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>7</maxHistory>
-            <totalSizeCap>500MB</totalSizeCap>
+            <totalSizeCap>50MB</totalSizeCap>
         </rollingPolicy>
 
         <encoder>
