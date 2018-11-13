@@ -12,14 +12,17 @@
 (defn start!
   "Starts the server"
   ([] (start! {:port 3000}))
-  ([{:keys [port executor-utilization executor-max-threads]}]
+  ([{:keys [port
+            executor-utilization
+            executor-max-threads
+            executor-control-period]}]
    (reset! server 
       (http/start-server
         #'a/app 
         {:port port
         :executor (flow/utilization-executor executor-utilization executor-max-threads
                     {:metrics (EnumSet/of Stats$Metric/UTILIZATION)
-                     :control-period 1000
+                     :control-period executor-control-period
                      :initial-thread-count (/ executor-max-threads 2)})}))))
 
 (defn stop!

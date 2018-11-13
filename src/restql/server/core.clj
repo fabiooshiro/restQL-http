@@ -27,6 +27,11 @@
   [default]
   (if (contains? env :executor-max-threads) (read-string (env :executor-max-threads)) default))
 
+(defn get-executor-control-period
+  "Gets executor control period in milliseconds"
+  [default]
+  (if (contains? env :executor-control-period) (read-string (env :executor-control-period)) default))
+
 (defn start-api?
   "Verifies if it should start the api"
   []
@@ -58,7 +63,8 @@
   (let [port (get-port 9000)
         handler-timeout (get-handler-timeout 30000)
         executor-utilization (get-executor-utilization 0.9)
-        executor-max-threads (get-executor-max-threads 512)]
+        executor-max-threads (get-executor-max-threads 512)
+        executor-control-period (get-executor-control-period 1000)]
     (log/info "Starting the amazing restQL Server!")
 
     (connect-to-mongo)
@@ -71,5 +77,6 @@
       (server/start! {:port port
                       :timeout handler-timeout
                       :executor-utilization executor-utilization
-                      :executor-max-threads executor-max-threads})
+                      :executor-max-threads executor-max-threads
+                      :executor-control-period executor-control-period})
       (log/info "restQL Server running on port" port))))

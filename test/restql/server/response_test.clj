@@ -1,7 +1,7 @@
 (ns restql.server.response-test
   (:require [clojure.test :refer :all]
             [restql.server.response :refer :all]
-            [clojure.data.json :as json]))
+            [cheshire.core :as json]))
 
 (defn get-sample-response []
   {:jedis {:details {:headers {:x-type "Jedi"
@@ -11,7 +11,7 @@
                     :weaponId 2}}})
 
 (defn get-sample-response-as-string []
-  (json/write-str (get-sample-response)))
+  (json/generate-string (get-sample-response)))
 
 
 (deftest should-map-all-headers-to-aliases

@@ -1,5 +1,5 @@
 (ns restql.server.request-util
-  (:require [clojure.data.json :as json]
+  (:require [cheshire.core :as json]
             [slingshot.slingshot :refer [try+]]
             [environ.core :refer [env]]
             [clojure.tools.reader.edn :as edn]
@@ -94,7 +94,7 @@
 
   {:status  status
    :headers {"Content-Type" "application/json"}
-   :body    (json/write-str {:message message})})
+   :body    (json/generate-string {:message message})})
 
 (defn make-revision-link
   "Returns a revision route"
@@ -181,7 +181,7 @@
 
   (as-> result x
         (map-values format-response-item x)
-        (json/write-str x)))
+        (json/generate-string x)))
 
 (defn is-contextual?
   "Filters if a given map key is contextual"
