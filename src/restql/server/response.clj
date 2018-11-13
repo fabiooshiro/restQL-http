@@ -1,5 +1,5 @@
 (ns restql.server.response
-  (:require [clojure.data.json :as json]
+  (:require [cheshire.core :as json]
             [clojure.string :as string]))
 
 (defn is-x-preffixed-header? [[k _]]
@@ -47,7 +47,7 @@
 (defn transform-response [query-response]
   (if
     (string? query-response)
-    (json/read-str query-response :key-fn keyword)
+    (json/parse-string query-response true)
     query-response))
 
 (defn extract-alias-suffixed-headers
