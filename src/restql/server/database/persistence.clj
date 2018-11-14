@@ -53,16 +53,6 @@
                 {:_id tenant}
                 {$set {mapping-key resource-url}}
                 {:upsert false :return-new true})))
-  
-
-(defquery save-query [query-ns id query :with db]
-  (mc/find-and-modify db "query"
-                      {:name id :namespace query-ns}
-                      {$inc {:size 1}
-                       $push {:revisions query}}
-                      {:return-new true
-                       :upsert true
-                       :fields {:size true}}))
 
 (defquery find-query [query-ns id revision :with db]
   (let [res (mc/find-one-as-map db "query" {:name id :namespace query-ns}
