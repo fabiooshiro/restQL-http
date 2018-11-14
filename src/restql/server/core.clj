@@ -12,11 +12,6 @@
 
   (if (contains? env :port) (read-string (env :port))  default))
 
-(defn get-handler-timeout
-  "Gets a timeout for server hanldlers, or the default timeout"
-  [default]
-  (if (contains? env :handler-timeout) (read-string (env :handler-timeout)) default))
-
 (defn get-executor-utilization
   "Gets sizes the thread pool according to target utilization, within `[0,1]`"
   [default]
@@ -61,7 +56,6 @@
   [& args]
 
   (let [port (get-port 9000)
-        handler-timeout (get-handler-timeout 30000)
         executor-utilization (get-executor-utilization 0.9)
         executor-max-threads (get-executor-max-threads 512)
         executor-control-period (get-executor-control-period 1000)]
@@ -75,7 +69,6 @@
     (when (start-api?)
       (log/info "Starting server")
       (server/start! {:port port
-                      :timeout handler-timeout
                       :executor-utilization executor-utilization
                       :executor-max-threads executor-max-threads
                       :executor-control-period executor-control-period})

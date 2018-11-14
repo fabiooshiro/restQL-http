@@ -82,7 +82,7 @@
           opts (into {:forward-params forward-params} base-opts)
 
           [query-ch exception-ch] (process-query query opts tenant)
-          timeout-ch (timeout 10000)]
+          timeout-ch (timeout 5000)]
       (log/debug "starting request handler")
       (go
         (alt!
