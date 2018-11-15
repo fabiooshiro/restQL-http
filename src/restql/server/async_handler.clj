@@ -35,7 +35,7 @@
   (restql/execute-query-channel :mappings (find-mappings tenant)
                                 :encoders base-encoders
                                 :query query
-                                :query-opts (plugin/get-query-opts-with-plugins query-opts)))
+                                :query-opts query-opts))
 
 (defn strip-nils [map]
   (reduce-kv (fn [r k v]

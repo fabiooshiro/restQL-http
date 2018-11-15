@@ -1,28 +1,31 @@
 (ns restql.server.plugin.core
-  (:require [restql.server.plugin.plugin-loader :as loader]))
+  (:require [restql.server.plugin.plugin-loader :as loader]
+            [restql.hooks.core :as hooks]))
 
 (defonce plugins (atom []))
 
 (defn load-plugins! []
-  (reset! plugins (loader/search-installed-plugins)))
+  (reset! plugins (loader/search-installed-plugins))
+)
 
 (defn get-loaded-plugins []
-  (deref plugins))
+  (deref plugins)
+)
 
-(defn combine-hook [one other]
-  (merge-with into one other))
+(defn register-each [hook]
+  (doseq [[hook-name hook-fns] hook]
+    (hooks/register-hook hook-name hook-fns)
+  )
+)
 
-(defn merge-hooks [target-query-opts query-opts]
-  (-> target-query-opts
-    (update-in [:clojure-hooks] combine-hook (:clojure-hooks query-opts))
-    (update-in [:java-hooks] combine-hook (:java-hooks query-opts))))
-
-(defn get-query-opts-with-plugins [query-opts]
-  (let [plugins (deref plugins)
-        plugins-with-hooks (filter #(-> % :add-hooks nil? not) plugins)
-        plugin-hooks (map (fn [plugin] ((:add-hooks plugin))) plugins-with-hooks)
-        plugin-query-opts (map (fn [hooks] {:clojure-hooks hooks}) plugin-hooks) ]
-    (reduce merge-hooks query-opts plugin-query-opts)))
+(defn register-plugins! []
+  (->> (deref plugins)
+       (filter #(-> % :add-hooks nil? not))
+       (map :add-hooks)
+       (map (fn [hook] (hook)))
+       (map register-each)
+       (doall))
+)
 
 (comment
   (load-plugins!)

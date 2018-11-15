@@ -2,7 +2,8 @@
   (:require [aleph.http :as http]
             [aleph.flow :as flow]
             [clojure.tools.logging :as log]
-            [restql.server.async-handler :as a])
+            [restql.server.async-handler :as a]
+            [restql.hooks.core :as hooks])
   (:import [java.util EnumSet]
            [io.aleph.dirigiste Stats$Metric]))
 
@@ -23,7 +24,8 @@
         :executor (flow/utilization-executor executor-utilization executor-max-threads
                     {:metrics (EnumSet/of Stats$Metric/UTILIZATION)
                      :control-period executor-control-period
-                     :initial-thread-count (/ executor-max-threads 2)})}))))
+                     :initial-thread-count (/ executor-max-threads 2)
+                     :stats-callback #(hooks/execute-hook :stats-server-executor (assoc {} :stats %))})}))))
 
 (defn stop!
   "Stops the server"

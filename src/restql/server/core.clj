@@ -3,6 +3,7 @@
             [restql.server.plugin.core :as plugin]
             [clojure.tools.logging :as log]
             [restql.server.database.persistence :as db]
+            [restql.hooks.core :as hooks]
             [environ.core :refer [env]])
   (:gen-class))
 
@@ -66,6 +67,7 @@
     (log/info "Loading plugins")
     (plugin/load-plugins!)
     (display-loaded-plugins!)
+    (plugin/register-plugins!)
     (when (start-api?)
       (log/info "Starting server")
       (server/start! {:port port
