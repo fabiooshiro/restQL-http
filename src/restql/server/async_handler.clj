@@ -19,6 +19,11 @@
             [ring.middleware.params :refer [wrap-params]]
             [slingshot.slingshot :refer [try+]]))
 
+(def default-values {:query-global-timeout 30000})
+
+(defn get-default [key]
+  (if (contains? env key) (read-string (env key)) (default-values key)))
+
 (defonce FIND_QUERY_TTL 86400000)
 (def find-query (cache/cached
                   (fn [query-ns id rev]
@@ -82,7 +87,7 @@
           opts (into {:forward-params forward-params} base-opts)
 
           [query-ch exception-ch] (process-query query opts tenant)
-          timeout-ch (timeout 5000)]
+          timeout-ch (timeout (get-default :query-global-timeout))]
       (log/debug "starting request handler")
       (go
         (alt!
