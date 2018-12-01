@@ -200,8 +200,8 @@
   routes
   ; Routes to health checking
   (c/OPTIONS "*" [] {:status 204})
-  (c/GET "/health" [] "restql is healthy :)")
-  (c/GET "/resource-status" [] "OK")
+  (c/GET "/health" [] "I'm healthy! :)")
+  (c/GET "/resource-status" [] "Up and running! :)")
 
   ; Route to validate a query
   (c/POST "/validate-query" [] util/validate-request)
