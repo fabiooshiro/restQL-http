@@ -29,7 +29,9 @@
             [single-file-lein-zip "0.1.0"]]
   :main ^:skip-aot restql.server.core
   :target-path "target/%s"
-  :resource-paths ["plugins/first.jar" "resources"]
+  :source-paths ["src/clojure"]
+  :test-paths  ["test/clojure"]
+  :resource-paths ["plugins/first.jar" "src/resources"]
   :zip ["Dockerfile" {:file-name "restql-server-standalone.jar" :file-folder "target/uberjar"}]
   :uberjar-name "restql-server-standalone.jar"
   :profiles {:uberjar {:aot :all
