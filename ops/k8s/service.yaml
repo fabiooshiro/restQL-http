@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: restQL-http
+  name: restql-http
 spec:
   selector:
-    app: restQL-http
+    app: restql-http
   ports:
   - port: 80
     targetPort: 9001

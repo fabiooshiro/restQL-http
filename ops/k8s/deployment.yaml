@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: restQL-http
+  name: restql-http
 spec:
   selector:
     matchLabels:
-      app: restQL-http
+      app: restql-http
   template:
     metadata:
       labels:
-        app: restQL-http
+        app: restql-http
     spec:
       containers:
-      - name: restQL-http
-        image: imageurl
+      - name: restql
+        image: restql/restql-http:latest
         env:
         - name: my_service
           value: "http://my-service-endpoint/"
