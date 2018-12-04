@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/B2W-BIT/restQL-server.svg?branch=master)](https://travis-ci.org/B2W-BIT/restQL-server)
+[![Build Status](https://travis-ci.org/B2W-BIT/restQL-http.svg?branch=master)](https://travis-ci.org/B2W-BIT/restQL-http)
 
-restQL-server is a server to run restQL queries, making easy to fetch information from multiple services in the most efficient manner. e.g:
+restQL-http is a server to run restQL queries, making easy to fetch information from multiple services in the most efficient manner. e.g:
 
 ```
 from search
@@ -18,8 +18,8 @@ Links
 * [@restQLBR](https://t.me/restQLBR): Brazilian restQL Telegram Group
 * [restql.b2w.io](http://restql.b2w.io): Project home page,
 * [game.b2w.io](http://game.b2w.io): A game developed to teach the basics of restQL language,
-* [restQL-core](https://github.com/B2W-BIT/restQL-core): If you want to embed restQL directly into your Clojure application,
-* [restQL-core-java](https://github.com/B2W-BIT/restQL-core-java): If you want to embed restQL directly into your Java application,
+* [restQL-clojure](https://github.com/B2W-BIT/restQL-clojure): If you want to embed restQL directly into your Clojure application,
+* [restQL-java](https://github.com/B2W-BIT/restQL-java): If you want to embed restQL directly into your Java application,
 * [restQL-manager](https://github.com/B2W-BIT/restQL-manager): To manage saved queries and resources endpoints. restQL-manager requires a MongoDB instance.
 * [Tackling microservice query complexity](https://medium.com/b2w-engineering/restql-tackling-microservice-query-complexity-27def5d09b40): Project motivation and history
 * [Wiki](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language): Project documentation.
@@ -32,11 +32,11 @@ Who're talking about restQL
 
 # Getting Started
 
-## Running restQL Server
+## Running restQL HTTP
 
 restQL Server allows you to post ad-hoc queries and to reference resources pre-configured in the server startup.
 
-1. Download the latest release in the [release page](https://github.com/B2W-BIT/restQL-server/releases),
+1. Download the latest release in the [release page](https://github.com/B2W-BIT/restQL-http/releases),
 2. Unzip the package,
 3. Edit the file env.sh with the resources you want to invoke,
 3. Run bin/run.sh.
@@ -49,7 +49,7 @@ curl -H "Content-Type: text/plain" localhost:9000/run-query -d "from planets as 
 
 ## Next steps
 
-1. Learn restQL [query language](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language),
+1. Learn restQL [query language](https://github.com/B2W-BIT/restQL-http/wiki/RestQL-Query-Language),
 2. Get involved :) We're looking for contributors, if you're interested ping ricardo.mayerhofer@b2wdigital.com
 
 # Help and community
@@ -63,7 +63,7 @@ If you need help you can reach the community on Telegram
 
 ## Building From Source Code
 
-As prerequisites to build restQL-server from source we need:
+As prerequisites to build restQL-http from source we need:
 
 + Java 8
 + Leiningen
