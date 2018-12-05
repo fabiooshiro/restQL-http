@@ -1,4 +1,4 @@
-(ns restql.server.plugin.plugin-loader
+(ns restql.http.plugin.plugin-loader
   (:require [clojure.java.classpath :as cp]
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]

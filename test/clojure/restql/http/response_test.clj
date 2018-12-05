@@ -1,6 +1,6 @@
-(ns restql.server.response-test
+(ns restql.http.response-test
   (:require [clojure.test :refer :all]
-            [restql.server.response :refer :all]
+            [restql.http.response :refer :all]
             [cheshire.core :as json]))
 
 (defn get-sample-response []

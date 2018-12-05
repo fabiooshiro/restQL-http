@@ -1,5 +1,5 @@
-(ns restql.server.plugin.core
-  (:require [restql.server.plugin.plugin-loader :as loader]
+(ns restql.http.plugin.core
+  (:require [restql.http.plugin.plugin-loader :as loader]
             [restql.hooks.core :as hooks]))
 
 (defonce plugins (atom []))

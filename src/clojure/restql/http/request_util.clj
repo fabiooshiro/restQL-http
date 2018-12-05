@@ -1,4 +1,4 @@
-(ns restql.server.request-util
+(ns restql.http.request-util
   (:require [cheshire.core :as json]
             [slingshot.slingshot :refer [try+]]
             [environ.core :refer [env]]

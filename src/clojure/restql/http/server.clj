@@ -1,8 +1,8 @@
-(ns restql.server.server
+(ns restql.http.server
   (:require [aleph.http :as http]
             [aleph.flow :as flow]
             [clojure.tools.logging :as log]
-            [restql.server.async-handler :as a]
+            [restql.http.async-handler :as a]
             [restql.hooks.core :as hooks])
   (:import [java.util EnumSet]
            [io.aleph.dirigiste Stats$Metric]))

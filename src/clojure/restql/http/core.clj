@@ -1,8 +1,8 @@
-(ns restql.server.core
-  (:require [restql.server.server :as server]
-            [restql.server.plugin.core :as plugin]
+(ns restql.http.core
+  (:require [restql.http.server :as server]
+            [restql.http.plugin.core :as plugin]
             [clojure.tools.logging :as log]
-            [restql.server.database.persistence :as db]
+            [restql.http.database.persistence :as db]
             [restql.hooks.core :as hooks]
             [environ.core :refer [env]])
   (:gen-class))

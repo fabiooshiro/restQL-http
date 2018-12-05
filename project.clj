@@ -1,4 +1,4 @@
-(defproject restql-server "v2.6.0-SNAPSHOT" :description "restQL Server"
+(defproject restql-http "v2.6.0-SNAPSHOT" :description "restQL HTTP"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url  "http://restql.b2w.io"}
@@ -27,13 +27,13 @@
             [lein-environ "1.0.0"]
             [lein-ring "0.12.1"]
             [single-file-lein-zip "0.1.0"]]
-  :main ^:skip-aot restql.server.core
+  :main ^:skip-aot restql.http.core
   :target-path "target/%s"
   :source-paths ["src/clojure"]
   :test-paths  ["test/clojure"]
   :resource-paths ["plugins/first.jar" "src/resources"]
-  :zip ["Dockerfile" {:file-name "restql-server-standalone.jar" :file-folder "target/uberjar"}]
-  :uberjar-name "restql-server-standalone.jar"
+  :zip ["Dockerfile" {:file-name "restql-http-standalone.jar" :file-folder "target/uberjar"}]
+  :uberjar-name "restql-http-standalone.jar"
   :profiles {:uberjar {:aot :all
                        :env {:port      "9000"
                              :cache-ttl "30000"}}
@@ -42,5 +42,5 @@
                                  :cards     "http://api.magicthegathering.io/v1/cards"
                                  :card      "http://api.magicthegathering.io/v1/cards/:id"
                                  :planets   "https://swapi.co/api/planets/:id"
-                                 :mongo-url "mongodb://localhost:27017/restql-server"}
+                                 :mongo-url "mongodb://localhost:27017/restql-http"}
                        :plugins [[lein-cloverage "1.0.9"]]}})

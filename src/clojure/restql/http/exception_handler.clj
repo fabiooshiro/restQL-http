@@ -1,7 +1,7 @@
-(ns restql.server.exception-handler
+(ns restql.http.exception-handler
   (:require [slingshot.slingshot :refer [try+]]
             [clojure.tools.logging :as log]
-            [restql.server.request-util :as util]
+            [restql.http.request-util :as util]
             [ring.util.response :refer [response]]))
 
 (defn wrap-exception-handling

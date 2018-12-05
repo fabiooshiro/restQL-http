@@ -1,4 +1,4 @@
-(ns restql.server.authorization
+(ns restql.http.authorization
   (:require [environ.core :refer [env]]))
 
 (defn get-env-key

@@ -1,4 +1,4 @@
-(ns restql.server.response
+(ns restql.http.response
   (:require [cheshire.core :as json]
             [clojure.string :as string]))
 

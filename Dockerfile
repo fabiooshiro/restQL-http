@@ -1,21 +1,12 @@
-FROM clojure:lein-2.7.1-alpine
+FROM openjdk:8-alpine
 
-ENV PORT=9000
-EXPOSE $PORT
+RUN apk update
+RUN apk upgrade
+RUN apk add bash
 
-WORKDIR /opt/source
-COPY . /opt/source
+RUN mkdir -p /usr/src/restql-http
+ADD ./dist /usr/src/restql-http
 
-RUN apk add --update -q --no-cache zip && \
-    ./scripts/build-dist.sh && \
-    mkdir -p /opt/app/ && \
-    cp restql-server.zip /opt/app/ && \
-    cd /opt/app/ && \
-    unzip restql-server.zip && \
-    rm restql-server.zip && \
-    rm -rf /opt/source/ && \
-    apk del --purge zip
+WORKDIR /usr/src/restql-http
 
-WORKDIR /opt/app
-
-ENTRYPOINT eval "exec bin/run.sh"
+CMD ./bin/run.sh

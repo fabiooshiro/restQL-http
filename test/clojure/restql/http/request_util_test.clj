@@ -1,6 +1,6 @@
-(ns restql.server.request-util-test
+(ns restql.http.request-util-test
   (:require [clojure.test :refer :all]
-            [restql.server.request-util :refer :all]))
+            [restql.http.request-util :refer :all]))
 
 (deftest test-headers-blacklist
 

@@ -1,10 +1,10 @@
-(ns restql.server.database.core
-  (:require [restql.server.database.persistence :as db]
+(ns restql.http.database.core
+  (:require [restql.http.database.persistence :as db]
             [environ.core :refer [env]]
             [clojure.edn :as edn]
             [restql.core.validator.core :as validator]
             [slingshot.slingshot :refer [throw+]]
-            [restql.server.request-util :as util]))
+            [restql.http.request-util :as util]))
 
 ;re-exporting find-query
 (def find-query-by-id-and-revision db/find-query)

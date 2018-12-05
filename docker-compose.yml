@@ -2,7 +2,7 @@ version: '3'
 services:
   restql:
     build: .
-    image: restql-server:alpine
+    image: restql-http:alpine
     restart: always
     environment:
       - mongo_url=mongodb://mongodb:27017/restql

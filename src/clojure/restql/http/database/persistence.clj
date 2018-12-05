@@ -1,4 +1,4 @@
-(ns restql.server.database.persistence
+(ns restql.http.database.persistence
   (:require [monger.core :as mg]
             [monger.collection :as mc]
             [monger.operators :refer [$inc $push $slice $group $set]]

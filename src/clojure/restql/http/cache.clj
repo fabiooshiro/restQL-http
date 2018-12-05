@@ -1,4 +1,4 @@
-(ns restql.server.cache
+(ns restql.http.cache
   (:require [clojure.tools.logging :as log]
             [slingshot.slingshot :refer [throw+]]
             [clojure.core.cache :as cache]

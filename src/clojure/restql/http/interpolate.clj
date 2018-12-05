@@ -1,4 +1,4 @@
-(ns restql.server.interpolate
+(ns restql.http.interpolate
   (:require [clojure.string :as string]
             [schema.core :as s :refer [Keyword Str]]
             [environ.core :refer [env]]
