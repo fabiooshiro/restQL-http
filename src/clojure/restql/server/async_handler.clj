@@ -4,6 +4,7 @@
             [compojure.response :refer [Renderable]]
             [clojure.walk :refer [keywordize-keys stringify-keys]]
             [restql.core.api.restql :as restql]
+            [restql.core.response.headers :as response-headers]
             [restql.core.encoders.core :refer [base-encoders]]
             [clojure.tools.logging :as log]
             [restql.server.request-util :as util]
@@ -42,25 +43,10 @@
                                 :query query
                                 :query-opts query-opts))
 
-(defn strip-nils [map]
-  (reduce-kv (fn [r k v]
-               (if (nil? v)
-                 r
-                 (assoc r k v))) {} map))
-
-(defn additional-headers [query]
-  (let [metadata (meta query)
-        cache-control-value (:cache-control metadata)]
-    (if (nil? cache-control-value)
-      {}
-      (strip-nils
-        (into {} {"cache-control" (str "max-age=" cache-control-value)})))))
-
 (defn make-headers [interpolated-query result]
   (->
-    (resp/extract-alias-suffixed-headers result)
+    (response-headers/get-response-headers interpolated-query result)
     (into {"Content-Type" "application/json"})
-    (into (additional-headers interpolated-query))
     (stringify-keys)))
 
 (defn handle-request [req result-ch error-ch]
