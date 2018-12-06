@@ -17,8 +17,6 @@ fi
 
 export DIST_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.."
 
-. $DIST_PATH/bin/env.sh
-
 export JAVA_AGENTS=$(for i in $(ls $JAVA_AGENTS_DIR/*.jar); do echo "-javaagent:$JAVA_AGENTS_DIR/$(basename $i)"; done)
 export MAIN_JAR="$DIST_PATH/lib/restql-http.jar"
 

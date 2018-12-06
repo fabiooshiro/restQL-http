@@ -24,12 +24,14 @@ jobs:
     - stage: deploy
       name: "DockerHUB Deploy"
       if: tag IS present
+      env:
+        - DOCKER_TAG=${TRAVIS_TAG:1}
       script:
         - wget https://github.com/${TRAVIS_REPO_SLUG}/releases/download/${TRAVIS_TAG}/restql-http-${TRAVIS_TAG}.zip
         - unzip ./restql-http-${TRAVIS_TAG}.zip -d ./dist
         - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASS
         - docker build -t b2wdigital/restql-http:latest .
         - docker push b2wdigital/restql-http:latest
-        - docker tag b2wdigital/restql-http:latest b2wdigital/restql-http:${TRAVIS_TAG}
-        - docker push b2wdigital/restql-http:${TRAVIS_TAG}
+        - docker tag b2wdigital/restql-http:latest b2wdigital/restql-http:${DOCKER_TAG}
+        - docker push b2wdigital/restql-http:${DOCKER_TAG}
  
