@@ -3,42 +3,32 @@
             [compojure.route :as route]
             [compojure.response :refer [Renderable]]
             [clojure.walk :refer [keywordize-keys stringify-keys]]
-            [restql.core.api.restql :as restql]
-            [restql.core.response.headers :as response-headers]
-            [restql.core.encoders.core :refer [base-encoders]]
             [clojure.tools.logging :as log]
-            [restql.http.request-util :as util]
-            [restql.http.database.core :as dbcore]
-            [restql.http.cache :as cache]
-            [restql.http.exception-handler :refer [wrap-exception-handling]]
-            [restql.http.plugin.core :as plugin]
-            [restql.http.response :as resp]
             [clojure.tools.reader.edn :as edn]
             [environ.core :refer [env]]
             [manifold.stream :as m-stream]
             [clojure.core.async :refer [chan go go-loop >! >!! <! alt! timeout]]
             [ring.middleware.params :refer [wrap-params]]
-            [slingshot.slingshot :refer [try+]]))
+            [slingshot.slingshot :refer [try+]]
+            [restql.core.api.restql :as restql]
+            [restql.core.response.headers :as response-headers]
+            [restql.core.encoders.core :refer [base-encoders]]
+            [restql.http.request.mappings :as request-mappings]
+            [restql.http.request.queries :as request-queries]
+            [restql.http.request-util :as util]
+            [restql.http.database.core :as dbcore]
+            [restql.http.cache :as cache]
+            [restql.http.exception-handler :refer [wrap-exception-handling]]
+            [restql.http.plugin.core :as plugin]
+            [restql.http.response :as resp]))
 
 (def default-values {:query-global-timeout 30000})
 
 (defn get-default [key]
   (if (contains? env key) (read-string (env key)) (default-values key)))
 
-(defonce FIND_QUERY_TTL 86400000)
-(def find-query (cache/cached
-                  (fn [query-ns id rev]
-                    (-> (dbcore/find-query-by-id-and-revision query-ns id rev) :text))
-                  FIND_QUERY_TTL))
-
-(def find-mappings (cache/cached (fn [id] (cond
-                                            (nil? id) env
-                                            :else (-> (dbcore/find-tenant-by-id id)
-                                                      :mappings
-                                                      (into env))))))
-
 (defn process-query [query query-opts tenant]
-  (restql/execute-query-channel :mappings (find-mappings tenant)
+  (restql/execute-query-channel :mappings (request-mappings/get-mappings tenant)
                                 :encoders base-encoders
                                 :query query
                                 :query-opts query-opts))
@@ -145,7 +135,7 @@
                                   :id        id
                                   :revision  rev}}
 
-          query-entry (find-query query-ns id rev)
+          query-entry (request-queries/get-query query-ns id rev)
           context (into (:headers req) (:query-params req))
           interpolated-query (util/parse query-entry context)
           query (util/merge-headers req-headers interpolated-query)
@@ -199,7 +189,7 @@
   (c/POST "/parse-query" [] parse-query)
 
   (c/GET "/run-query/:namespace/:id/:rev" [] run-saved-query)
-  
+
   (route/not-found "route not found"))
 
 

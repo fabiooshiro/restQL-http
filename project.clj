@@ -11,6 +11,7 @@
                  [expectations "2.0.9"]
                  [slingshot "0.12.2"]
                  [cheshire "5.8.1"]
+                 [io.forward/yaml "1.0.9"]
                  [com.novemberain/monger "3.1.0"]
                  [prismatic/schema "1.1.7"]
                  [commons-validator "1.5.1"]
@@ -41,6 +42,5 @@
                                  :cache-ttl "30000"
                                  :cards     "http://api.magicthegathering.io/v1/cards"
                                  :card      "http://api.magicthegathering.io/v1/cards/:id"
-                                 :planets   "https://swapi.co/api/planets/:id"
-                                 :mongo-url "mongodb://localhost:27017/restql-http"}
+                                 :planets   "https://swapi.co/api/planets/:id"}
                        :plugins [[lein-cloverage "1.0.9"]]}})

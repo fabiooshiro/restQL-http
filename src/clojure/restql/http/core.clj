@@ -4,6 +4,7 @@
             [clojure.tools.logging :as log]
             [restql.http.database.persistence :as db]
             [restql.hooks.core :as hooks]
+            [restql.config.core :as config]
             [environ.core :refer [env]])
   (:gen-class))
 
@@ -62,6 +63,7 @@
         executor-control-period (get-executor-control-period 1000)]
     (log/info "Starting the amazing restQL Server!")
 
+    (config/init!)
     (connect-to-mongo)
 
     (log/info "Loading plugins")

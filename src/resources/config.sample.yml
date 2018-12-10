@@ -1,0 +1,18 @@
+mappings:
+  resource: "my-resource-url"
+
+queries:
+  my-namespace:
+    my-query:
+      - |
+        from resource
+      - |
+        use max-age=900
+        from resource
+  my-namespace-2:
+    my-query:
+      - |
+        from resource
+      - |
+        use max-age=900
+        from resource
