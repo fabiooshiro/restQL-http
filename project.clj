@@ -1,9 +1,9 @@
-(defproject restql-http "v2.8.4" :description "restQL HTTP"
+(defproject restql-http "v2.8.5" :description "restQL HTTP"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url  "http://restql.b2w.io"}
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [b2wdigital/restql-core "2.8.3"]
+                 [b2wdigital/restql-core "2.8.4"]
                  [aleph "0.4.6"]
                  [compojure "1.6.1"]
                  [environ "1.0.0"]
