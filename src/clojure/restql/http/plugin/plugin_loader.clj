@@ -4,10 +4,10 @@
             [clojure.tools.logging :as log]
             [cheshire.core :as json]))
 
-(defn is-plugin-properties-file? [path]
+(defn- is-plugin-properties-file? [path]
   (not (nil? (re-matches #".*restql-plugin\.json$" (.toLowerCase path)))))
 
-(defn create-plugin-def [json-def]
+(defn- create-plugin-def [json-def]
   (let [ns-symbol (symbol (:namespace json-def))
         _ (require ns-symbol)
         check-fn (ns-resolve ns-symbol (symbol "check"))
@@ -16,7 +16,7 @@
      :check check-fn
      :add-hooks add-hooks-fn}))
 
-(defn read-plugin-def [desc-file-path]
+(defn- read-plugin-def [desc-file-path]
   (-> desc-file-path
       io/resource
       io/input-stream

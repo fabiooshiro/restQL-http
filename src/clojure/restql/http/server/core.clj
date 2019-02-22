@@ -28,23 +28,17 @@
 
 (defn start!
   "Starts the restQL http server"
-  [{:keys [port
-           executor-utilization
-           executor-max-threads
-           executor-control-period]
-    :or {port 9000
-         executor-utilization 0.9
-         executor-max-threads 512
-         executor-control-period 1000}}]
-  (log/info "Server starting with" {:port port
-                                     :executor-utilization executor-utilization
-                                     :executor-max-threads executor-max-threads
-                                     :executor-control-period executor-control-period})
-  (reset! server (start-server port
-                               executor-utilization
-                               executor-max-threads
-                               executor-control-period))
-  (log/info "Server started!"))
+  [{:keys [port executor-utilization executor-max-threads executor-control-period]}]
+  (let [cfg {:port (or port 9000)
+             :executor-utilization (or executor-utilization 0.9)
+             :executor-max-threads (or executor-max-threads 512)
+             :executor-control-period (or executor-control-period 1000)}]
+    (log/info "Server starting with" cfg)
+    (reset! server (start-server (:port cfg)
+                                 (:executor-utilization cfg)
+                                 (:executor-max-threads cfg)
+                                 (:executor-control-period cfg)))
+    (log/info "Server started!")))
 
 (defn stop!
   "Stops the server"
