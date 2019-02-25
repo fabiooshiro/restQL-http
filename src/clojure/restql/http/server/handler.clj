@@ -13,7 +13,7 @@
 
 (def handler
   (-> (compojure/routes
-       (GET  "/health"                        [] "I', healthy! :)")
+       (GET  "/health"                        [] "I'm healthy! :)")
        (GET  "/resource-status"               [] "Up and running! :)")
        (GET  "/run-query/:namespace/:id/:rev" [] query-handler/saved)
        (POST "/run-query"                     [] query-handler/adhoc)
