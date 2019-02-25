@@ -1,33 +1,37 @@
 (ns restql.http.plugin.core
   (:require [restql.http.plugin.plugin-loader :as loader]
-            [restql.hooks.core :as hooks]))
+            [restql.hooks.core :as hooks]
+            [clojure.tools.logging :as log]))
 
 (defonce plugins (atom []))
 
-(defn load-plugins! []
-  (reset! plugins (loader/search-installed-plugins))
-)
+(defn get-loaded-plugins
+  "Gets all loaded custom plugins"
+  []
+  (deref plugins))
 
-(defn get-loaded-plugins []
-  (deref plugins)
-)
-
-(defn register-each [hook]
+(defn- register-each [hook]
   (doseq [[hook-name hook-fns] hook]
-    (hooks/register-hook hook-name hook-fns)
-  )
-)
+    (hooks/register-hook hook-name hook-fns)))
 
-(defn register-plugins! []
+(defn- register-plugins []
   (->> (deref plugins)
        (filter #(-> % :add-hooks nil? not))
        (map :add-hooks)
        (map (fn [hook] (hook)))
        (map register-each)
-       (doall))
-)
+       (doall)))
 
-(comment
-  (load-plugins!)
-  (get-loaded-plugins)
-  (get-query-opts-with-plugins {}))
+(defn- log-loaded []
+  (as-> (get-loaded-plugins) loadeds
+    (if (>= (count loadeds) 1)
+      (doseq [p loadeds]
+        (log/info "Loaded plugin:" (:name p)))
+      (log/info "No plugins to load"))))
+
+(defn load!
+  "Loads custom plugins"
+  []
+  (reset! plugins (loader/search-installed-plugins))
+  (register-plugins)
+  (log-loaded))

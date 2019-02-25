@@ -2,6 +2,7 @@
   (:require [monger.core :as mg]
             [monger.collection :as mc]
             [monger.operators :refer [$inc $push $slice $group $set]]
+            [clojure.tools.logging :as log]
             [slingshot.slingshot :refer [throw+]]))
 
 (defonce conn-data (atom nil))
@@ -9,9 +10,11 @@
 (defn connect!
   "Connects to the MongoDB"
   [uri]
-
-  (when (nil? @conn-data)
-  (reset! conn-data (mg/connect-via-uri uri))))
+  (if (nil? uri)
+    (log/info "Skiping connection with MongoDB: db url is not setted")
+    (when (nil? @conn-data)
+      (do (log/info "Connecting to MongoDB:" uri)
+          (reset! conn-data (mg/connect-via-uri uri))))))
 
 (defn disconnect!
   "Disconnects from the MongoDB"
