@@ -40,3 +40,4 @@
                                  :card      "http://api.magicthegathering.io/v1/cards/:id"
                                  :planets   "https://swapi.co/api/planets/:id"}
                        :plugins [[lein-cloverage "1.0.9"]]}})
+                                 
