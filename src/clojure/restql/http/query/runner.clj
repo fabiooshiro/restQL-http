@@ -14,7 +14,7 @@
             [restql.core.encoders.core :as encoders]))
 
 (def default-values {:query-global-timeout 30000
-                     :go-routine-start-execution-timeout 25})
+                     :go-routine-start-execution-timeout 50})
 
 (defn- get-default [key]
   (if (contains? env key) (read-string (env key)) (default-values key)))
