@@ -104,7 +104,7 @@
      (async/go
        (if (< (- (System/currentTimeMillis) time#) ~timeout)
          ~@args
-         {:status 500 :headers {"Content-Type" "application/json"} :body "{\"error\":\"START_EXECUTION_TIMEOUT\"}"}))))
+         {:status 507 :headers {"Content-Type" "application/json"} :body "{\"error\":\"START_EXECUTION_TIMEOUT\"}"}))))
 
 (defn run [query-string query-opts context]
   (timed-go (get-default :go-routine-start-execution-timeout)
