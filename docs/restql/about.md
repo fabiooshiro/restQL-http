@@ -1,5 +1,5 @@
 
-<img name="logo" src="/assets/images/logo_text.svg?sanitize=true">
+<img name="logo" src="./assets/images/logo_text.svg?sanitize=true">
 
  <br/><br/>
 
