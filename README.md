@@ -22,7 +22,7 @@ Links
 * [restQL-java](https://github.com/B2W-BIT/restQL-java): If you want to embed restQL directly into your Java application,
 * [restQL-manager](https://github.com/B2W-BIT/restQL-manager): To manage saved queries and resources endpoints. restQL-manager requires a MongoDB instance.
 * [Tackling microservice query complexity](https://medium.com/b2w-engineering/restql-tackling-microservice-query-complexity-27def5d09b40): Project motivation and history
-* [Wiki](https://github.com/B2W-BIT/restQL-server/wiki/RestQL-Query-Language): Project documentation.
+* [Wiki](http://doc.restql.b2w.io): Project documentation.
 * [Code](https://cljdoc.org/d/b2wdigital/restql-core): cljdoc of [restQL-clojure](https://github.com/B2W-BIT/restQL-clojure)
 
 Who're talking about restQL
@@ -50,7 +50,7 @@ curl -H "Content-Type: text/plain" localhost:9000/run-query -d "from planets as 
 
 ## Next steps
 
-1. Learn restQL [query language](https://github.com/B2W-BIT/restQL-http/wiki/RestQL-Query-Language),
+1. Learn restQL [query language](http://doc.restql.b2w.io/#/restql/queryLang),
 2. Get involved :) We're looking for contributors, if you're interested ping ricardo.mayerhofer@b2wdigital.com
 
 # Help and community
@@ -66,7 +66,7 @@ If you need help you can reach the community on Telegram
 
 As prerequisites to build restQL-http from source we need:
 
-+ Java 8
++ Java 8 or 11
 + Leiningen
 
 Build the server using the build script: `scripts/build-dist.sh`. 
@@ -104,6 +104,6 @@ The MongoDB dependency is optional and is used to run saved queries.
 
 ## License
 
-Copyright © 2016-2017 B2W Digital
+Copyright © 2016-2019 B2W Digital
 
 Distributed under the MIT License.
