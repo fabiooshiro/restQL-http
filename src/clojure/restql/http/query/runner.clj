@@ -61,7 +61,7 @@
      value)))
 
 (defn- parse-param-value [value]
-  (if (re-matches #"[\{\[](.*)" value)
+  (if (and (string? value) (re-matches #"[\{\[](.*)" value))
     (parse-param-json-value value)
     value))
 
