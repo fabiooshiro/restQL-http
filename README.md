@@ -25,11 +25,12 @@ Links
 * [Wiki](http://doc.restql.b2w.io): Project documentation.
 * [Code](https://cljdoc.org/d/b2wdigital/restql-core): cljdoc of [restQL-clojure](https://github.com/B2W-BIT/restQL-clojure)
 
-Who're talking about restQL
+Who's talking about restQL
 
 * [infoQ: restQL, a Microservices Query Language, Released on GitHub](https://www.infoq.com/news/2018/01/restql-released)
 * [infoQ: 微服务查询语言restQL已在GitHub上发布](http://www.infoq.com/cn/news/2018/01/restql-released)
 * [OSDN Mag: マイクロサービスクエリ言語「restQL 2.3」公開](https://mag.osdn.jp/18/01/12/160000)
+* [Build API's w/ GraphQL, RestQL or RESTful?](https://www.youtube.com/watch?v=OeUGswoYrvA)
 
 # Getting Started
 
