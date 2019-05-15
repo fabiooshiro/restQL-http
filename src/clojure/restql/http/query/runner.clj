@@ -4,7 +4,9 @@
             [clojure.walk :refer [stringify-keys]]
             [cheshire.core :as json]
             [environ.core :refer [env]]
+            [restql.config.core :as config]            
             [slingshot.slingshot :as slingshot]
+            [restql.http.server.cors :as cors]
             [restql.http.query.headers :as headers]
             [restql.http.query.calculate-response-status-code :refer [calculate-response-status-code]]
             [restql.http.query.mappings :as mappings]
@@ -19,7 +21,7 @@
 (defn- get-default [key]
   (if (contains? env key) (read-string (env key)) (default-values key)))
 
-(defn- make-headers [interpolated-query result]
+(defn- get-response-headers [interpolated-query result]
   (-> (response-headers/get-response-headers interpolated-query result)
       (stringify-keys)))
 
@@ -68,7 +70,7 @@
 (defn- create-response [query result]
   (slingshot/try+
    {:body    (result-without-headers result)
-    :headers (make-headers query result)
+    :headers (get-response-headers query result)
     :status  (calculate-response-status-code result)}
    (catch Exception e (.printStackTrace e)
           (identify-error e))))
@@ -79,17 +81,18 @@
                                 :query query
                                 :query-opts query-opts))
 
-(defn- add-content-type [response]
+(defn- make-headers [response]
   (->> (:headers response)
        (stringify-keys)
-       (into {"Content-Type" "application/json"})))
+       (merge (cors/fetch-cors-headers))
+       (merge {"Content-Type" "application/json"})))
 
 (defn- json-output
   "Creates a json output given it's status and body (message)"
   [response]
 
   {:status  (:status response)
-   :headers (add-content-type response)
+   :headers (make-headers response)
    :body    (json/generate-string (:body response))})
 
 (defn- get-error-msg [error]
