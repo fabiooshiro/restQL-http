@@ -2,7 +2,7 @@
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
             :url  "http://restql.b2w.io"}
-  :dependencies [[b2wdigital/restql-core "2.8.21"]
+  :dependencies [[b2wdigital/restql-core "2.8.22"]
                  [org.clojure/clojure "1.10.0"]
                  [org.clojure/core.async "0.4.490"]
                  [org.clojure/java.classpath "0.3.0"]
