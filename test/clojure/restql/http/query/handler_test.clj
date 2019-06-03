@@ -4,9 +4,10 @@
             [slingshot.slingshot :refer [throw+]]
             [clojure.core.async :refer [chan go >!]]
             [clojure.string :refer [includes?]]
-            [environ.core :refer [env]]
             [restql.config.core :as config]
+            [environ.core :refer [env]]
             [restql.http.server.handler :as server-handler]
+            [restql.http.server.cors :as cors]
             [restql.http.query.handler :refer [parse]]
             [restql.http.request.queries :as request-queries]
             [restql.http.query.handler :as query-handler]))
@@ -82,14 +83,4 @@
                         "Access-Control-Allow-Origin"
                         "Access-Control-Allow-Methods"
                         "Access-Control-Allow-Headers"
-                        "Access-Control-Expose-Headers"))))
-  
-  (testing "Should follow CORS headers priority ENV > Config File > Default"
-    (reset! config/config-data {:cors {:allow-origin "xyz"
-                                       :allow-methods "GET"}})
-    (is 
-     (= {"Access-Control-Allow-Origin"  "abc"
-         "Access-Control-Allow-Methods" "GET"
-         "Access-Control-Allow-Headers" "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
-         "Access-Control-Expose-Headers" "Content-Length,Content-Range"}
-        (get (server-handler/options {}) :headers)))))
+                        "Access-Control-Expose-Headers")))))
