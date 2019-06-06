@@ -2,7 +2,7 @@
   (:require [clojure.java.classpath :as cp]
             [clojure.java.io :as io]
             [clojure.tools.logging :as log]
-            [cheshire.core :as json]))
+            [restql.parser.json :as json]))
 
 (defn- is-plugin-properties-file? [path]
   (not (nil? (re-matches #".*restql-plugin\.json$" (.toLowerCase path)))))
@@ -21,7 +21,7 @@
       io/resource
       io/input-stream
       slurp
-      (json/parse-string true)
+      (json/parse-string)
       create-plugin-def))
 
 (defn search-installed-plugins []
