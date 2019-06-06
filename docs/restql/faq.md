@@ -31,7 +31,6 @@ RestQL caches only the mappings and parsed query, not the result of its executio
 RestQL uses some dependencies, listed below:
 - [Aleph](https://aleph.io/) is used to manage HTTP requests
 - [Manifold](https://aleph.io/manifold/rationale.html) is used to manage `deferreds` and `streams`
-- [Cheshire](https://github.com/dakrone/cheshire) is used to encode / decode JSON
 - [Clojure/core.async](https://github.com/clojure/core.async) is used to manage [CSP](https://en.wikipedia.org/wiki/Communicating_sequential_processes)
 - [Compojure](https://github.com/weavejester/compojure) is used to allow routing
 - [Slingshot](https://github.com/scgilardi/slingshot) is used to manage and throw exceptions
