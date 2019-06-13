@@ -1,10 +1,10 @@
 # Configuration
 
 ## Environment variables:
-- `PORT` allows you to specify which port the servers will listen (default is `9000`)
-- `MONGO_URL` allows you to specify the connection with restQL-manager database (default is `nil`)
-- `EXECUTOR_UTILIZATION` allows you to specify the server executor thread pool target utilization (default is `0.9`) - Learn more at [Manifold's wiki](https://github.com/ztellman/manifold/blob/449d1c63e13d5735e704eba02ed949f862d02596/src/manifold/executor.clj#L165)
-- `EXECUTOR_MAX_THREADS` allows you to specify the server executor max threads (default is `512`) - Learn more at [Manifold's wiki](https://github.com/ztellman/manifold/blob/449d1c63e13d5735e704eba02ed949f862d02596/src/manifold/executor.clj#L165)
+- `PORT` sets the HTTP listening port (default is `9000`)
+- `MONGO_URL` sets Mongo as resources and saved queries back-end (default is `nil`)
+- `EXECUTOR_UTILIZATION` sets the server executor thread pool target utilization (default is `0.9`) - Learn more at [Manifold's wiki](https://github.com/ztellman/manifold/blob/449d1c63e13d5735e704eba02ed949f862d02596/src/manifold/executor.clj#L165)
+- `EXECUTOR_MAX_THREADS` sets the server executor max threads (default is `512`) - Learn more at [Manifold's wiki](https://github.com/ztellman/manifold/blob/449d1c63e13d5735e704eba02ed949f862d02596/src/manifold/executor.clj#L165)
 - `EXECUTOR_CONTROL_PERIOD` allows you to specify the interval, in milliseconds, between use of the controller to adjust the size of the pool (default ius `1000`) - Learn more at [Manifold's wiki](https://github.com/ztellman/manifold/blob/449d1c63e13d5735e704eba02ed949f862d02596/src/manifold/executor.clj#L91)
 - `POOL_CONNECTIONS_PER_HOST` allows you to specify the maximum number of simultaneous connections to any host (default is `100`) - Learn more at [Aleph's wiki](https://github.com/ztellman/aleph/blob/5dd8083aa9858ef23ba32dfb05b4db47ec79b22c/src/aleph/http.clj#L96)
 - `POOL_TOTAL_CONNECTIONS` allows you to specify the maximum number of connections across all hosts (default is `10000`) - Learn more at [Aleph's wiki](https://github.com/ztellman/aleph/blob/5dd8083aa9858ef23ba32dfb05b4db47ec79b22c/src/aleph/http.clj#L97)
@@ -13,14 +13,14 @@
 - `QUERY_RESOURCE_TIMEOUT` allows you to specify the default timeout, in milliseconds, for each resource request (default is `5000`) 
 - `CACHE_TTL` allows you to specify the *time to leave*, in milliseconds, to be used to cache the parse of Saved Queries (default is `60000`)
 - `CACHE-COUNT` allows you to specify the number of items stored in cache (default is `2000`)
-- `MAPPINGS_CACHE_TTL` allows you to specify the *time to leave*, in milliseconds, to be used to cache Resources Mappings URLs (default is `60000`)
-- `CORS_ALLOW_ORIGIN` allows you to set the `Access-Control-Allow-Origin` CORS configuration (default is `"*"`)
-- `CORS_ALLOW_METHODS` allows you to set the `Access-Control-Allow-Methods` CORS configuration (default is `"GET, POST, PUT, PATH, DELETE, OPTIONS"`)
-- `CORS_ALLOW_HEADERS` allows you to set the `Access-Control-Allow-Headers` CORS configuration (default is `"DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"`)
-- `CORS_EXPOSE_HEADERS` allows you to set the `Access-Control-Expose-Headers` CORS configuration (default is `"Content-Length,Content-Range"`)
-- `TENANT` allows you to choose the tenant which contains your resources
-- `ALLOW-ADHOC-QUERIES` if set to `false`, blocks the execution of adhoc queries (via POST HTTP mehtod), useful for performance (default is `true`)
-- `RESTQL-CONFIG-FILE` allows you to change the name of the YAML configuration file. Note that it still needs to be located at the `src/resources/` folder (default is `restql.yml`)
+- `MAPPINGS_CACHE_TTL` sets the resource mapping cache TTL, in milliseconds (default is `60000`)
+- `CORS_ALLOW_ORIGIN` sets the `Access-Control-Allow-Origin` CORS configuration (default is `"*"`)
+- `CORS_ALLOW_METHODS` sets the `Access-Control-Allow-Methods` CORS configuration (default is `"GET, POST, PUT, PATH, DELETE, OPTIONS"`)
+- `CORS_ALLOW_HEADERS` sets the `Access-Control-Allow-Headers` CORS configuration (default is `"DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"`)
+- `CORS_EXPOSE_HEADERS` sets `Access-Control-Expose-Headers` CORS configuration (default is `"Content-Length,Content-Range"`)
+- `TENANT` sets the resources tenant. This allows saving multiple end-points for the same API (test, staging, prod, etc.)
+- `ALLOW-ADHOC-QUERIES` if set to `false`, blocks the execution of adhoc queries (via POST HTTP mehtod), useful to limit access to APIs and expose only saved queries (default is `true`)
+- `RESTQL-CONFIG-FILE` sets the full path of restQL configuration file (default is `./restql.yml`);
 
 **Note:** restQL caches only the mappings and parsed query, not the result of its execution.
 
