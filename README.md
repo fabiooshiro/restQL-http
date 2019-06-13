@@ -81,7 +81,7 @@ curl -H "Content-Type: text/plain" localhost:9000/run-query -d "from planets as 
 ```
 
 # Help and community
-Get involved :) We're looking for contributors, if you're interested ping ricardo.mayerhofer@b2wdigital.com
+Get involved :) We're looking for contributor.
 
 If you need help you can reach the community on Telegram:
 - https://t.me/restQL 
