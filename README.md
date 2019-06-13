@@ -15,30 +15,24 @@
   </a>
 </p>
 
+# Getting Started
 
-# Links
-* [Documentation](http://doc.restql.b2w.io)
-* [Code API](https://cljdoc.org/d/b2wdigital/restql-core): [restQL-clojure](https://github.com/B2W-BIT/restQL-clojure) code documentation
-* [restql.b2w.io](http://restql.b2w.io): Project home page
-* [game.b2w.io](http://game.b2w.io): A game developed to teach the basics of restQL language
-* [restQL-clojure](https://github.com/B2W-BIT/restQL-clojure): If you want to embed restQL directly into your Clojure application,
-* [restQL-java](https://github.com/B2W-BIT/restQL-java): If you want to embed restQL directly into your Java application,
-* [restQL-manager](https://github.com/B2W-BIT/restQL-manager): To manage saved queries and resources endpoints. restQL-manager requires a MongoDB instance.
-* [Tackling microservice query complexity](https://medium.com/b2w-engineering/restql-tackling-microservice-query-complexity-27def5d09b40): Project motivation and history
+## Running restQL HTTP
 
-## Reach the community
-* [#restql](https://clojurians.slack.com/messages/C8S6EG8BF): [clojurians](https://clojurians.slack.com) restQL Slack channel
-* [@restQL](https://t.me/restQL): restQL Telegram Group
+restQL server allows you to post ad-hoc queries and to reference resources pre-configured in the server startup.
 
-## Who's talking about restQL
+1. Download the latest release in the [release page](https://github.com/B2W-BIT/restQL-http/releases),
+2. Unzip the package,
+3. Edit the file env.sh with the resources you want to invoke,
+3. Run bin/run.sh.
 
-* [infoQ: restQL, a Microservices Query Language, Released on GitHub](https://www.infoq.com/news/2018/01/restql-released)
-* [infoQ: 微服务查询语言restQL已在GitHub上发布](http://www.infoq.com/cn/news/2018/01/restql-released)
-* [OSDN Mag: マイクロサービスクエリ言語「restQL 2.3」公開](https://mag.osdn.jp/18/01/12/160000)
-* [Build API's w/ GraphQL, RestQL or RESTful?](https://www.youtube.com/watch?v=OeUGswoYrvA)
+Post to http://your-server.ip:9000/run-query the body below and content-type text/plain:
 
-# Quick start
-Look at [this tutorial](http://doc.restql.b2w.io/#/restql/tutorial/intro)
+```clojure
+curl -H "Content-Type: text/plain" localhost:9000/run-query -d "from planets as allPlanets" 
+```
+
+For a more complex example follow [this tutorial](http://doc.restql.b2w.io/#/restql/tutorial/intro)
 
 ## Our query language
 The clause order matters when making restQL queries. The following is a full reference to the query syntax, available clauses and order.
@@ -65,23 +59,24 @@ from hero as heroList
 ```
 Learn more about [**restQL** query language](http://doc.restql.b2w.io/#/restql/queryLang)
 
-## Run **restQL** HTTP
+# Links
+* [Docs](http://doc.restql.b2w.io)
+* [Code API](https://cljdoc.org/d/b2wdigital/restql-core): [restQL-clojure](https://github.com/B2W-BIT/restQL-clojure) code documentation
+* [restQL-clojure](https://github.com/B2W-BIT/restQL-clojure): If you want to embed restQL directly into your Clojure application,
+* [restQL-java](https://github.com/B2W-BIT/restQL-java): If you want to embed restQL directly into your Java application,
+* [restQL-manager](https://github.com/B2W-BIT/restQL-manager): To manage saved queries and resources endpoints. restQL-manager requires a MongoDB instance.
+* [Tackling microservice query complexity](https://medium.com/b2w-engineering/restql-tackling-microservice-query-complexity-27def5d09b40): Project motivation and history
 
-**restQL** Server allows you to post `ad-hoc` queries and to reference resources pre-configured in the server startup.
+## Reach the community
+* [#restql](https://clojurians.slack.com/messages/C8S6EG8BF): [clojurians](https://clojurians.slack.com) restQL Slack channel
+* [@restQL](https://t.me/restQL): restQL Telegram Group
 
-1. Download the latest release in the [release page](https://github.com/B2W-BIT/restQL-http/releases),
-2. Unzip the package,
-3. Edit the file `restql.yml` with the resources you want to invoke,
-3. Run bin/run.sh.
+## Who's talking about restQL
 
-Post to http://your-server.ip:9000/run-query the body below and content-type text/plain:
-
-```clojure
-curl -H "Content-Type: text/plain" localhost:9000/run-query -d "from planets as allPlanets" 
-```
-
-If you need help you can reach the community on Telegram:
-- https://t.me/restQL 
+* [infoQ: restQL, a Microservices Query Language, Released on GitHub](https://www.infoq.com/news/2018/01/restql-released)
+* [infoQ: 微服务查询语言restQL已在GitHub上发布](http://www.infoq.com/cn/news/2018/01/restql-released)
+* [OSDN Mag: マイクロサービスクエリ言語「restQL 2.3」公開](https://mag.osdn.jp/18/01/12/160000)
+* [Build API's w/ GraphQL, RestQL or RESTful?](https://www.youtube.com/watch?v=OeUGswoYrvA)
 
 ## License
 
