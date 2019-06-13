@@ -26,7 +26,7 @@
 * [restQL-manager](https://github.com/B2W-BIT/restQL-manager): To manage saved queries and resources endpoints. restQL-manager requires a MongoDB instance.
 * [Tackling microservice query complexity](https://medium.com/b2w-engineering/restql-tackling-microservice-query-complexity-27def5d09b40): Project motivation and history
 
-## Talk with us
+## Reach the community
 * [#restql](https://clojurians.slack.com/messages/C8S6EG8BF): [clojurians](https://clojurians.slack.com) restQL Slack channel
 * [@restQL](https://t.me/restQL): restQL Telegram Group
 
@@ -79,9 +79,6 @@ Post to http://your-server.ip:9000/run-query the body below and content-type tex
 ```clojure
 curl -H "Content-Type: text/plain" localhost:9000/run-query -d "from planets as allPlanets" 
 ```
-
-# Help and community
-Get involved :) We're looking for contributor.
 
 If you need help you can reach the community on Telegram:
 - https://t.me/restQL 
