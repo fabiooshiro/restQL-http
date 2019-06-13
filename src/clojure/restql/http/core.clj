@@ -21,7 +21,7 @@
 
   (log/info "Starting the amazing restQL Server!")
 
-  (config/init! (from-env-or-defaut :restql-config-file "restql.yml"))
+  (config/init! (:restql-config-file env))
   (db/connect!  (env :mongo-url))
   (plugin/load!)
 
