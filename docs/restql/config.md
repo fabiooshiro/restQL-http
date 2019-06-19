@@ -1,5 +1,8 @@
 # Configuration
 
+RestQL can be configured either via `Environment Variables` or through a `Config File`.
+Configuration options follows the precedence `Environment > Config File > Default`.
+
 ## Environment variables:
 - `PORT` sets the HTTP listening port (default is `9000`)
 - `MONGO_URL` sets Mongo as resources and saved queries back-end (default is `nil`)
@@ -19,8 +22,8 @@
 - `CORS_ALLOW_HEADERS` sets the `Access-Control-Allow-Headers` CORS configuration (default is `"DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"`)
 - `CORS_EXPOSE_HEADERS` sets `Access-Control-Expose-Headers` CORS configuration (default is `"Content-Length,Content-Range"`)
 - `TENANT` sets the resources tenant. This allows saving multiple end-points for the same API (test, staging, prod, etc.)
-- `ALLOW-ADHOC-QUERIES` if set to `false`, blocks the execution of adhoc queries (via POST HTTP mehtod), useful to limit access to APIs and expose only saved queries (default is `true`)
-- `RESTQL-CONFIG-FILE` sets the full path of restQL configuration file (default is `./restql.yml`);
+- `ALLOW_ADHOC_QUERIES` if set to `false`, blocks the execution of adhoc queries (via POST HTTP mehtod), useful to limit access to APIs and expose only saved queries (default is `true`)
+- `RESTQL_CONFIG_FILE` sets the full path of restQL configuration file (default is `./restql.yml`);
 
 **Note:** restQL caches only the mappings and parsed query, not the result of its execution.
 
@@ -96,7 +99,6 @@ planets=https://swapi.co/api/planets/:id ./bin/run.sh
 
 Cross-Origin Resource Sharing - CORS, for short - is a specification that enables truly open access across domain-boundaries.
 You can configure your own CORS headers either via the `restql.yml` config file or via environment variables.
-CORS options follows the precedence `Environment > Config File > Default`.
 
 ### Via an environment variable:
 
