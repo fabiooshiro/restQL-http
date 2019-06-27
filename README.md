@@ -57,10 +57,10 @@ from hero as heroList
     with
         name = search.results.name
 ```
-Learn more about [**restQL** query language](http://doc.restql.b2w.io/#/restql/queryLang)
+Learn more about [**restQL** query language](http://docs.restql.b2w.io/#/restql/queryLang)
 
 # Links
-* [Docs](http://doc.restql.b2w.io)
+* [Docs](http://docs.restql.b2w.io)
 * [Code API](https://cljdoc.org/d/b2wdigital/restql-core): [restQL-clojure](https://github.com/B2W-BIT/restQL-clojure) code documentation
 * [restQL-clojure](https://github.com/B2W-BIT/restQL-clojure): If you want to embed restQL directly into your Clojure application,
 * [restQL-java](https://github.com/B2W-BIT/restQL-java): If you want to embed restQL directly into your Java application,
