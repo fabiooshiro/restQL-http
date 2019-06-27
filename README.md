@@ -32,7 +32,7 @@ Post to http://your-server.ip:9000/run-query the body below and content-type tex
 curl -H "Content-Type: text/plain" localhost:9000/run-query -d "from planets as allPlanets" 
 ```
 
-For a more complex example follow [this tutorial](http://doc.restql.b2w.io/#/restql/tutorial/intro)
+For a more complex example follow [this tutorial](http://doc.restql.b2w.io/#/restql/tutorial/intro). Alternatively you can use our [official docker image](https://hub.docker.com/r/b2wdigital/restql-http).
 
 ## Our query language
 The clause order matters when making restQL queries. The following is a full reference to the query syntax, available clauses and order.
