@@ -23,7 +23,7 @@ restQL server allows you to post ad-hoc queries and to reference resources pre-c
 
 1. Download the latest release in the [release page](https://github.com/B2W-BIT/restQL-http/releases),
 2. Unzip the package,
-3. Edit the file env.sh with the resources you want to invoke,
+3. Configure [resource mappings](http://docs.restql.b2w.io/#/restql/resource-mappings),
 3. Run bin/run.sh.
 
 Post to http://your-server.ip:9000/run-query the body below and content-type text/plain:
